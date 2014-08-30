@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import android.app.FragmentManager;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -19,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.abc.drawer_fragment.People;
 import com.abc.drawer_fragment.ClientNote;
@@ -39,13 +41,18 @@ public class MainActivity extends FragmentActivity {
 	private CharSequence my_Title;
 	private String[] my_PlanetTitles;
 	private Button button;
+	private Typeface typeface;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		typeface = Typeface.createFromAsset(getAssets(),
+				"fonts/Quicksand-Regular.ttf");
+
 		my_Title = my_DrawerTitle = getTitle();
-		
+
 		my_PlanetTitles = getResources().getStringArray(R.array.planets_array);
 		my_DrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		my_DrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -89,7 +96,6 @@ public class MainActivity extends FragmentActivity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
-		
 
 	}
 
@@ -161,81 +167,87 @@ public class MainActivity extends FragmentActivity {
 
 		switch (position) {
 		case 0:
-			if(fragmentManager7.findFragmentById(R.id.content_frame)==null){
+			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
 				fragmentManager.beginTransaction()
 						.replace(R.id.content_frame, people).commit();
-				}
-			else {
-				fragmentManager7.beginTransaction()
-				.remove(fragmentManager7.findFragmentById(R.id.content_frame)).commit();
+			} else {
+				fragmentManager7
+						.beginTransaction()
+						.remove(fragmentManager7
+								.findFragmentById(R.id.content_frame)).commit();
 				fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, people).commit();
+						.replace(R.id.content_frame, people).commit();
 			}
 			break;
-			
+
 		case 1:
-			if(fragmentManager7.findFragmentById(R.id.content_frame)==null){
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, clientNote).commit();
-			}
-			else {
-				fragmentManager7.beginTransaction()
-				.remove(fragmentManager7.findFragmentById(R.id.content_frame)).commit();
+			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
 				fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, clientNote).commit();
+						.replace(R.id.content_frame, clientNote).commit();
+			} else {
+				fragmentManager7
+						.beginTransaction()
+						.remove(fragmentManager7
+								.findFragmentById(R.id.content_frame)).commit();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, clientNote).commit();
 			}
 			break;
 		case 2:
-			if(fragmentManager7.findFragmentById(R.id.content_frame)==null){
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, calender).commit();
-			}
-			else {
-				fragmentManager7.beginTransaction()
-				.remove(fragmentManager7.findFragmentById(R.id.content_frame)).commit();
+			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
 				fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, calender).commit();
+						.replace(R.id.content_frame, calender).commit();
+			} else {
+				fragmentManager7
+						.beginTransaction()
+						.remove(fragmentManager7
+								.findFragmentById(R.id.content_frame)).commit();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, calender).commit();
 			}
 			break;
 		case 3:
-			if(fragmentManager7.findFragmentById(R.id.content_frame)==null){
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, recent).commit();
-			}
-			else {
-				fragmentManager7.beginTransaction()
-				.remove(fragmentManager7.findFragmentById(R.id.content_frame)).commit();
+			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
 				fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, recent).commit();
+						.replace(R.id.content_frame, recent).commit();
+			} else {
+				fragmentManager7
+						.beginTransaction()
+						.remove(fragmentManager7
+								.findFragmentById(R.id.content_frame)).commit();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, recent).commit();
 			}
 			break;
 		case 4:
-			if(fragmentManager7.findFragmentById(R.id.content_frame)==null){
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, search).commit();
-			}
-			else {
-				fragmentManager7.beginTransaction()
-				.remove(fragmentManager7.findFragmentById(R.id.content_frame)).commit();
+			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
 				fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, search).commit();
+						.replace(R.id.content_frame, search).commit();
+			} else {
+				fragmentManager7
+						.beginTransaction()
+						.remove(fragmentManager7
+								.findFragmentById(R.id.content_frame)).commit();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, search).commit();
 			}
 			break;
 		case 5:
-			if(fragmentManager7.findFragmentById(R.id.content_frame)==null){
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, schedule).commit();
-			}
-			else {
-				fragmentManager7.beginTransaction()
-				.remove(fragmentManager7.findFragmentById(R.id.content_frame)).commit();
+			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
 				fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, schedule).commit();
+						.replace(R.id.content_frame, schedule).commit();
+			} else {
+				fragmentManager7
+						.beginTransaction()
+						.remove(fragmentManager7
+								.findFragmentById(R.id.content_frame)).commit();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, schedule).commit();
 			}
 			break;
 		case 6:
 			// special case
-			
+
 			fm.beginTransaction()
 					.remove(fm.findFragmentById(R.id.content_frame)).commit();
 
@@ -258,6 +270,12 @@ public class MainActivity extends FragmentActivity {
 	public void setTitle(CharSequence title) {
 		my_Title = title;
 		getActionBar().setTitle(my_Title);
+
+		// action bar (title)
+		int titleId = getResources().getIdentifier("action_bar_title", "id",
+				"android");
+		TextView yourTextView = (TextView) findViewById(titleId);
+		yourTextView.setTypeface(typeface);
 	}
 
 	@Override

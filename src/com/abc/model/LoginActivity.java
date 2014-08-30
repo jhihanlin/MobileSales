@@ -3,12 +3,14 @@ package com.abc.model;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -43,10 +45,25 @@ public class LoginActivity extends Activity {
 		// ParseInstallation.getCurrentInstallation().saveInBackground();
 		// ParseAnalytics.trackAppOpened(getIntent());
 
+		Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.ttf");
+		
+		//action bar (title)
+		int titleId = getResources().getIdentifier("action_bar_title", "id",
+	            "android");
+	    TextView yourTextView = (TextView) findViewById(titleId);
+	    yourTextView.setTypeface(typeface);
+		
 		accountEditText = (EditText) findViewById(R.id.accountEditText);
+		accountEditText.setTypeface(typeface);
+		
 		passwordEditText = (EditText) findViewById(R.id.passwordEditText);
+		passwordEditText.setTypeface(typeface);
+		
 		loginButton = (Button) findViewById(R.id.loginButton);
+		loginButton.setTypeface(typeface);
+		
 		registerButton = (Button) findViewById(R.id.registerButton);
+		registerButton.setTypeface(typeface);
 
 		loginButton.setOnClickListener(new OnClickListener() {
 			@Override
