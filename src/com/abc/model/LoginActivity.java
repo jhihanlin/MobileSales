@@ -14,11 +14,8 @@ import android.widget.TextView;
 
 import com.parse.LogInCallback;
 import com.parse.Parse;
-import com.parse.ParseAnalytics;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseUser;
-import com.parse.PushService;
 import com.parse.SignUpCallback;
 
 public class LoginActivity extends Activity {

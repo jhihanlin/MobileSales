@@ -1,8 +1,5 @@
 package com.abc.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
@@ -15,22 +12,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.abc.drawer_fragment.CalendarFragment;
 import com.abc.drawer_fragment.People;
 import com.abc.drawer_fragment.ClientNote;
-import com.abc.drawer_fragment.Calender;
 import com.abc.drawer_fragment.Recent;
 import com.abc.drawer_fragment.Search;
 import com.abc.drawer_fragment.Schedule;
 import com.abc.drawer_fragment.Others;
 import com.abc.model.R;
-import com.parse.ParsePush;
 
 public class MainActivity extends FragmentActivity {
 	private DrawerLayout my_DrawerLayout;
@@ -40,7 +34,6 @@ public class MainActivity extends FragmentActivity {
 	private CharSequence my_DrawerTitle;
 	private CharSequence my_Title;
 	private String[] my_PlanetTitles;
-	private Button button;
 	private Typeface typeface;
 
 	@Override
@@ -159,7 +152,7 @@ public class MainActivity extends FragmentActivity {
 		android.support.v4.app.FragmentManager fragmentManager7 = getSupportFragmentManager();
 		People people = new People();
 		ClientNote clientNote = new ClientNote();
-		Calender calender = new Calender();
+		CalendarFragment calendarFragment = new CalendarFragment();
 		Recent recent = new Recent();
 		Search search = new Search();
 		Schedule schedule = new Schedule();
@@ -196,14 +189,14 @@ public class MainActivity extends FragmentActivity {
 		case 2:
 			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
 				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, calender).commit();
+						.replace(R.id.content_frame, calendarFragment).commit();
 			} else {
 				fragmentManager7
 						.beginTransaction()
 						.remove(fragmentManager7
 								.findFragmentById(R.id.content_frame)).commit();
 				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, calender).commit();
+						.replace(R.id.content_frame, calendarFragment).commit();
 			}
 			break;
 		case 3:
@@ -263,10 +256,15 @@ public class MainActivity extends FragmentActivity {
 
 		my_DrawerList.setItemChecked(position, true);
 		setTitle(my_PlanetTitles[position]);
+		
+		
+		
+		
+		
 		my_DrawerLayout.closeDrawer(my_DrawerList);
 	}
 
-	@Override
+	@Override 
 	public void setTitle(CharSequence title) {
 		my_Title = title;
 		getActionBar().setTitle(my_Title);
