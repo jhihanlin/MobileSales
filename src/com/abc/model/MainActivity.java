@@ -52,8 +52,8 @@ public class MainActivity extends FragmentActivity {
 
 		// set a custom shadow that overlays the main content when the drawer
 		// opens
-		my_DrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-				GravityCompat.START);
+//		my_DrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+//				GravityCompat.START);
 
 		// set up the drawer's list view with items and click listener
 		my_DrawerList.setAdapter(new ArrayAdapter<String>(this,

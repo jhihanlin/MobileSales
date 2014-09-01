@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="function_5"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="370dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/etLocationName"
+        class="com.google.android.gms.maps.MapFragment" />
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/etLocationName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:background="#FFFFFF"
+        android:ems="6"
+        android:hint="please enter the address"
+        android:textColor="#999999"
+        android:textColorHint="#666666" />
+
+    <Button
+        android:id="@+id/btSubmit"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/etLocationName"
+        android:background="#99cccc"
+        android:onClick="onLoactionNameClick"
+        android:text="search"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

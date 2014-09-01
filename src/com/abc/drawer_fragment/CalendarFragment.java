@@ -5,8 +5,12 @@ import java.util.Calendar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.ContentUris;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +26,7 @@ public class CalendarFragment extends Fragment {
 	private EditText showDate;
 	private EditText editNote;
 	private Button sendBtn;
+	private Intent intent;
 	public CalendarFragment() {
 	}
 
@@ -50,11 +55,27 @@ public class CalendarFragment extends Fragment {
 		
 		dateBtn = (Button) v.findViewById(R.id.dateBtn);
 		dateBtn.setTypeface(typeface);
+
 		dateBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				 onCreateDialog(dateBtn).show();
+			}
+		});
+		
+		sendBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				 long startMillis = System.currentTimeMillis();
+				 Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+				 builder.appendPath("time");
+				 ContentUris.appendId(builder, startMillis);
+				 intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+				 startActivity(intent);
+				
 			}
 		});
 		return v;
