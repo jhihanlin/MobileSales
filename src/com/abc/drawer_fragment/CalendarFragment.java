@@ -429,13 +429,9 @@ public class CalendarFragment extends Fragment {
 				gridcell.setTextColor(getResources().getColor(
 						R.color.lightgray02));
 			}
-			if (day_color[1].equals("BLUE")) {
-				gridcell.setTextColor(getResources().getColor(R.color.orrange));
-			}
 			String checkDate = String.format("%d/%02d/%02d",
 					Integer.parseInt(theyear), indexOfMonth(themonth) + 1,
 					Integer.parseInt(theday));
-			Log.d(tag, checkDate);
 			if (clientNotes != null) {
 				for (ParseObject clientNote : clientNotes) {
 					if (clientNote.getString("date").equals(checkDate)) {
@@ -443,6 +439,9 @@ public class CalendarFragment extends Fragment {
 								R.color.blue));
 					}
 				}
+			}
+			if (day_color[1].equals("BLUE")) {
+				gridcell.setTextColor(getResources().getColor(R.color.orrange));
 			}
 
 			return row;
