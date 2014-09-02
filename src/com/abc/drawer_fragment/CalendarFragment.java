@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -44,7 +45,9 @@ public class CalendarFragment extends Fragment {
 	private int month, year;
 	private final DateFormat dateFormatter = new DateFormat();
 	protected List<ParseObject> clientNotes;
+	private TextView clientNoteText;
 	private static final String dateTemplate = "MMMM yyyy";
+	private ProgressDialog progressDialog;
 
 	public CalendarFragment() {
 	}
@@ -117,6 +120,8 @@ public class CalendarFragment extends Fragment {
 		});
 
 		calendarView = (GridView) v.findViewById(R.id.calendar);
+		clientNoteText = (TextView) v.findViewById(R.id.clientNoteText);
+		progressDialog = new ProgressDialog(getActivity());
 
 		// Initialised
 		adapter = new GridCellAdapter(getActivity().getApplicationContext(),
@@ -130,6 +135,10 @@ public class CalendarFragment extends Fragment {
 	}
 
 	private void loadClientNoteFromParse() {
+		progressDialog.setTitle("Loading...");
+		progressDialog.setCancelable(false);
+		progressDialog.show();
+
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"ClientNote");
 		query.findInBackground(new FindCallback<ParseObject>() {
@@ -140,7 +149,7 @@ public class CalendarFragment extends Fragment {
 				if (e == null) {
 					clientNotes = objects;
 				}
-
+				progressDialog.dismiss();
 			}
 		});
 	}
@@ -428,11 +437,18 @@ public class CalendarFragment extends Fragment {
 				Date parsedDate = dateFormatter.parse(date_month_year);
 				String dateStr = dateFormatter2.format(parsedDate);
 
+				String text = "";
 				for (ParseObject clientNote : clientNotes) {
 					if (clientNote.getString("date").equals(dateStr)) {
 						Log.d(tag, "title:" + clientNote.getString("title"));
+						text += String.format(
+								"title: %s, content: %s, location: %s\n",
+								clientNote.getString("title"),
+								clientNote.getString("content"),
+								clientNote.getString("location"));
 					}
 				}
+				clientNoteText.setText(text);
 
 			} catch (ParseException e) {
 				e.printStackTrace();

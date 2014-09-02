@@ -26,8 +26,8 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:layout_marginLeft="10sp"
-            android:src="@drawable/calendar_left_arrow_selector"
-             android:background="#0090ff" >
+            android:background="#0090ff"
+            android:src="@drawable/calendar_left_arrow_selector" >
         </ImageView>
 
         <TextView
@@ -35,10 +35,10 @@
             android:layout_width="fill_parent"
             android:layout_height="60sp"
             android:layout_weight="0.6"
+            android:background="#0090ff"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#FFFFFF"
-             android:background="#0090ff" >
+            android:textColor="#FFFFFF" >
         </TextView>
 
         <ImageView
@@ -47,8 +47,8 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:layout_marginRight="10sp"
-            android:src="@drawable/calendar_right_arrow_selector"
-             android:background="#0090ff" >
+            android:background="#0090ff"
+            android:src="@drawable/calendar_right_arrow_selector" >
         </ImageView>
 
         <Button
@@ -88,5 +88,15 @@
         android:layout_height="wrap_content"
         android:numColumns="7" >
     </GridView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/clientNoteText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
 </LinearLayout>
