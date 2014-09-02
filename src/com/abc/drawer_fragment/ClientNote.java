@@ -25,8 +25,10 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.abc.model.R;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class ClientNote extends Fragment {
@@ -115,6 +117,7 @@ public class ClientNote extends Fragment {
 				object.put("time", time);
 				object.put("location", location);
 				object.put("remarks", remarks);
+				object.setACL(new ParseACL(ParseUser.getCurrentUser()));
 				object.saveInBackground(new SaveCallback() {
 
 					@Override
