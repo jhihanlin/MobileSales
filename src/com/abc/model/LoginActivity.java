@@ -2,7 +2,9 @@ package com.abc.model;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -26,6 +29,9 @@ public class LoginActivity extends Activity {
 	private Button loginButton;
 	private ProgressDialog progressDialog;
 
+	private SharedPreferences sp;
+	private SharedPreferences.Editor editor;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,43 +42,51 @@ public class LoginActivity extends Activity {
 
 		Log.d("debug", "login activity");
 
-		progressDialog = new ProgressDialog(this);//loading bar
+		progressDialog = new ProgressDialog(this);// loading bar
+
+		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);
+		editor = sp.edit();
 
 		// PushService.setDefaultPushCallback(this, MainActivity.class);
 		// ParseInstallation.getCurrentInstallation().saveInBackground();
 		// ParseAnalytics.trackAppOpened(getIntent());
 
-		Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.ttf");//font
-		
-		//action bar (title)
+		Typeface typeface = Typeface.createFromAsset(getAssets(),
+				"fonts/Quicksand-Regular.ttf");// font
+
+		// action bar (title)
 		int titleId = getResources().getIdentifier("action_bar_title", "id",
-	            "android");
-	    TextView yourTextView = (TextView) findViewById(titleId);
-	    yourTextView.setTypeface(typeface);
-		
+				"android");
+		TextView yourTextView = (TextView) findViewById(titleId);
+		yourTextView.setTypeface(typeface);
+
 		accountEditText = (EditText) findViewById(R.id.accountEditText);
 		accountEditText.setTypeface(typeface);
-		
+
 		passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 		passwordEditText.setTypeface(typeface);
-		
+
 		loginButton = (Button) findViewById(R.id.loginButton);
 		loginButton.setTypeface(typeface);
-		
+
 		registerButton = (Button) findViewById(R.id.registerButton);
 		registerButton.setTypeface(typeface);
 
 		loginButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String account = accountEditText.getText().toString();
-				String passwrod = passwordEditText.getText().toString();
-				Log.d("debug", "login:" + account);
+				String username = accountEditText.getText().toString();
+				String password = passwordEditText.getText().toString();
+				Log.d("debug", "login:" + username);
 
+				editor.putString("username", username);
+				editor.putString("password", password);
+				editor.commit();
+				
 				progressDialog.setCancelable(false);
 				progressDialog.setTitle("Loading...");
 				progressDialog.show();
-				ParseUser.logInInBackground(account, passwrod,
+				ParseUser.logInInBackground(username, password,
 						new LogInCallback() {
 							@Override
 							public void done(ParseUser user,
@@ -94,27 +108,32 @@ public class LoginActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				String account = accountEditText.getText().toString();
-				String passwrod = passwordEditText.getText().toString();
+				String username = accountEditText.getText().toString();
+				String password = passwordEditText.getText().toString();
 
-				Log.d("debug", "signup:" + account);
+				editor.putString("username", username);
+				editor.putString("password", password);
+				editor.commit();
+
+				Log.d("debug", "signup:" + username);
 
 				progressDialog.setCancelable(false);
 				progressDialog.setTitle("Loading...");
 				progressDialog.show();
 
 				final ParseUser user = new ParseUser();
-				user.setUsername(account);
-				user.setPassword(passwrod);
+				user.setUsername(username);
+				user.setPassword(password);
 				user.signUpInBackground(new SignUpCallback() {
 
 					@Override
 					public void done(ParseException e) {
 
 						progressDialog.dismiss();
-
 						if (e != null) {
 							e.printStackTrace();
+							Toast.makeText(LoginActivity.this, "帳號密碼錯誤",
+									Toast.LENGTH_LONG).show();
 						} else {
 							goToMainActivity();
 							LoginActivity.this.finish();
@@ -123,6 +142,13 @@ public class LoginActivity extends Activity {
 				});
 			}
 		});
+
+		loadDataFromSharedPreference();
+	}
+
+	private void loadDataFromSharedPreference() {
+		accountEditText.setText(sp.getString("username", ""));
+		passwordEditText.setText(sp.getString("password", ""));
 	}
 
 	private void goToMainActivity() {
