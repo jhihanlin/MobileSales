@@ -36,13 +36,13 @@ public class LoginActivity extends Activity {
 
 		Log.d("debug", "login activity");
 
-		progressDialog = new ProgressDialog(this);
+		progressDialog = new ProgressDialog(this);//loading bar
 
 		// PushService.setDefaultPushCallback(this, MainActivity.class);
 		// ParseInstallation.getCurrentInstallation().saveInBackground();
 		// ParseAnalytics.trackAppOpened(getIntent());
 
-		Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.ttf");
+		Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.ttf");//font
 		
 		//action bar (title)
 		int titleId = getResources().getIdentifier("action_bar_title", "id",
