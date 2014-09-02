@@ -2,10 +2,8 @@ package com.abc.drawer_fragment;
 
 import java.util.Calendar;
 import java.util.Locale;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +41,6 @@ public class CalendarFragment extends Fragment {
 	private GridCellAdapter adapter;
 	private Calendar _calendar;
 	private int month, year;
-	private final DateFormat dateFormatter = new DateFormat();
 	protected List<ParseObject> clientNotes;
 	private TextView clientNoteText;
 	private static final String dateTemplate = "MMMM yyyy";
@@ -193,10 +190,6 @@ public class CalendarFragment extends Fragment {
 		private Button gridcell;
 		private TextView num_events_per_day;
 		private final HashMap<String, Integer> eventsPerMonthMap;
-		private final SimpleDateFormat dateFormatter = new SimpleDateFormat(
-				"d-MMMM-yyyy");
-		private final SimpleDateFormat dateFormatter2 = new SimpleDateFormat(
-				"yyyy/MM/dd");
 
 		// Days in Current Month
 		public GridCellAdapter(Context context, int textViewResourceId,
@@ -415,11 +408,13 @@ public class CalendarFragment extends Fragment {
 				}
 			}
 
+			String formatDate = String.format("%d/%02d/%02d",
+					Integer.parseInt(theyear), indexOfMonth(themonth) + 1,
+					Integer.parseInt(theday));
+
 			// Set the Day GridCell
 			gridcell.setText(theday);
-			gridcell.setTag(theday + "-" + themonth + "-" + theyear);
-			Log.d(tag, "Setting GridCell " + theday + "-" + themonth + "-"
-					+ theyear);
+			gridcell.setTag(formatDate);
 
 			if (day_color[1].equals("GREY")) {
 				gridcell.setTextColor(getResources()
@@ -429,12 +424,9 @@ public class CalendarFragment extends Fragment {
 				gridcell.setTextColor(getResources().getColor(
 						R.color.lightgray02));
 			}
-			String checkDate = String.format("%d/%02d/%02d",
-					Integer.parseInt(theyear), indexOfMonth(themonth) + 1,
-					Integer.parseInt(theday));
 			if (clientNotes != null) {
 				for (ParseObject clientNote : clientNotes) {
-					if (clientNote.getString("date").equals(checkDate)) {
+					if (clientNote.getString("date").equals(formatDate)) {
 						gridcell.setTextColor(getResources().getColor(
 								R.color.blue));
 					}
@@ -452,31 +444,23 @@ public class CalendarFragment extends Fragment {
 			Typeface typeface = Typeface.createFromAsset(getActivity()
 					.getAssets(), "fonts/Quicksand-Regular.ttf");// font
 
-			String date_month_year = (String) view.getTag();
-			selectedDayMonthYearButton.setText("Selected: " + date_month_year);
+			String selectedDate = (String) view.getTag();
+			selectedDayMonthYearButton.setText("Selected: " + selectedDate);
 			selectedDayMonthYearButton.setTypeface(typeface);
-			Log.d("Selected date", date_month_year);
+			Log.d("Selected date", selectedDate);
 
-			try {
-				Date parsedDate = dateFormatter.parse(date_month_year);
-				String dateStr = dateFormatter2.format(parsedDate);
-
-				String text = "";
-				for (ParseObject clientNote : clientNotes) {
-					if (clientNote.getString("date").equals(dateStr)) {
-						Log.d(tag, "title:" + clientNote.getString("title"));
-						text += String.format(
-								"title: %s, content: %s, location: %s\n",
-								clientNote.getString("title"),
-								clientNote.getString("content"),
-								clientNote.getString("location"));
-					}
+			String text = "";
+			for (ParseObject clientNote : clientNotes) {
+				if (clientNote.getString("date").equals(selectedDate)) {
+					Log.d(tag, "title:" + clientNote.getString("title"));
+					text += String.format(
+							"title: %s, content: %s, location: %s\n",
+							clientNote.getString("title"),
+							clientNote.getString("content"),
+							clientNote.getString("location"));
 				}
-				clientNoteText.setText(text);
-
-			} catch (ParseException e) {
-				e.printStackTrace();
 			}
+			clientNoteText.setText(text);
 		}
 
 		public int getCurrentDayOfMonth() {
