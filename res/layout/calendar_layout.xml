@@ -69,15 +69,16 @@
     </Button>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center" >
 
         <ImageView
             android:id="@+id/calendarheader"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:scaleType="fitXY"
             android:src="@drawable/calendar_days" >
         </ImageView>
     </LinearLayout>
