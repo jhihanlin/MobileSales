@@ -87,9 +87,9 @@ public class ClientNote extends Fragment {
 				onCreateDialog2(m_timepickerButton).show();
 			}
 		});
-		
+
 		saveButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				String title = m_titleText.getText().toString();
@@ -98,7 +98,7 @@ public class ClientNote extends Fragment {
 				String time = m_timepickerButton.getText().toString();
 				String location = m_locationText.getText().toString();
 				String remarks = m_remarksText.getText().toString();
-				
+
 				ParseObject object = new ParseObject("ClientNote");
 				object.put("title", title);
 				object.put("content", content);
@@ -120,8 +120,9 @@ public class ClientNote extends Fragment {
 				new DatePickerDialog.OnDateSetListener() {
 					public void onDateSet(DatePicker dp, int year, int month,
 							int dayOfMonth) {
-						btn.setText(year + "year" + (month + 1) + "month"
-								+ dayOfMonth + "day");
+						String text = String.format("%d/%02d/%02d", year,
+								(month + 1), dayOfMonth);
+						btn.setText(text);
 					}
 				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
 				c.get(Calendar.DAY_OF_MONTH));
@@ -136,7 +137,7 @@ public class ClientNote extends Fragment {
 				new TimePickerDialog.OnTimeSetListener() {
 					public void onTimeSet(TimePicker view, int hourOfDay,
 							int minute) {
-						btn.setText(hourOfDay + "hour" + minute + "minute");
+						btn.setText(hourOfDay + ":" + minute);
 					}
 				}, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
 		return dialog2;

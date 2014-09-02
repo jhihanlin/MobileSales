@@ -10,13 +10,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,12 +23,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.abc.model.R;
+import com.parse.FindCallback;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 public class CalendarFragment extends Fragment {
 	private static final String tag = "MyCalendarActivity";
@@ -41,13 +41,10 @@ public class CalendarFragment extends Fragment {
 	private GridView calendarView;
 	private GridCellAdapter adapter;
 	private Calendar _calendar;
-	@SuppressLint("NewApi")
 	private int month, year;
-	@SuppressWarnings("unused")
-	@SuppressLint({ "NewApi", "NewApi", "NewApi", "NewApi" })
 	private final DateFormat dateFormatter = new DateFormat();
+	protected List<ParseObject> clientNotes;
 	private static final String dateTemplate = "MMMM yyyy";
-
 
 	public CalendarFragment() {
 	}
@@ -63,7 +60,9 @@ public class CalendarFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.calendar_layout, container, false);
-		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.ttf");//font
+
+		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/Quicksand-Regular.ttf");// font
 
 		_calendar = Calendar.getInstance(Locale.getDefault());
 		month = _calendar.get(Calendar.MONTH) + 1;
@@ -71,26 +70,27 @@ public class CalendarFragment extends Fragment {
 		Log.d(tag, "Calendar Instance:= " + "Month: " + month + " " + "Year: "
 				+ year);
 
-		selectedDayMonthYearButton = (Button) v.findViewById(R.id.selectedDayMonthYear);
+		selectedDayMonthYearButton = (Button) v
+				.findViewById(R.id.selectedDayMonthYear);
 		selectedDayMonthYearButton.setText("Selected: ");
 
 		prevMonth = (ImageView) v.findViewById(R.id.prevMonth);
 		prevMonth.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-			
-					if (month <= 1) {
-						month = 12;
-						year--;
-					} else {
-						month--;
-					}
-					Log.d(tag, "Setting Prev Month in GridCellAdapter: " + "Month: "
-							+ month + " Year: " + year);
-					setGridCellAdapterToDate(month, year);
+
+				if (month <= 1) {
+					month = 12;
+					year--;
+				} else {
+					month--;
 				}
-		
+				Log.d(tag, "Setting Prev Month in GridCellAdapter: "
+						+ "Month: " + month + " Year: " + year);
+				setGridCellAdapterToDate(month, year);
+			}
+
 		});
 
 		currentMonth = (TextView) v.findViewById(R.id.currentMonth);
@@ -99,21 +99,21 @@ public class CalendarFragment extends Fragment {
 		currentMonth.setTypeface(typeface);
 		nextMonth = (ImageView) v.findViewById(R.id.nextMonth);
 		nextMonth.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				
-					if (month > 11) {
-						month = 1;
-						year++;
-					} else {
-						month++;
-					}
-					Log.d(tag, "Setting Next Month in GridCellAdapter: " + "Month: "
-							+ month + " Year: " + year);
-					setGridCellAdapterToDate(month, year);
+
+				if (month > 11) {
+					month = 1;
+					year++;
+				} else {
+					month++;
 				}
-			
+				Log.d(tag, "Setting Next Month in GridCellAdapter: "
+						+ "Month: " + month + " Year: " + year);
+				setGridCellAdapterToDate(month, year);
+			}
+
 		});
 
 		calendarView = (GridView) v.findViewById(R.id.calendar);
@@ -124,8 +124,27 @@ public class CalendarFragment extends Fragment {
 		adapter.notifyDataSetChanged();
 		calendarView.setAdapter(adapter);
 
+		loadClientNoteFromParse();
+
 		return v;
 	}
+
+	private void loadClientNoteFromParse() {
+		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
+				"ClientNote");
+		query.findInBackground(new FindCallback<ParseObject>() {
+
+			@Override
+			public void done(List<ParseObject> objects,
+					com.parse.ParseException e) {
+				if (e == null) {
+					clientNotes = objects;
+				}
+
+			}
+		});
+	}
+
 	private void setGridCellAdapterToDate(int month, int year) {
 		adapter = new GridCellAdapter(getActivity().getApplicationContext(),
 				R.id.calendar_day_gridcell, month, year);
@@ -163,7 +182,9 @@ public class CalendarFragment extends Fragment {
 		private TextView num_events_per_day;
 		private final HashMap<String, Integer> eventsPerMonthMap;
 		private final SimpleDateFormat dateFormatter = new SimpleDateFormat(
-				"dd-MMM-yyyy");
+				"d-MMMM-yyyy");
+		private final SimpleDateFormat dateFormatter2 = new SimpleDateFormat(
+				"yyyy/MM/dd");
 
 		// Days in Current Month
 		public GridCellAdapter(Context context, int textViewResourceId,
@@ -342,7 +363,8 @@ public class CalendarFragment extends Fragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.ttf");//font
+			Typeface typeface = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/Quicksand-Regular.ttf");// font
 
 			View row = convertView;
 			if (row == null) {
@@ -392,17 +414,25 @@ public class CalendarFragment extends Fragment {
 			return row;
 		}
 
-		@Override 
+		@Override
 		public void onClick(View view) {
-			Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.ttf");//font
+			Typeface typeface = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/Quicksand-Regular.ttf");// font
 
 			String date_month_year = (String) view.getTag();
 			selectedDayMonthYearButton.setText("Selected: " + date_month_year);
 			selectedDayMonthYearButton.setTypeface(typeface);
-			Log.e("Selected date", date_month_year);
+			Log.d("Selected date", date_month_year);
+
 			try {
 				Date parsedDate = dateFormatter.parse(date_month_year);
-				Log.d(tag, "Parsed Date: " + parsedDate.toString());
+				String dateStr = dateFormatter2.format(parsedDate);
+
+				for (ParseObject clientNote : clientNotes) {
+					if (clientNote.getString("date").equals(dateStr)) {
+						Log.d(tag, "title:" + clientNote.getString("title"));
+					}
+				}
 
 			} catch (ParseException e) {
 				e.printStackTrace();
