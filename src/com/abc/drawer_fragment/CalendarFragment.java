@@ -150,6 +150,9 @@ public class CalendarFragment extends Fragment {
 					clientNotes = objects;
 				}
 				progressDialog.dismiss();
+				if (adapter != null) {
+					adapter.notifyDataSetChanged();
+				}
 			}
 		});
 	}
@@ -215,6 +218,15 @@ public class CalendarFragment extends Fragment {
 
 			// Find Number of Events
 			eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
+		}
+
+		private int indexOfMonth(String monthStr) {
+			for (int i = 0; i < months.length; i++) {
+				if (months[i].equals(monthStr)) {
+					return i;
+				}
+			}
+			return -1;
 		}
 
 		private String getMonthAsString(int i) {
@@ -420,6 +432,19 @@ public class CalendarFragment extends Fragment {
 			if (day_color[1].equals("BLUE")) {
 				gridcell.setTextColor(getResources().getColor(R.color.orrange));
 			}
+			String checkDate = String.format("%d/%02d/%02d",
+					Integer.parseInt(theyear), indexOfMonth(themonth) + 1,
+					Integer.parseInt(theday));
+			Log.d(tag, checkDate);
+			if (clientNotes != null) {
+				for (ParseObject clientNote : clientNotes) {
+					if (clientNote.getString("date").equals(checkDate)) {
+						gridcell.setTextColor(getResources().getColor(
+								R.color.blue));
+					}
+				}
+			}
+
 			return row;
 		}
 
