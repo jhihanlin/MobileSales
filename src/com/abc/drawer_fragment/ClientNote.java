@@ -12,10 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.widget.Button;
@@ -23,13 +25,11 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.abc.model.R;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 public class ClientNote extends Fragment {
-
-	public Context context;
-
-	View v;
 
 	EditText m_titleText;
 	EditText m_contentText;
@@ -41,6 +41,8 @@ public class ClientNote extends Fragment {
 	Button saveButton;
 	Calendar c = null;
 
+	private ProgressDialog progressDialog;
+
 	String[] remindTime = new String[] { "10 minutes ago", "15 minutes ago",
 			"30 minutes ago", "1 hour ago", "3 hour ago", "12 hour ago",
 			"1 day ago" };
@@ -48,7 +50,8 @@ public class ClientNote extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		v = inflater.inflate(R.layout.client_note_layout, container, false);
+		View v = inflater
+				.inflate(R.layout.client_note_layout, container, false);
 
 		remindSpinner = (Spinner) v.findViewById(R.id.remindSpinner);
 		m_titleText = (EditText) v.findViewById(R.id.titleText);
@@ -65,6 +68,8 @@ public class ClientNote extends Fragment {
 		adapterTime
 				.setDropDownViewResource(android.R.layout.simple_spinner_item);
 		remindSpinner.setAdapter(adapterTime);
+
+		progressDialog = new ProgressDialog(getActivity());
 
 		if (container == null)
 			return null;
@@ -99,6 +104,10 @@ public class ClientNote extends Fragment {
 				String location = m_locationText.getText().toString();
 				String remarks = m_remarksText.getText().toString();
 
+				progressDialog.setCancelable(false);
+				progressDialog.setTitle("Loading...");
+				progressDialog.show();
+
 				ParseObject object = new ParseObject("ClientNote");
 				object.put("title", title);
 				object.put("content", content);
@@ -106,7 +115,21 @@ public class ClientNote extends Fragment {
 				object.put("time", time);
 				object.put("location", location);
 				object.put("remarks", remarks);
-				object.saveInBackground();
+				object.saveInBackground(new SaveCallback() {
+
+					@Override
+					public void done(ParseException e) {
+						progressDialog.dismiss();
+						if (e == null) {
+							Toast.makeText(getActivity(), "Successful",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Toast.makeText(getActivity(), "Error",
+									Toast.LENGTH_SHORT).show();
+						}
+
+					}
+				});
 			}
 		});
 		return v;
