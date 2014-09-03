@@ -11,6 +11,7 @@ import java.util.List;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ public class CalendarFragment extends Fragment {
 	private static final String tag = "MyCalendarActivity";
 	private TextView currentMonth;
 	private Button selectedDayMonthYearButton;
+	private Button addEvent;
 	private ImageView prevMonth;
 	private ImageView nextMonth;
 	private GridView calendarView;
@@ -72,6 +74,7 @@ public class CalendarFragment extends Fragment {
 
 		selectedDayMonthYearButton = (Button) v
 				.findViewById(R.id.selectedDayMonthYear);
+		addEvent = (Button) v.findViewById(R.id.addEvent);
 		selectedDayMonthYearButton.setText("Selected: ");
 
 		prevMonth = (ImageView) v.findViewById(R.id.prevMonth);
@@ -127,7 +130,7 @@ public class CalendarFragment extends Fragment {
 		calendarView.setAdapter(adapter);
 
 		loadClientNoteFromParse();
-
+		
 		return v;
 	}
 
@@ -137,17 +140,17 @@ public class CalendarFragment extends Fragment {
 		progressDialog.show();
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-				"ClientNote");
+				"ClientNote"); //get Parse table:ClientNote
 		query.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) {
+				if (e == null) { //put resule into a variable:clientNotes
 					clientNotes = objects;
 				}
 				progressDialog.dismiss();
-				if (adapter != null) {
+				if (adapter != null) { //when Parse changed it will notify adapter 
 					adapter.notifyDataSetChanged();
 				}
 			}
@@ -211,6 +214,13 @@ public class CalendarFragment extends Fragment {
 
 			// Find Number of Events
 			eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
+			addEvent.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+				
+				}
+			});
 		}
 
 		private int indexOfMonth(String monthStr) {
@@ -337,6 +347,7 @@ public class CalendarFragment extends Fragment {
 				Log.d(currentMonthName, String.valueOf(i) + " "
 						+ getMonthAsString(currentMonth) + " " + yy);
 				if (i == getCurrentDayOfMonth()) {
+					
 					list.add(String.valueOf(i) + "-BLUE" + "-"
 							+ getMonthAsString(currentMonth) + "-" + yy);
 				} else {
@@ -398,6 +409,8 @@ public class CalendarFragment extends Fragment {
 			String theday = day_color[0];
 			String themonth = day_color[2];
 			String theyear = day_color[3];
+			Log.d("day_color" , list.get(position));
+
 			if ((!eventsPerMonthMap.isEmpty()) && (eventsPerMonthMap != null)) {
 				if (eventsPerMonthMap.containsKey(theday)) {
 					num_events_per_day = (TextView) row
@@ -424,7 +437,7 @@ public class CalendarFragment extends Fragment {
 				gridcell.setTextColor(getResources().getColor(
 						R.color.lightgray02));
 			}
-			if (clientNotes != null) {
+			if (clientNotes != null) { //if Parse has data  it will change the color:blue
 				for (ParseObject clientNote : clientNotes) {
 					if (clientNote.getString("date").equals(formatDate)) {
 						gridcell.setTextColor(getResources().getColor(

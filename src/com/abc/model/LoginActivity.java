@@ -44,8 +44,8 @@ public class LoginActivity extends Activity {
 
 		progressDialog = new ProgressDialog(this);// loading bar
 
-		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);
-		editor = sp.edit();
+		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);//use SharedPreferences to store data
+		editor = sp.edit();//editor is SharedPReferences one of class
 
 		// PushService.setDefaultPushCallback(this, MainActivity.class);
 		// ParseInstallation.getCurrentInstallation().saveInBackground();
@@ -71,15 +71,18 @@ public class LoginActivity extends Activity {
 
 		registerButton = (Button) findViewById(R.id.registerButton);
 		registerButton.setTypeface(typeface);
-
+		
+		//login
+		
 		loginButton.setOnClickListener(new OnClickListener() {
+			
 			@Override
 			public void onClick(View v) {
 				String username = accountEditText.getText().toString();
 				String password = passwordEditText.getText().toString();
 				Log.d("debug", "login:" + username);
 
-				editor.putString("username", username);
+				editor.putString("username", username); //when user keyin owen username it will put in editor
 				editor.putString("password", password);
 				editor.commit();
 				
@@ -99,11 +102,16 @@ public class LoginActivity extends Activity {
 								}
 								if (e != null) {
 									e.printStackTrace();
-								}
+									Toast.makeText(LoginActivity.this, "Login failed",
+											Toast.LENGTH_LONG).show();								
+									}
 							}
 						});
 			}
 		});
+		
+		//register
+		
 		registerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -132,7 +140,7 @@ public class LoginActivity extends Activity {
 						progressDialog.dismiss();
 						if (e != null) {
 							e.printStackTrace();
-							Toast.makeText(LoginActivity.this, "帳號密碼錯誤",
+							Toast.makeText(LoginActivity.this, "Username already exists",
 									Toast.LENGTH_LONG).show();
 						} else {
 							goToMainActivity();
