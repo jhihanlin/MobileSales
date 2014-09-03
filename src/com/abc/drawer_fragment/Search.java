@@ -57,9 +57,9 @@ public class Search extends Fragment implements LocationListener {
 		gmap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 				.getMap();
 
-		LatLng Taipei101 = new LatLng(25.033611, 121.565000); // 台北 101
+//		LatLng Taipei101 = new LatLng(25.033611, 121.565000); // 台北 101
 		zoom = 17;
-		gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(Taipei101, zoom));
+//		gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(Taipei101, zoom));
 		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL); // 一般地圖
 
 		locMgr = (LocationManager) getActivity().getSystemService(
