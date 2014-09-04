@@ -10,10 +10,17 @@ import java.util.List;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Calendars;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -26,6 +33,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abc.model.R;
 import com.parse.FindCallback;
@@ -33,6 +41,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 public class CalendarFragment extends Fragment {
+
 	private static final String tag = "MyCalendarActivity";
 	private TextView currentMonth;
 	private Button selectedDayMonthYearButton;
@@ -47,6 +56,19 @@ public class CalendarFragment extends Fragment {
 	private TextView clientNoteText;
 	private static final String dateTemplate = "MMMM yyyy";
 	private ProgressDialog progressDialog;
+
+	private static String calanderURL = "";
+	private static String calanderEventURL = "";
+	private static String calanderRemiderURL = "";
+	static {
+		calanderURL = "content://com.android.calendar/calendars";
+		calanderEventURL = "content://com.android.calendar/events";
+		calanderRemiderURL = "content://com.android.calendar/reminders";
+
+	}
+	String[] EVENT_PROJECTION = new String[] { Calendars._ID,
+			Calendars.OWNER_ACCOUNT, Calendars.ACCOUNT_NAME,
+			Calendars.CALENDAR_DISPLAY_NAME };
 
 	public CalendarFragment() {
 	}
@@ -65,6 +87,38 @@ public class CalendarFragment extends Fragment {
 
 		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Quicksand-Regular.ttf");// font
+
+		// read google Read user
+		Cursor cur = null;
+		Cursor cur_event = null;
+		ContentResolver cr = getActivity().getContentResolver();
+		Uri uri = Calendars.CONTENT_URI;
+		String selection = "((" + Calendars.ACCOUNT_NAME + " = ?) AND ("
+				+ Calendars.ACCOUNT_TYPE + " = ?) AND ("
+				+ Calendars.OWNER_ACCOUNT + " = ?))";
+		String[] selectionArgs = new String[] { "jhihanlin@gmail.com",
+				"com.google", "jhihanlin@gmail.com" };
+		// Submit the query and get a Cursor object back.
+		cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
+		cur.moveToFirst();
+		String userName = cur.getString(1);
+		Log.d("user", userName);
+		Toast.makeText(getActivity(), userName, Toast.LENGTH_LONG).show();
+		
+		// read google event
+		String[] projection = new String[] { BaseColumns._ID,
+				CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART };
+		cur_event = getActivity().getContentResolver().query(
+				CalendarContract.Events.CONTENT_URI, projection, null, null,
+				null);
+		cur_event.moveToFirst();
+		String allTitle = "";
+		while (cur_event.moveToNext()) {
+			String title = cur_event.getString(1);
+			allTitle += title + ";";
+			Log.d("debug", title);
+		}
+		Toast.makeText(getActivity(), allTitle, Toast.LENGTH_LONG).show();
 
 		_calendar = Calendar.getInstance(Locale.getDefault());
 		month = _calendar.get(Calendar.MONTH) + 1;
@@ -130,7 +184,7 @@ public class CalendarFragment extends Fragment {
 		calendarView.setAdapter(adapter);
 
 		loadClientNoteFromParse();
-		
+
 		return v;
 	}
 
@@ -140,17 +194,18 @@ public class CalendarFragment extends Fragment {
 		progressDialog.show();
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-				"ClientNote"); //get Parse table:ClientNote
+				"ClientNote"); // get Parse table:ClientNote
 		query.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { //put resule into a variable:clientNotes
+				if (e == null) { // put resule into a variable:clientNotes
 					clientNotes = objects;
 				}
 				progressDialog.dismiss();
-				if (adapter != null) { //when Parse changed it will notify adapter 
+				if (adapter != null) { // when Parse changed it will notify
+										// adapter
 					adapter.notifyDataSetChanged();
 				}
 			}
@@ -215,10 +270,10 @@ public class CalendarFragment extends Fragment {
 			// Find Number of Events
 			eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
 			addEvent.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
-				
+
 				}
 			});
 		}
@@ -347,7 +402,7 @@ public class CalendarFragment extends Fragment {
 				Log.d(currentMonthName, String.valueOf(i) + " "
 						+ getMonthAsString(currentMonth) + " " + yy);
 				if (i == getCurrentDayOfMonth()) {
-					
+
 					list.add(String.valueOf(i) + "-BLUE" + "-"
 							+ getMonthAsString(currentMonth) + "-" + yy);
 				} else {
@@ -409,7 +464,7 @@ public class CalendarFragment extends Fragment {
 			String theday = day_color[0];
 			String themonth = day_color[2];
 			String theyear = day_color[3];
-			Log.d("day_color" , list.get(position));
+			Log.d("day_color", list.get(position));
 
 			if ((!eventsPerMonthMap.isEmpty()) && (eventsPerMonthMap != null)) {
 				if (eventsPerMonthMap.containsKey(theday)) {
@@ -437,7 +492,8 @@ public class CalendarFragment extends Fragment {
 				gridcell.setTextColor(getResources().getColor(
 						R.color.lightgray02));
 			}
-			if (clientNotes != null) { //if Parse has data  it will change the color:blue
+			if (clientNotes != null) { // if Parse has data it will change the
+										// color:blue
 				for (ParseObject clientNote : clientNotes) {
 					if (clientNote.getString("date").equals(formatDate)) {
 						gridcell.setTextColor(getResources().getColor(
