@@ -1,40 +1,37 @@
 package com.abc.drawer_fragment;
 
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.provider.BaseColumns;
 import android.provider.CalendarContract;
-import android.provider.CalendarContract.Calendars;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
-import android.text.style.BulletSpan;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
@@ -46,9 +43,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.abc.model.LoginActivity;
 import com.abc.model.R;
-import com.google.android.gms.internal.v;
 import com.parse.FindCallback;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -59,6 +54,7 @@ public class CalendarFragment extends Fragment {
 	private TextView currentMonth;
 	private Button selectedDayMonthYearButton;
 	private Button addEvent;
+	private Button importCalendar;
 	private ImageView prevMonth;
 	private ImageView nextMonth;
 	private GridView calendarView;
@@ -89,8 +85,6 @@ public class CalendarFragment extends Fragment {
 		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Quicksand-Regular.ttf");// font
 
-		readCalendarEvent();
-
 		_calendar = Calendar.getInstance(Locale.getDefault());
 		month = _calendar.get(Calendar.MONTH) + 1;
 		year = _calendar.get(Calendar.YEAR);
@@ -100,6 +94,8 @@ public class CalendarFragment extends Fragment {
 		selectedDayMonthYearButton = (Button) v
 				.findViewById(R.id.selectedDayMonthYear);
 		addEvent = (Button) v.findViewById(R.id.addEvent);
+		importCalendar = (Button) v.findViewById(R.id.importCalendar);
+
 		selectedDayMonthYearButton.setText("Selected: ");
 		selectedDayMonthYearButton.setTypeface(typeface);
 
@@ -180,8 +176,37 @@ public class CalendarFragment extends Fragment {
 				transaction.commit();
 			}
 		});
+		importCalendar.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				Log.d("importCalendar", "Onclick");
+				getActivity().openContextMenu(importCalendar);
+			}
+		});
+
+		registerForContextMenu(importCalendar);
 		return v;
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.import_calendar:
+			Log.d("contextItem", "contexItem");
+			readCalendarEvent();
+			return true;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		getActivity().getMenuInflater().inflate(R.menu.calendar_menu, menu);
+		Log.d("menu", "run menu");
 	}
 
 	/**
@@ -189,25 +214,7 @@ public class CalendarFragment extends Fragment {
 	 */
 	private void readCalendarEvent() {
 
-		String[] EVENT_PROJECTION = new String[] { Calendars._ID,
-				Calendars.OWNER_ACCOUNT, Calendars.ACCOUNT_NAME,
-				Calendars.CALENDAR_DISPLAY_NAME };
-
-		Cursor cur = null;
 		Cursor cur_event = null;
-		ContentResolver cr = getActivity().getContentResolver();
-		Uri uri = Calendars.CONTENT_URI;
-		String selection = "((" + Calendars.ACCOUNT_NAME + " = ?) AND ("
-				+ Calendars.ACCOUNT_TYPE + " = ?) AND ("
-				+ Calendars.OWNER_ACCOUNT + " = ?))";
-		String[] selectionArgs = new String[] { "jhihanlin@gmail.com",
-				"com.google", "jhihanlin@gmail.com" };
-		// Submit the query and get a Cursor object back.
-		cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
-		cur.moveToFirst();
-		String userName = cur.getString(1);
-		Log.d("user", userName);
-		Toast.makeText(getActivity(), userName, Toast.LENGTH_LONG).show();
 
 		// read google event
 		String[] projection = new String[] { BaseColumns._ID,
@@ -217,12 +224,22 @@ public class CalendarFragment extends Fragment {
 				null);
 		cur_event.moveToFirst();
 		String allTitle = "";
+		calendarEvents = new ArrayList<Map<String, String>>();
 		while (cur_event.moveToNext()) {
 			String title = cur_event.getString(1);
-			allTitle += title + ";";
-			Log.d("debug", title);
+			long datetime = Long.parseLong(cur_event.getString(2));
+			String dateString = (String) DateFormat.format("yyyy/MM/dd",
+					datetime);
+			allTitle += title + "," + dateString + ";";
+
+			Map<String, String> item = new HashMap<String, String>();
+			item.put("title", title);
+			item.put("date", dateString);
+			calendarEvents.add(item);
+
+			Log.d("debug", item.toString());
 		}
-		Toast.makeText(getActivity(), allTitle, Toast.LENGTH_LONG).show();
+		// Toast.makeText(getActivity(), allTitle, Toast.LENGTH_LONG).show();
 	}
 
 	private void loadClientNoteFromParse() {
@@ -551,6 +568,15 @@ public class CalendarFragment extends Fragment {
 
 			final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 			final List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+
+			if (calendarEvents != null) {
+				for (Map<String, String> event : calendarEvents) {
+					if (event.get("date").equals(selectedDate)) {
+						data.add(event);
+					}
+				}
+			}
+
 			for (ParseObject clientNote : clientNotes) {
 				if (clientNote.getString("date").equals(selectedDate)) {
 
@@ -573,9 +599,9 @@ public class CalendarFragment extends Fragment {
 					item2.put("remarks", clientNote.getString("remarks"));
 					list.add(item2);
 				}
-				Log.d("data", data.toString());
-				Log.d("item2", list.toString());
 			}
+			Log.d("data", data.toString());
+			Log.d("item2", list.toString());
 
 			final SimpleAdapter simpleAdapter = new SimpleAdapter(
 					getActivity(), data, R.layout.calendar_listview,
@@ -587,6 +613,7 @@ public class CalendarFragment extends Fragment {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
+
 					showDialogAlert(data, list, position);
 
 				}
@@ -602,6 +629,7 @@ public class CalendarFragment extends Fragment {
 							return true;
 						}
 					});
+
 		}
 
 		public int getCurrentDayOfMonth() {
@@ -623,12 +651,16 @@ public class CalendarFragment extends Fragment {
 		public void showDialogAlert(List<Map<String, String>> data,
 				List<HashMap<String, String>> list, int position) {
 
-			View v = CrateDiaglogView(data, list, position);
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setView(v);
-			builder.setTitle(data.get(position).get("title").toString());
-			builder.show();
-
+			try {
+				View v = crateDiaglogView(data, list, position);
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				builder.setView(v);
+				builder.setTitle(data.get(position).get("title").toString());
+				builder.show();
+			} catch (Exception e) {
+				// google calendar's event does not support showing dialog
+			}
 		}
 
 		public void showDeleteDialog(final List<Map<String, String>> data,
@@ -660,7 +692,7 @@ public class CalendarFragment extends Fragment {
 			builder.show();
 		}
 
-		public View CrateDiaglogView(List<Map<String, String>> data,
+		public View crateDiaglogView(List<Map<String, String>> data,
 				List<HashMap<String, String>> list, int position) {
 
 			Typeface typeface = Typeface.createFromAsset(getActivity()
