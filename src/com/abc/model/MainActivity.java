@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.abc.drawer_fragment.CalendarFragment;
+import com.abc.drawer_fragment.ClientNoteList;
 import com.abc.drawer_fragment.Message;
 import com.abc.drawer_fragment.People;
 import com.abc.drawer_fragment.ClientNote;
@@ -162,7 +163,7 @@ public class MainActivity extends FragmentActivity {
 
 		case 1: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, clientNote).commit();
+					.replace(R.id.content_frame, new ClientNoteList()).commit();
 		}
 			break;
 		case 2: {
