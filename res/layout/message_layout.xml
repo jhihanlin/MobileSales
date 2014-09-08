@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+>
+<TextView
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:text="Message"
+android:textSize="25sp"
+android:layout_margin="10sp"
+/>
+<LinearLayout
+android:orientation="horizontal"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:layout_margin="10sp"
+>
+<TextView 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content" 
+android:text="Receiver "
+android:textSize="20sp"
+/>
+<EditText
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:id="@+id/EditTextReceiver"
+/>
+</LinearLayout>
+
+<Spinner
+    android:id="@+id/spinner1"
+    style="@android:style/ButtonBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+<EditText
+android:layout_width="fill_parent"
+android:layout_height="100sp"
+android:id="@+id/EditTextContent"
+android:layout_margin="10sp"
+android:hint="Content..."
+android:gravity="top|left"
+/>
+<LinearLayout
+android:orientation="horizontal"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:layout_margin="20sp"
+>
+<Button
+android:layout_width="150sp"
+android:layout_height="wrap_content"
+android:text=" Send "
+android:textSize="20sp"
+android:id="@+id/ButtonSend"
+/>
+<Button
+android:layout_width="150sp"
+android:layout_height="wrap_content"
+android:text=" Clear "
+android:layout_marginLeft="10sp"
+android:textSize="20sp"
+android:id="@+id/ButtonCancel"
+/>
+</LinearLayout>
+</LinearLayout>

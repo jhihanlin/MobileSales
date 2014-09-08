@@ -11,24 +11,19 @@ import com.abc.model.R;
 
 public class People extends Fragment{
 
-	public People(){} 
+	public People(){}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater,
+			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		View v =inflater.inflate(R.layout.recent_layout, container, false); 
+		return v;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
 	}
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater,
-			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View v =inflater.inflate(R.layout.people_layout, container, false); 
-		return v;
-	}
-
-	
-
-	
 
 }

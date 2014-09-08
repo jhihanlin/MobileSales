@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +17,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.abc.drawer_fragment.CalendarFragment;
+import com.abc.drawer_fragment.Message;
 import com.abc.drawer_fragment.People;
 import com.abc.drawer_fragment.ClientNote;
 import com.abc.drawer_fragment.Recent;
 import com.abc.drawer_fragment.Search;
-import com.abc.drawer_fragment.Schedule;
-import com.abc.drawer_fragment.Others;
 import com.abc.model.R;
 
 public class MainActivity extends FragmentActivity {
@@ -52,8 +50,8 @@ public class MainActivity extends FragmentActivity {
 
 		// set a custom shadow that overlays the main content when the drawer
 		// opens
-//		my_DrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-//				GravityCompat.START);
+		// my_DrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+		// GravityCompat.START);
 
 		// set up the drawer's list view with items and click listener
 		my_DrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -148,123 +146,58 @@ public class MainActivity extends FragmentActivity {
 		// update the main content by replacing fragments
 
 		FragmentManager fragmentManager = getFragmentManager();
-		FragmentManager fm = getFragmentManager();
-		android.support.v4.app.FragmentManager fragmentManager7 = getSupportFragmentManager();
 		People people = new People();
 		ClientNote clientNote = new ClientNote();
 		CalendarFragment calendarFragment = new CalendarFragment();
 		Recent recent = new Recent();
 		Search search = new Search();
-		Schedule schedule = new Schedule();
-		Others others = new Others();
+		Message message = new Message();
 
 		switch (position) {
-		case 0:
-			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, people).commit();
-			} else {
-				fragmentManager7
-						.beginTransaction()
-						.remove(fragmentManager7
-								.findFragmentById(R.id.content_frame)).commit();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, people).commit();
-			}
+		case 0: {
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, people).commit();
+		}
 			break;
 
-		case 1:
-			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, clientNote).commit();
-			} else {
-				fragmentManager7
-						.beginTransaction()
-						.remove(fragmentManager7
-								.findFragmentById(R.id.content_frame)).commit();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, clientNote).commit();
-			}
+		case 1: {
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, clientNote).commit();
+		}
 			break;
-		case 2:
-			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, calendarFragment).commit();
-			} else {
-				fragmentManager7
-						.beginTransaction()
-						.remove(fragmentManager7
-								.findFragmentById(R.id.content_frame)).commit();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, calendarFragment).commit();
-			}
+		case 2: {
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, calendarFragment).commit();
+		}
 			break;
-		case 3:
-			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, recent).commit();
-			} else {
-				fragmentManager7
-						.beginTransaction()
-						.remove(fragmentManager7
-								.findFragmentById(R.id.content_frame)).commit();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, recent).commit();
-			}
+		case 3: {
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, recent).commit();
+		}
 			break;
-		case 4:
-			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, search).commit();
-			} else {
-				fragmentManager7
-						.beginTransaction()
-						.remove(fragmentManager7
-								.findFragmentById(R.id.content_frame)).commit();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, search).commit();
-			}
+		case 4: {
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, search).commit();
+		}
 			break;
-		case 5:
-			if (fragmentManager7.findFragmentById(R.id.content_frame) == null) {
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, schedule).commit();
-			} else {
-				fragmentManager7
-						.beginTransaction()
-						.remove(fragmentManager7
-								.findFragmentById(R.id.content_frame)).commit();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, schedule).commit();
-			}
-			break;
-		case 6:
-			// special case
-
-			fm.beginTransaction()
-					.remove(fm.findFragmentById(R.id.content_frame)).commit();
-
-			fragmentManager7.beginTransaction()
-					.replace(R.id.content_frame, others).commit();
-
+		case 5: {
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, message).commit();
+		}
 			break;
 		default:
-
+ 
 			return;
 
 		}
 
 		my_DrawerList.setItemChecked(position, true);
 		setTitle(my_PlanetTitles[position]);
-		
-		
-		
-		
-		
+
 		my_DrawerLayout.closeDrawer(my_DrawerList);
 	}
 
-	@Override 
+	@Override
 	public void setTitle(CharSequence title) {
 		my_Title = title;
 		getActionBar().setTitle(my_Title);

@@ -2,40 +2,53 @@ package com.abc.drawer_fragment;
 
 import java.util.Calendar;
 import java.util.Locale;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.provider.BaseColumns;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Calendars;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
+import android.text.style.BulletSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abc.model.LoginActivity;
 import com.abc.model.R;
+import com.google.android.gms.internal.v;
 import com.parse.FindCallback;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -53,22 +66,10 @@ public class CalendarFragment extends Fragment {
 	private Calendar _calendar;
 	private int month, year;
 	protected List<ParseObject> clientNotes;
-	private TextView clientNoteText;
+	private ListView clientNoteText;
 	private static final String dateTemplate = "MMMM yyyy";
 	private ProgressDialog progressDialog;
-
-	private static String calanderURL = "";
-	private static String calanderEventURL = "";
-	private static String calanderRemiderURL = "";
-	static {
-		calanderURL = "content://com.android.calendar/calendars";
-		calanderEventURL = "content://com.android.calendar/events";
-		calanderRemiderURL = "content://com.android.calendar/reminders";
-
-	}
-	String[] EVENT_PROJECTION = new String[] { Calendars._ID,
-			Calendars.OWNER_ACCOUNT, Calendars.ACCOUNT_NAME,
-			Calendars.CALENDAR_DISPLAY_NAME };
+	private List<Map<String, String>> calendarEvents;
 
 	public CalendarFragment() {
 	}
@@ -88,37 +89,7 @@ public class CalendarFragment extends Fragment {
 		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Quicksand-Regular.ttf");// font
 
-		// read google Read user
-		Cursor cur = null;
-		Cursor cur_event = null;
-		ContentResolver cr = getActivity().getContentResolver();
-		Uri uri = Calendars.CONTENT_URI;
-		String selection = "((" + Calendars.ACCOUNT_NAME + " = ?) AND ("
-				+ Calendars.ACCOUNT_TYPE + " = ?) AND ("
-				+ Calendars.OWNER_ACCOUNT + " = ?))";
-		String[] selectionArgs = new String[] { "jhihanlin@gmail.com",
-				"com.google", "jhihanlin@gmail.com" };
-		// Submit the query and get a Cursor object back.
-		cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
-		cur.moveToFirst();
-		String userName = cur.getString(1);
-		Log.d("user", userName);
-		Toast.makeText(getActivity(), userName, Toast.LENGTH_LONG).show();
-		
-		// read google event
-		String[] projection = new String[] { BaseColumns._ID,
-				CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART };
-		cur_event = getActivity().getContentResolver().query(
-				CalendarContract.Events.CONTENT_URI, projection, null, null,
-				null);
-		cur_event.moveToFirst();
-		String allTitle = "";
-		while (cur_event.moveToNext()) {
-			String title = cur_event.getString(1);
-			allTitle += title + ";";
-			Log.d("debug", title);
-		}
-		Toast.makeText(getActivity(), allTitle, Toast.LENGTH_LONG).show();
+		readCalendarEvent();
 
 		_calendar = Calendar.getInstance(Locale.getDefault());
 		month = _calendar.get(Calendar.MONTH) + 1;
@@ -130,6 +101,7 @@ public class CalendarFragment extends Fragment {
 				.findViewById(R.id.selectedDayMonthYear);
 		addEvent = (Button) v.findViewById(R.id.addEvent);
 		selectedDayMonthYearButton.setText("Selected: ");
+		selectedDayMonthYearButton.setTypeface(typeface);
 
 		prevMonth = (ImageView) v.findViewById(R.id.prevMonth);
 		prevMonth.setOnClickListener(new OnClickListener() {
@@ -174,7 +146,7 @@ public class CalendarFragment extends Fragment {
 		});
 
 		calendarView = (GridView) v.findViewById(R.id.calendar);
-		clientNoteText = (TextView) v.findViewById(R.id.clientNoteText);
+		clientNoteText = (ListView) v.findViewById(R.id.clientNoteText);
 		progressDialog = new ProgressDialog(getActivity());
 
 		// Initialised
@@ -185,7 +157,72 @@ public class CalendarFragment extends Fragment {
 
 		loadClientNoteFromParse();
 
+		addEvent.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				// Create new fragment and transaction
+				FragmentTransaction transaction = getFragmentManager()
+						.beginTransaction();
+
+				// Replace whatever is in the fragment_container view with this
+				// fragment,
+				// and add the transaction to the back stack
+
+				ClientNote clientNote = new ClientNote();// press addEvent
+															// Button will
+
+				transaction.replace(R.id.content_frame, clientNote);
+				transaction.addToBackStack(null);
+
+				// Commit the transaction
+				transaction.commit();
+			}
+		});
+
 		return v;
+	}
+
+	/**
+	 * read google user
+	 */
+	private void readCalendarEvent() {
+
+		String[] EVENT_PROJECTION = new String[] { Calendars._ID,
+				Calendars.OWNER_ACCOUNT, Calendars.ACCOUNT_NAME,
+				Calendars.CALENDAR_DISPLAY_NAME };
+
+		Cursor cur = null;
+		Cursor cur_event = null;
+		ContentResolver cr = getActivity().getContentResolver();
+		Uri uri = Calendars.CONTENT_URI;
+		String selection = "((" + Calendars.ACCOUNT_NAME + " = ?) AND ("
+				+ Calendars.ACCOUNT_TYPE + " = ?) AND ("
+				+ Calendars.OWNER_ACCOUNT + " = ?))";
+		String[] selectionArgs = new String[] { "jhihanlin@gmail.com",
+				"com.google", "jhihanlin@gmail.com" };
+		// Submit the query and get a Cursor object back.
+		cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
+		cur.moveToFirst();
+		String userName = cur.getString(1);
+		Log.d("user", userName);
+		Toast.makeText(getActivity(), userName, Toast.LENGTH_LONG).show();
+
+		// read google event
+		String[] projection = new String[] { BaseColumns._ID,
+				CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART };
+		cur_event = getActivity().getContentResolver().query(
+				CalendarContract.Events.CONTENT_URI, projection, null, null,
+				null);
+		cur_event.moveToFirst();
+		String allTitle = "";
+		while (cur_event.moveToNext()) {
+			String title = cur_event.getString(1);
+			allTitle += title + ";";
+			Log.d("debug", title);
+		}
+		Toast.makeText(getActivity(), allTitle, Toast.LENGTH_LONG).show();
 	}
 
 	private void loadClientNoteFromParse() {
@@ -269,13 +306,7 @@ public class CalendarFragment extends Fragment {
 
 			// Find Number of Events
 			eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
-			addEvent.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-
-				}
-			});
 		}
 
 		private int indexOfMonth(String monthStr) {
@@ -518,18 +549,59 @@ public class CalendarFragment extends Fragment {
 			selectedDayMonthYearButton.setTypeface(typeface);
 			Log.d("Selected date", selectedDate);
 
-			String text = "";
+			final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+			final List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 			for (ParseObject clientNote : clientNotes) {
 				if (clientNote.getString("date").equals(selectedDate)) {
+
+					Map<String, String> item = new HashMap<String, String>();
+					HashMap<String, String> item2 = new HashMap<String, String>();
+
 					Log.d(tag, "title:" + clientNote.getString("title"));
-					text += String.format(
-							"title: %s, content: %s, location: %s\n",
-							clientNote.getString("title"),
-							clientNote.getString("content"),
-							clientNote.getString("location"));
+
+					item.put("date", clientNote.getString("date"));
+					item.put("title", clientNote.getString("title"));
+					item.put("id", clientNote.getObjectId());
+					data.add(item);
+
+					item2.put("client", clientNote.getString("client"));
+					Log.d(tag, "client:" + clientNote.getString("client"));
+					item2.put("purpose", clientNote.getString("purpose"));
+					item2.put("time", clientNote.getString("time"));
+					item2.put("content", clientNote.getString("content"));
+					item2.put("location", clientNote.getString("location"));
+					item2.put("remarks", clientNote.getString("remarks"));
+					list.add(item2);
 				}
+				Log.d("data", data.toString());
+				Log.d("item2", list.toString());
 			}
-			clientNoteText.setText(text);
+
+			final SimpleAdapter simpleAdapter = new SimpleAdapter(
+					getActivity(), data, R.layout.calendar_listview,
+					new String[] { "title", "date" }, new int[] {
+							R.id.note_title, R.id.note_date });
+
+			clientNoteText.setAdapter(simpleAdapter);
+			clientNoteText.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					showDialogAlert(data, list, position);
+
+				}
+			});
+			clientNoteText
+					.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+						@Override
+						public boolean onItemLongClick(AdapterView<?> parent,
+								View view, int position, long id) {
+							showDeleteDialog(data, list, position,
+									simpleAdapter);
+							return true;
+						}
+					});
 		}
 
 		public int getCurrentDayOfMonth() {
@@ -546,6 +618,171 @@ public class CalendarFragment extends Fragment {
 
 		public int getCurrentWeekDay() {
 			return currentWeekDay;
+		}
+
+		public void showDialogAlert(List<Map<String, String>> data,
+				List<HashMap<String, String>> list, int position) {
+
+			View v = CrateDiaglogView(data, list, position);
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setView(v);
+			builder.setTitle(data.get(position).get("title").toString());
+			builder.show();
+
+		}
+
+		public void showDeleteDialog(final List<Map<String, String>> data,
+				List<HashMap<String, String>> list, final int index,
+				final SimpleAdapter simpleAdapter) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setTitle("Delete");
+			builder.setPositiveButton("Delete",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String id = data.get(index).get("id");
+							ParseObject obj = ParseObject.createWithoutData(
+									"ClientNote", id);
+							obj.deleteEventually();
+							data.remove(index);
+							simpleAdapter.notifyDataSetChanged();
+						}
+					});
+			builder.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+
+						}
+					});
+			builder.show();
+		}
+
+		public View CrateDiaglogView(List<Map<String, String>> data,
+				List<HashMap<String, String>> list, int position) {
+
+			Typeface typeface = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+
+			LayoutInflater factory = LayoutInflater.from(getActivity());
+			View dialogView = factory
+					.inflate(R.layout.calendar_show_note, null);
+
+			// date
+			TextView getDate = (TextView) dialogView.findViewById(R.id.c_date);
+			getDate.setTypeface(typeface, typeface.BOLD);
+			TextView getShowDate = (TextView) dialogView
+					.findViewById(R.id.show_date);
+			getShowDate.setTypeface(typeface);
+			// time
+			TextView getTime = (TextView) dialogView.findViewById(R.id.c_time);
+			getTime.setTypeface(typeface, typeface.BOLD);
+			TextView getShowTime = (TextView) dialogView
+					.findViewById(R.id.show_time);
+			getShowTime.setTypeface(typeface);
+			// client
+			TextView getClient = (TextView) dialogView
+					.findViewById(R.id.c_client);
+			getClient.setTypeface(typeface, typeface.BOLD);
+			TextView getShowClient = (TextView) dialogView
+					.findViewById(R.id.show_client);
+			getShowClient.setTypeface(typeface);
+			// purpose
+			TextView getPurpose = (TextView) dialogView
+					.findViewById(R.id.c_purpose);
+			getPurpose.setTypeface(typeface, typeface.BOLD);
+			TextView getShowPurpose = (TextView) dialogView
+					.findViewById(R.id.show_purpose);
+			getShowPurpose.setTypeface(typeface);
+			// content
+			TextView getContent = (TextView) dialogView
+					.findViewById(R.id.c_content);
+			getContent.setTypeface(typeface, typeface.BOLD);
+			TextView getShowContent = (TextView) dialogView
+					.findViewById(R.id.show_content);
+			getShowContent.setTypeface(typeface);
+			// location
+			TextView getLocation = (TextView) dialogView
+					.findViewById(R.id.c_location);
+			getLocation.setTypeface(typeface, typeface.BOLD);
+			TextView getShowLocation = (TextView) dialogView
+					.findViewById(R.id.show_location);
+			getShowLocation.setTypeface(typeface);
+			// remarks
+			TextView getRemarks = (TextView) dialogView
+					.findViewById(R.id.c_remarks);
+			getRemarks.setTypeface(typeface, typeface.BOLD);
+			TextView getShowRemarks = (TextView) dialogView
+					.findViewById(R.id.show_remarks);
+			getShowRemarks.setTypeface(typeface);
+
+			String s = " ";
+			String date = null;
+			String client = null;
+			String time = null;
+			String location = null;
+			String content = null;
+			String remarks = null;
+			String purpose = null;
+
+			// if data is null it will crash
+
+			date = data.get(position).get("date").toString();
+			if (date != null) {
+				getShowDate.setText(date);
+			} else {
+				getShowDate.setText(s);
+			}
+
+			if (list.get(position).get("client") != null) {
+				client = list.get(position).get("client").toString();
+				getShowClient.setText(client);
+
+			} else {
+				getShowClient.setText(s);
+			}
+
+			time = list.get(position).get("time").toString();
+			if (time != null) {
+				getShowTime.setText(time);
+
+			} else {
+				getShowTime.setText(s);
+			}
+
+			location = list.get(position).get("location").toString();
+			if (location != null) {
+				getShowLocation.setText(location);
+			} else {
+				getShowLocation.setText(s);
+			}
+
+			content = list.get(position).get("content").toString();
+			if (content != null) {
+				getShowContent.setText(content);
+			} else {
+				getShowContent.setText(s);
+			}
+
+			remarks = list.get(position).get("remarks").toString();
+			if (remarks != null) {
+				getShowRemarks.setText(remarks);
+			} else {
+				getShowRemarks.setText(s);
+			}
+
+			if (list.get(position).get("purpose") != null) {
+				purpose = list.get(position).get("purpose").toString();
+				getShowPurpose.setText(purpose);
+
+			} else {
+				getShowPurpose.setText(s);
+			}
+
+			return dialogView;
+
 		}
 	}
 }
