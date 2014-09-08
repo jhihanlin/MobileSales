@@ -4,6 +4,7 @@ import android.app.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -25,9 +31,11 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.abc.model.R;
+import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -37,16 +45,20 @@ public class ClientNote extends Fragment {
 	EditText m_contentText;
 	EditText m_locationText;
 	EditText m_remarksText;
-	Spinner remindSpinner;
+	Spinner m_purpose;
+	Spinner m_remind;
+	Spinner m_client;
 	Button m_datepickerButton = null;
 	Button m_timepickerButton = null;
 	Button saveButton;
 	Calendar c = null;
+	protected List<ParseObject> purpose;
+	protected List<ParseObject> clientName;
 
 	private ProgressDialog progressDialog;
 
 	String[] remindTime = new String[] { "10 minutes ago", "15 minutes ago",
-			"30 minutes ago", "1 hour ago", "3 hour ago", "12 hour ago",
+			"30 minutes ago", "1 hour ago", "3 hours ago", "12 hours ago",
 			"1 day ago" };
 
 	@Override
@@ -54,11 +66,13 @@ public class ClientNote extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater
 				.inflate(R.layout.client_note_layout, container, false);
-
-		remindSpinner = (Spinner) v.findViewById(R.id.remindSpinner);
+		progressDialog = new ProgressDialog(getActivity());
 		m_titleText = (EditText) v.findViewById(R.id.titleText);
+		m_purpose = (Spinner) v.findViewById(R.id.purposeSpinner);
+		m_client = (Spinner) v.findViewById(R.id.clientSpinner);
 		m_contentText = (EditText) v.findViewById(R.id.contextText);
 		m_locationText = (EditText) v.findViewById(R.id.locationText);
+		m_remind = (Spinner) v.findViewById(R.id.remindSpinner);
 		m_remarksText = (EditText) v.findViewById(R.id.remarksText);
 		m_datepickerButton = (Button) v.findViewById(R.id.datepickerButton);
 		m_timepickerButton = (Button) v.findViewById(R.id.timepickerButton);
@@ -69,12 +83,69 @@ public class ClientNote extends Fragment {
 				remindTime);
 		adapterTime
 				.setDropDownViewResource(android.R.layout.simple_spinner_item);
-		remindSpinner.setAdapter(adapterTime);
+		m_remind.setAdapter(adapterTime);
 
-		progressDialog = new ProgressDialog(getActivity());
+		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Purpose"); // get
+																				// Parse
+																				// table:ClientNote
+		query.findInBackground(new FindCallback<ParseObject>() {
+			ArrayList<String> purposArrayList = new ArrayList<String>();
 
-		if (container == null)
-			return null;
+			@Override
+			public void done(List<ParseObject> objects,
+					com.parse.ParseException e) {
+				if (e == null) { // put resule into a variable:clientNotes
+					purpose = objects;
+					if (purpose != null) {
+						for (ParseObject purposeObject : purpose) {
+							purposArrayList.add(purposeObject.getString("name"));
+							Log.d("purposeArrayList",
+									purposArrayList.toString());
+
+						}
+					}
+					ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
+							getActivity(),
+							android.R.layout.simple_spinner_item,
+							purposArrayList);
+					purposeAdapter
+							.setDropDownViewResource(android.R.layout.simple_spinner_item);
+					m_purpose.setAdapter(purposeAdapter);
+
+				}
+			}
+		});
+
+		ParseQuery<ParseObject> queryClientName = new ParseQuery<ParseObject>(
+				"Client"); // get Parse table:ClientNote
+		queryClientName.findInBackground(new FindCallback<ParseObject>() {
+			ArrayList<String> clientNameArrayList = new ArrayList<String>();
+
+			@Override
+			public void done(List<ParseObject> objects,
+					com.parse.ParseException e) {
+				if (e == null) {
+					clientName = objects;
+					if (clientName != null) {
+						for (ParseObject clientNameObject : clientName) {
+							clientNameArrayList.add(clientNameObject
+									.getString("name"));
+							Log.d("clientNameArrayList",
+									clientNameArrayList.toString());
+
+						}
+					}
+					ArrayAdapter<String> clientNameAdapter = new ArrayAdapter<String>(
+							getActivity(),
+							android.R.layout.simple_spinner_item,
+							clientNameArrayList);
+					clientNameAdapter
+							.setDropDownViewResource(android.R.layout.simple_spinner_item);
+					m_client.setAdapter(clientNameAdapter);
+
+				}
+			}
+		});
 
 		// DatePickerDialog
 		m_datepickerButton.setOnClickListener(new View.OnClickListener() {
@@ -100,10 +171,14 @@ public class ClientNote extends Fragment {
 			@Override
 			public void onClick(View v) {
 				String title = m_titleText.getText().toString();
+				String client = m_client.getSelectedItem().toString();
+				String purpose = m_purpose.getSelectedItem().toString();
+				Log.d("purpose", purpose);
 				String content = m_contentText.getText().toString();
 				String date = m_datepickerButton.getText().toString();
 				String time = m_timepickerButton.getText().toString();
 				String location = m_locationText.getText().toString();
+				String remind = m_remind.getSelectedItem().toString();
 				String remarks = m_remarksText.getText().toString();
 
 				progressDialog.setCancelable(false);
@@ -111,11 +186,14 @@ public class ClientNote extends Fragment {
 				progressDialog.show();
 
 				ParseObject object = new ParseObject("ClientNote");
+				object.put("client", client);
 				object.put("title", title);
+				object.put("purpose", purpose);
 				object.put("content", content);
 				object.put("date", date);
 				object.put("time", time);
 				object.put("location", location);
+				object.put("remind", remind);
 				object.put("remarks", remarks);
 				object.setACL(new ParseACL(ParseUser.getCurrentUser()));
 				object.saveInBackground(new SaveCallback() {
@@ -130,7 +208,6 @@ public class ClientNote extends Fragment {
 							Toast.makeText(getActivity(), "Error",
 									Toast.LENGTH_SHORT).show();
 						}
-
 					}
 				});
 			}
