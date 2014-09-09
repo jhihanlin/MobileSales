@@ -11,48 +11,93 @@
     android:paddingTop="@dimen/activity_vertical_margin" >
 
     <EditText
-        android:id="@+id/title_show"
+        android:id="@+id/view_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="title"
         android:inputType="text" />
 
-    <EditText
-        android:id="@+id/client_show"
-        android:layout_width="match_parent"
+     <Spinner
+        android:id="@+id/view_clientSpinner"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text" />
+        android:layout_gravity="center" />
 
-    <EditText
-        android:id="@+id/purpose_show"
-        android:layout_width="match_parent"
+
+
+    <Spinner
+        android:id="@+id/view_purposeSpinner"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text" />
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/view_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="date"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/view_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="time"
+            tools:ignore="ButtonStyle" />
+    </LinearLayout>
 
     <EditText
-        android:id="@+id/content_show"
+        android:id="@+id/view_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text" />
+        android:hint="content"
+        android:inputType="textMultiLine" />
 
     <EditText
-        android:id="@+id/location_show"
+        android:id="@+id/view_location"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="location"
         android:inputType="textPostalAddress" />
 
+    <Spinner
+        android:id="@+id/view_remind"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
     <EditText
-        android:id="@+id/remark_show"
+        android:id="@+id/view_remarks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="remarks"
         android:inputType="text" >
 
         <requestFocus />
     </EditText>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" >
+
+        <Button
+            android:id="@+id/edit"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="right"
+            android:text="edit" />
+
+    </LinearLayout>
 
 </LinearLayout>

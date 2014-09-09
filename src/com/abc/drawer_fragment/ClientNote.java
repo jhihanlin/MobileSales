@@ -23,6 +23,7 @@ import java.util.Map;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -77,6 +78,8 @@ public class ClientNote extends Fragment {
 		m_datepickerButton = (Button) v.findViewById(R.id.datepickerButton);
 		m_timepickerButton = (Button) v.findViewById(R.id.timepickerButton);
 		saveButton = (Button) v.findViewById(R.id.save);
+		Button cancelButton = (Button) v.findViewById(R.id.cancel);
+
 		// remind Spinner
 		ArrayAdapter<String> adapterTime = new ArrayAdapter<String>(
 				this.getActivity(), android.R.layout.simple_spinner_item,
@@ -89,29 +92,36 @@ public class ClientNote extends Fragment {
 																				// Parse
 																				// table:ClientNote
 		query.findInBackground(new FindCallback<ParseObject>() {
-			ArrayList<String> purposArrayList = new ArrayList<String>();
+			ArrayList<String> purposArrayList;
 
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
 				if (e == null) { // put resule into a variable:clientNotes
-					purpose = objects;
-					if (purpose != null) {
-						for (ParseObject purposeObject : purpose) {
-							purposArrayList.add(purposeObject.getString("name"));
-							Log.d("purposeArrayList",
-									purposArrayList.toString());
 
+					try {
+						purposArrayList = new ArrayList<String>();
+						purpose = objects;
+						if (purpose != null) {
+							for (ParseObject purposeObject : purpose) {
+								if (purposeObject.getString("name") != null)
+									purposArrayList.add(purposeObject
+											.getString("name"));
+								Log.d("purposeArrayList",
+										purposArrayList.toString());
+
+							}
 						}
+						ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
+								getActivity(),
+								android.R.layout.simple_spinner_item,
+								purposArrayList);
+						purposeAdapter
+								.setDropDownViewResource(android.R.layout.simple_spinner_item);
+						m_purpose.setAdapter(purposeAdapter);
+					} catch (Exception e2) {
+						e2.printStackTrace();
 					}
-					ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
-							getActivity(),
-							android.R.layout.simple_spinner_item,
-							purposArrayList);
-					purposeAdapter
-							.setDropDownViewResource(android.R.layout.simple_spinner_item);
-					m_purpose.setAdapter(purposeAdapter);
-
 				}
 			}
 		});
@@ -119,29 +129,36 @@ public class ClientNote extends Fragment {
 		ParseQuery<ParseObject> queryClientName = new ParseQuery<ParseObject>(
 				"Client"); // get Parse table:ClientNote
 		queryClientName.findInBackground(new FindCallback<ParseObject>() {
-			ArrayList<String> clientNameArrayList = new ArrayList<String>();
+			ArrayList<String> clientNameArrayList;
 
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
 				if (e == null) {
-					clientName = objects;
-					if (clientName != null) {
-						for (ParseObject clientNameObject : clientName) {
-							clientNameArrayList.add(clientNameObject
-									.getString("name"));
-							Log.d("clientNameArrayList",
-									clientNameArrayList.toString());
 
+					try {
+						clientNameArrayList = new ArrayList<String>();
+						clientName = objects;
+						if (clientName != null) {
+							for (ParseObject clientNameObject : clientName) {
+								if (clientNameObject.getString("name") != null)
+									clientNameArrayList.add(clientNameObject
+											.getString("name"));
+								Log.d("clientNameArrayList",
+										clientNameArrayList.toString());
+
+							}
 						}
+						ArrayAdapter<String> clientNameAdapter = new ArrayAdapter<String>(
+								getActivity(),
+								android.R.layout.simple_spinner_item,
+								clientNameArrayList);
+						clientNameAdapter
+								.setDropDownViewResource(android.R.layout.simple_spinner_item);
+						m_client.setAdapter(clientNameAdapter);
+					} catch (Exception e2) {
+						e2.printStackTrace();
 					}
-					ArrayAdapter<String> clientNameAdapter = new ArrayAdapter<String>(
-							getActivity(),
-							android.R.layout.simple_spinner_item,
-							clientNameArrayList);
-					clientNameAdapter
-							.setDropDownViewResource(android.R.layout.simple_spinner_item);
-					m_client.setAdapter(clientNameAdapter);
 
 				}
 			}
@@ -212,6 +229,17 @@ public class ClientNote extends Fragment {
 				});
 			}
 		});
+		cancelButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				FragmentManager fragmentManager = getFragmentManager();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, new ClientNoteList())
+						.commit();
+			}
+		});
+
 		return v;
 	}
 
