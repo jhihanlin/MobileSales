@@ -59,11 +59,12 @@ public class ClientNoteList extends Fragment {
 	}
 
 	private void loadDataFromParse() {
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading bar
+		final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading
+																				// bar
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
-		
+
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"ClientNote");
 		query.orderByDescending("createdAt");
@@ -73,7 +74,6 @@ public class ClientNoteList extends Fragment {
 			public void done(List<ParseObject> objects, ParseException e) {
 				progressDialog.dismiss();
 
-				
 				ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
@@ -108,7 +108,7 @@ public class ClientNoteList extends Fragment {
 						@Override
 						public void onItemClick(AdapterView<?> parent,
 								View view, int position, long id) {
-							
+
 							Bundle bundle = new Bundle();
 							ArrayList arrayList = new ArrayList();
 							arrayList.add(list);
@@ -117,13 +117,11 @@ public class ClientNoteList extends Fragment {
 							ClientNoteView clientNoteView = new ClientNoteView();
 							Log.i("BUNDLE", bundle.toString());
 							clientNoteView.setArguments(bundle);
-							
-							FragmentManager fragmentManager = getFragmentManager();
-							fragmentManager
+							getActivity()
+									.getFragmentManager()
 									.beginTransaction()
-									.replace(R.id.content_frame,
-											new ClientNoteView()).commit();
-
+									.replace(R.id.content_frame, clientNoteView)
+									.commit();
 						}
 
 					});

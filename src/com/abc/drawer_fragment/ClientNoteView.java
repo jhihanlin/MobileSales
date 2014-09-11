@@ -32,8 +32,6 @@ public class ClientNoteView extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_note_view, container, false);
 		// Bundle bundle=new Bundle();
-		// ArrayList arrayList = bundle.getParcelableArrayList("arrayList");
-		// Log.d("arrayList:",arrayList.toString());
 		// ArrayList list=(ArrayList) arrayList.get(0);
 		// Log.d("list2", list.toString());
 		//
@@ -43,7 +41,9 @@ public class ClientNoteView extends Fragment {
 		} else {
 			Log.d("BUNDLE == null", "NULL");
 		}
-		
+		ArrayList arrayList = arguments.getParcelableArrayList("arrayList");
+		Log.d("arrayList:", arrayList.toString());
+
 		EditText getTitle = (EditText) v.findViewById(R.id.view_title);
 		Spinner getClient = (Spinner) v.findViewById(R.id.view_clientSpinner);
 		Spinner getPurpose = (Spinner) v.findViewById(R.id.view_purposeSpinner);
