@@ -68,6 +68,10 @@ public class ClientNote extends Fragment {
 		View v = inflater
 				.inflate(R.layout.client_note_layout, container, false);
 		progressDialog = new ProgressDialog(getActivity());
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
+
 		m_titleText = (EditText) v.findViewById(R.id.titleText);
 		m_purpose = (Spinner) v.findViewById(R.id.purposeSpinner);
 		m_client = (Spinner) v.findViewById(R.id.clientSpinner);
@@ -100,6 +104,8 @@ public class ClientNote extends Fragment {
 				if (e == null) { // put resule into a variable:clientNotes
 
 					try {
+						progressDialog.dismiss();
+
 						purposArrayList = new ArrayList<String>();
 						purpose = objects;
 						if (purpose != null) {

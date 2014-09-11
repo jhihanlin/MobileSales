@@ -113,11 +113,12 @@ public class ClientNoteList extends Fragment {
 							Log.d("list[position]",list.get(position).toString());
 							ArrayList arrayList = new ArrayList();
 							arrayList.add(list.get(position));
-							bundle.putParcelableArrayList("arrayList",
-									arrayList);
+							bundle.putParcelableArrayList("arrayList", arrayList);
+							
+							Bundle bundle2 = new Bundle();
+							bundle2.putBundle("bundle2", bundle);
 							ClientNoteView clientNoteView = new ClientNoteView();
-//							Log.i("BUNDLE", bundle.toString());
-							clientNoteView.setArguments(bundle);
+							clientNoteView.setArguments(bundle2);
 							getActivity()
 									.getFragmentManager()
 									.beginTransaction()
