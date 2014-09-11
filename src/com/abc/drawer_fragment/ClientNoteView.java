@@ -43,7 +43,7 @@ public class ClientNoteView extends Fragment {
 		}
 		ArrayList arrayList = arguments.getParcelableArrayList("arrayList");
 		Log.d("arrayList:", arrayList.toString());
-
+		
 		EditText getTitle = (EditText) v.findViewById(R.id.view_title);
 		Spinner getClient = (Spinner) v.findViewById(R.id.view_clientSpinner);
 		Spinner getPurpose = (Spinner) v.findViewById(R.id.view_purposeSpinner);
