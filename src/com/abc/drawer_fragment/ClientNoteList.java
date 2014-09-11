@@ -1,5 +1,6 @@
 package com.abc.drawer_fragment;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,8 +8,12 @@ import java.util.Map;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +59,11 @@ public class ClientNoteList extends Fragment {
 	}
 
 	private void loadDataFromParse() {
+		final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading bar
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
+		
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"ClientNote");
 		query.orderByDescending("createdAt");
@@ -61,6 +71,9 @@ public class ClientNoteList extends Fragment {
 
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
+				progressDialog.dismiss();
+
+				
 				ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
@@ -95,7 +108,16 @@ public class ClientNoteList extends Fragment {
 						@Override
 						public void onItemClick(AdapterView<?> parent,
 								View view, int position, long id) {
-
+							
+							Bundle bundle = new Bundle();
+							ArrayList arrayList = new ArrayList();
+							arrayList.add(list);
+							bundle.putParcelableArrayList("arrayList",
+									arrayList);
+							ClientNoteView clientNoteView = new ClientNoteView();
+							Log.i("BUNDLE", bundle.toString());
+							clientNoteView.setArguments(bundle);
+							
 							FragmentManager fragmentManager = getFragmentManager();
 							fragmentManager
 									.beginTransaction()
