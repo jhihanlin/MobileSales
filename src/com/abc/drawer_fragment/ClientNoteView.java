@@ -28,7 +28,10 @@ import com.parse.ParseQuery;
 
 public class ClientNoteView extends Fragment {
 	protected List<ParseObject> clientName;
-	int index;
+	protected List<ParseObject> purposeName;
+
+	int c_index;
+	int p_index;
 
 	public ClientNoteView() {
 	}
@@ -57,7 +60,7 @@ public class ClientNoteView extends Fragment {
 
 		EditText getTitle = (EditText) v.findViewById(R.id.view_title);
 		final Spinner getClient = (Spinner) v.findViewById(R.id.view_clientSpinner);
-		Spinner getPurpose = (Spinner) v.findViewById(R.id.view_purposeSpinner);
+		final Spinner getPurpose = (Spinner) v.findViewById(R.id.view_purposeSpinner);
 		Button getDateButton = (Button) v.findViewById(R.id.view_date);
 		Button getTimeButton = (Button) v.findViewById(R.id.view_time);
 		EditText getContent = (EditText) v.findViewById(R.id.view_content);
@@ -66,7 +69,7 @@ public class ClientNoteView extends Fragment {
 		EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
 		getTitle.setText(list.get(0).get("title"));
 		final String client = list.get(0).get("client");
-		Log.d("This name", client);
+		final String purpose = list.get(0).get("purpose");
 
 		final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading
 		// bar
@@ -76,6 +79,9 @@ public class ClientNoteView extends Fragment {
 
 		ParseQuery<ParseObject> queryClientName = new ParseQuery<ParseObject>(
 				"Client"); 
+		ParseQuery<ParseObject> queryPurpose = new ParseQuery<ParseObject>(
+				"Purpose");
+		
 		queryClientName.findInBackground(new FindCallback<ParseObject>() {
 			ArrayList<String> clientNameArrayList;
 
@@ -96,8 +102,8 @@ public class ClientNoteView extends Fragment {
 										clientNameArrayList.toString());
 
 							}
-							index = clientNameArrayList.indexOf(client);
-							Log.d("clientNameIndexOf", "index" + index);
+							c_index = clientNameArrayList.indexOf(client);
+							Log.d("clientNameIndexOf", "index" + c_index);
 
 						}
 						ArrayAdapter<String> clientNameAdapter = new ArrayAdapter<String>(
@@ -107,7 +113,46 @@ public class ClientNoteView extends Fragment {
 						clientNameAdapter
 								.setDropDownViewResource(android.R.layout.simple_spinner_item);
 						getClient.setAdapter(clientNameAdapter);
-						getClient.setSelection(index, true);
+						getClient.setSelection(c_index, true);
+
+
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+				}
+			}
+		});
+		queryPurpose.findInBackground(new FindCallback<ParseObject>() {
+			ArrayList<String> purposeArrayList;
+
+			@Override
+			public void done(List<ParseObject> objects, ParseException e) {
+				if (e == null) {
+
+					try {
+						purposeArrayList = new ArrayList<String>();
+						purposeName = objects;
+						if (purposeName != null) {
+							for (ParseObject purposeObject : purposeName) {
+								if (purposeObject.getString("name") != null)
+									purposeArrayList.add(purposeObject
+											.getString("name"));
+								Log.d("purposeArrayList",
+										purposeArrayList.toString());
+
+							}
+							p_index = purposeArrayList.indexOf(purpose);
+							Log.d("pIndexOf", "index" + p_index);
+
+						}
+						ArrayAdapter<String> purposeNameAdapter = new ArrayAdapter<String>(
+								getActivity(),
+								android.R.layout.simple_spinner_item,
+								purposeArrayList);
+						purposeNameAdapter
+								.setDropDownViewResource(android.R.layout.simple_spinner_item);
+						getPurpose.setAdapter(purposeNameAdapter);
+						getPurpose.setSelection(p_index, true);
 						progressDialog.dismiss();
 
 
@@ -117,7 +162,6 @@ public class ClientNoteView extends Fragment {
 				}
 			}
 		});
-		Log.d("index", "index" + index);
 		return v;
 	}
 
