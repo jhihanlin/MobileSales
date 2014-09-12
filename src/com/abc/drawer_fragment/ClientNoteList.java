@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,10 +22,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.abc.model.R;
 import com.parse.FindCallback;
@@ -74,13 +78,14 @@ public class ClientNoteList extends Fragment {
 			public void done(List<ParseObject> objects, ParseException e) {
 				progressDialog.dismiss();
 
-				ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
+				final ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
 				for (ParseObject ob : objects) {
 					Map<String, String> item = new HashMap<String, String>();
 					item.put("title", ob.getString("title"));
 					item.put("client", ob.getString("client"));
+					item.put("id", ob.getObjectId());
 
 					data.add(item);
 
@@ -98,7 +103,7 @@ public class ClientNoteList extends Fragment {
 					list.add(item2);
 				}
 				try {
-					SimpleAdapter adapter = new SimpleAdapter(getActivity(),
+					final SimpleAdapter adapter = new SimpleAdapter(getActivity(),
 							data, android.R.layout.simple_list_item_2,
 							new String[] { "title", "client" }, new int[] {
 									android.R.id.text1, android.R.id.text2 });
@@ -109,29 +114,76 @@ public class ClientNoteList extends Fragment {
 						public void onItemClick(AdapterView<?> parent,
 								View view, int position, long id) {
 
-							Bundle bundle = new Bundle();
-							Log.d("list[position]",list.get(position).toString());
-							ArrayList arrayList = new ArrayList();
-							arrayList.add(list.get(position));
-							bundle.putParcelableArrayList("arrayList", arrayList);
-							
-							Bundle bundle2 = new Bundle();
-							bundle2.putBundle("bundle2", bundle);
-							ClientNoteView clientNoteView = new ClientNoteView();
-							clientNoteView.setArguments(bundle2);
-							getActivity()
-									.getFragmentManager()
-									.beginTransaction()
-									.replace(R.id.content_frame, clientNoteView)
-									.commit();
+							sendValueToClientNoteView(list, position);
 						}
+					});
+					listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
+						@Override
+						public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+							showDeleteDialog(data, position,
+									adapter);
+							// Toast.makeText(getActivity(), "deleted",
+							// Toast.LENGTH_LONG).show();
+
+							return true;
+						}
 					});
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
 			}
+
 		});
+	}
+
+	public void sendValueToClientNoteView(ArrayList<Map<String, String>> list, int position) {
+		Bundle bundle = new Bundle();
+		Log.d("list[position]", list.get(position).toString());
+		ArrayList arrayList = new ArrayList();
+		arrayList.add(list.get(position));
+		bundle.putParcelableArrayList("arrayList", arrayList);
+
+		Bundle bundle2 = new Bundle();
+		bundle2.putBundle("bundle2", bundle);
+		ClientNoteView clientNoteView = new ClientNoteView();
+		clientNoteView.setArguments(bundle2);
+		getActivity()
+				.getFragmentManager()
+				.beginTransaction()
+				.replace(R.id.content_frame, clientNoteView)
+				.commit();
+	}
+
+	public void showDeleteDialog(final List<Map<String, String>> data,
+			final int index,
+			final SimpleAdapter adapter) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle("Delete");
+		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String Object_id = data.get(index).get("id");
+
+				Log.d("id", Object_id);
+				ParseObject obj = ParseObject.createWithoutData(
+						"ClientNote", Object_id);
+				obj.deleteEventually();
+				data.remove(index);
+
+				adapter.notifyDataSetChanged();
+			}
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+		});
+		builder.show();
 	}
 
 	@Override
