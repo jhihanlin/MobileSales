@@ -55,8 +55,8 @@
         <Button
             android:id="@+id/addEvent"
             android:layout_width="30sp"
-            android:layout_height="28sp"
-            android:background="@drawable/edit"
+            android:layout_height="40sp"
+            android:background="@drawable/add_icon"
             android:ems="20" />
     </LinearLayout>
 

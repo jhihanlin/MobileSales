@@ -71,7 +71,7 @@ public class ClientNoteList extends Fragment {
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"ClientNote");
-		query.orderByDescending("createdAt");
+		query.orderByDescending("date");
 		query.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
