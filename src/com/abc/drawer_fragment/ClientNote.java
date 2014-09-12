@@ -4,6 +4,8 @@ import android.app.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,7 @@ import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -169,6 +174,16 @@ public class ClientNote extends Fragment {
 				}
 			}
 		});
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		Date curDate = new Date(System.currentTimeMillis()); // 獲取當前時間
+		String str = formatter.format(curDate);
+
+		m_datepickerButton.setText(str);
+		Time t = new Time();
+		t.setToNow();
+		int hour = t.hour; // 0-23 
+		int minute = t.minute; 
+		m_timepickerButton.setText(hour +" : "+minute);
 
 		// DatePickerDialog
 		m_datepickerButton.setOnClickListener(new View.OnClickListener() {
@@ -227,6 +242,9 @@ public class ClientNote extends Fragment {
 						if (e == null) {
 							Toast.makeText(getActivity(), "Successful",
 									Toast.LENGTH_SHORT).show();
+							FragmentManager fragmentManager = getFragmentManager();
+							fragmentManager.beginTransaction()
+									.replace(R.id.content_frame, new ClientNoteList()).commit();
 						} else {
 							Toast.makeText(getActivity(), "Error",
 									Toast.LENGTH_SHORT).show();
