@@ -94,7 +94,7 @@ public class ClientNoteList extends Fragment {
 					item2.put("location", ob.getString("location"));
 					item2.put("remind", ob.getString("remind"));
 					item2.put("remarks", ob.getString("remarks"));
-
+					item2.put("id", ob.getObjectId());
 					list.add(item2);
 				}
 				try {

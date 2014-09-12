@@ -6,16 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.R.integer;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +23,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.abc.model.R;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -41,9 +42,11 @@ public class ClientNoteView extends Fragment {
 
 	int c_index;
 	int p_index;
+
 	String[] remindTime = new String[] { "10 minutes ago", "15 minutes ago",
 			"30 minutes ago", "1 hour ago", "3 hours ago", "12 hours ago",
 			"1 day ago" };
+
 	public ClientNoteView() {
 	}
 
@@ -56,7 +59,7 @@ public class ClientNoteView extends Fragment {
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
-		
+
 		Bundle arguments = getArguments();
 		Log.d("bundle2", arguments.getBundle("bundle2").toString());
 		Bundle bundle = arguments.getBundle("bundle2");
@@ -74,27 +77,36 @@ public class ClientNoteView extends Fragment {
 			Log.d("BUNDLE == null", "NULL");
 		}
 
-		EditText getTitle = (EditText) v.findViewById(R.id.view_title);
+		final EditText getTitle = (EditText) v.findViewById(R.id.view_title);
 		final Spinner getClient = (Spinner) v.findViewById(R.id.view_clientSpinner);
 		final Spinner getPurpose = (Spinner) v.findViewById(R.id.view_purposeSpinner);
 		final Button getDateButton = (Button) v.findViewById(R.id.view_date);
 		final Button getTimeButton = (Button) v.findViewById(R.id.view_time);
-		EditText getContent = (EditText) v.findViewById(R.id.view_content);
-		EditText getLocation = (EditText) v.findViewById(R.id.view_location);
-		Spinner getRemind = (Spinner) v.findViewById(R.id.view_remind);
-		EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
+		final EditText getContent = (EditText) v.findViewById(R.id.view_content);
+		final EditText getLocation = (EditText) v.findViewById(R.id.view_location);
+		final Spinner getRemind = (Spinner) v.findViewById(R.id.view_remind);
+		final EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
+		final LinearLayout linearLayout1 = (LinearLayout) v.findViewById(R.id.LinearLayout1);
+		final Button edit = (Button) v.findViewById(R.id.edit);
+		final String id = list.get(0).get("id");
+
 		getTitle.setText(list.get(0).get("title"));
+		getTitle.setInputType(InputType.TYPE_NULL);// can't edit
+
 		final String client = list.get(0).get("client");
 		final String purpose = list.get(0).get("purpose");
 		String date = list.get(0).get("date");
 		String time = list.get(0).get("time");
 		String content = list.get(0).get("content");
 		getContent.setText(content);
+		getContent.setInputType(InputType.TYPE_NULL);
 		String location = list.get(0).get("location");
 		getLocation.setText(location);
+		getLocation.setInputType(InputType.TYPE_NULL);
 		String remarks = list.get(0).get("remarks");
 		getRemarks.setText(remarks);
-		
+		getRemarks.setInputType(InputType.TYPE_NULL);
+
 		getDateButton.setText(date);
 		getTimeButton.setText(time);
 
@@ -113,10 +125,8 @@ public class ClientNoteView extends Fragment {
 			}
 		});
 
-		
-
-		LoadClientNameSpinner(getClient, client);
-		LoadPurposeSpinner(getPurpose, purpose, progressDialog);
+		loadClientNameSpinner(getClient, client);
+		loadPurposeSpinner(getPurpose, purpose, progressDialog);
 
 		ArrayAdapter<String> adapterTime = new ArrayAdapter<String>(
 				this.getActivity(), android.R.layout.simple_spinner_item,
@@ -124,11 +134,71 @@ public class ClientNoteView extends Fragment {
 		adapterTime
 				.setDropDownViewResource(android.R.layout.simple_spinner_item);
 		getRemind.setAdapter(adapterTime);
-		
+
+		// edit
+		edit.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				progressDialog.setCancelable(false);
+				progressDialog.setTitle("Loading...");
+				progressDialog.show();
+				
+				getTitle.setInputType(InputType.TYPE_CLASS_TEXT);
+				getContent.setInputType(InputType.TYPE_CLASS_TEXT);
+				getLocation.setInputType(InputType.TYPE_CLASS_TEXT);
+				getRemarks.setInputType(InputType.TYPE_CLASS_TEXT);
+				
+				
+
+				createSaveButton(id);
+				
+				progressDialog.dismiss();
+
+			}
+
+			private void createSaveButton(final String id) {
+				
+				Button saveEditButton = new Button(getActivity());
+				saveEditButton.setText("save");
+				linearLayout1.addView(saveEditButton);
+				edit.setEnabled(false);
+				
+
+				saveEditButton.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						final ArrayList<Map<String, String>> editClientNote = new ArrayList<Map<String, String>>();
+						Map<String, String> it = new HashMap<String, String>();
+
+						it.put("title", getTitle.getText().toString());
+						it.put("client", getClient.getSelectedItem().toString());
+						Log.d("clientSpinner", getClient.getSelectedItem().toString());
+						it.put("purpose", getPurpose.getSelectedItem().toString());
+						it.put("date", getDateButton.getText().toString());
+						it.put("time", getTimeButton.getText().toString());
+						it.put("content", getContent.getText().toString());
+						it.put("location", getLocation.getText().toString());
+						it.put("remind", getRemind.getSelectedItem().toString());
+						it.put("remarks", getRemarks.getText().toString());
+						editClientNote.add(it);
+						Log.d("editClientNote", editClientNote.get(0).toString());
+						changeDataToParse(editClientNote, id);
+						
+						Toast.makeText(getActivity(), "saved", Toast.LENGTH_LONG).show();
+
+					}
+				});
+				
+			}
+			
+		});
+
 		return v;
 	}
 
-	private void LoadPurposeSpinner(final Spinner getPurpose, final String purpose, final ProgressDialog progressDialog) {
+	private void loadPurposeSpinner(final Spinner getPurpose, final String purpose, final ProgressDialog progressDialog) {
 		ParseQuery<ParseObject> queryPurpose = new ParseQuery<ParseObject>(
 				"Purpose");
 		queryPurpose.findInBackground(new FindCallback<ParseObject>() {
@@ -172,7 +242,7 @@ public class ClientNoteView extends Fragment {
 		});
 	}
 
-	private void LoadClientNameSpinner(final Spinner getClient, final String client) {
+	private void loadClientNameSpinner(final Spinner getClient, final String client) {
 		ParseQuery<ParseObject> queryClientName = new ParseQuery<ParseObject>(
 				"Client");
 		queryClientName.findInBackground(new FindCallback<ParseObject>() {
@@ -216,14 +286,28 @@ public class ClientNoteView extends Fragment {
 		});
 	}
 
-	private void loadDataFromParse() {
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-				"ClientNote");
-		query.findInBackground(new FindCallback<ParseObject>() {
+	private void changeDataToParse(final ArrayList<Map<String, String>> ed, String id) {
 
-			@Override
-			public void done(List<ParseObject> objects, ParseException e) {
-				for (ParseObject ob : objects) {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("ClientNote");
+
+		// Retrieve the object by id
+		query.getInBackground(id, new GetCallback<ParseObject>() {
+			public void done(ParseObject ob, ParseException e) {
+				if (e == null) {
+					// Now let's update it with some new data. In this case,
+					// only cheatMode and score
+					// will get sent to the Parse Cloud. playerName hasn't
+					// changed.
+					ob.put("title", ed.get(0).get("title"));
+					ob.put("client", ed.get(0).get("client"));
+					ob.put("purpose", ed.get(0).get("purpose"));
+					ob.put("date", ed.get(0).get("date"));
+					ob.put("time", ed.get(0).get("time"));
+					ob.put("content", ed.get(0).get("content"));
+					ob.put("location", ed.get(0).get("location"));
+					ob.put("remind", ed.get(0).get("remind"));
+					ob.put("remarks", ed.get(0).get("remarks"));
+					ob.saveInBackground();
 				}
 			}
 		});
