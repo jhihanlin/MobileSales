@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,6 +89,7 @@ public class ClientNoteView extends Fragment {
 		final EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
 		final LinearLayout linearLayout1 = (LinearLayout) v.findViewById(R.id.LinearLayout1);
 		final Button edit = (Button) v.findViewById(R.id.edit);
+		final Button back = (Button) v.findViewById(R.id.back);
 		final String id = list.get(0).get("id");
 
 		getTitle.setText(list.get(0).get("title"));
@@ -98,8 +100,19 @@ public class ClientNoteView extends Fragment {
 		String date = list.get(0).get("date");
 		String time = list.get(0).get("time");
 		String content = list.get(0).get("content");
+		
 		getContent.setText(content);
-		getContent.setInputType(InputType.TYPE_NULL);
+		
+		getContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);  
+		getContent.setInputType(InputType.TYPE_NULL);  
+		
+		//文本显示的位置在EditText的最上方  
+		getContent.setGravity(Gravity.TOP);  
+		//改变默认的单行模式  
+		getContent.setSingleLine(false);  
+		//水平滚动设置为False  
+		getContent.setHorizontallyScrolling(false);  
+		
 		String location = list.get(0).get("location");
 		getLocation.setText(location);
 		getLocation.setInputType(InputType.TYPE_NULL);
@@ -143,30 +156,27 @@ public class ClientNoteView extends Fragment {
 				progressDialog.setCancelable(false);
 				progressDialog.setTitle("Loading...");
 				progressDialog.show();
-				
+
 				getTitle.setInputType(InputType.TYPE_CLASS_TEXT);
 				getContent.setInputType(InputType.TYPE_CLASS_TEXT);
 				getLocation.setInputType(InputType.TYPE_CLASS_TEXT);
 				getRemarks.setInputType(InputType.TYPE_CLASS_TEXT);
-				
-				
 
 				createSaveButton(id);
-				
+
 				progressDialog.dismiss();
 
 			}
 
 			private void createSaveButton(final String id) {
-				
+
 				Button saveEditButton = new Button(getActivity());
 				saveEditButton.setText("save");
 				linearLayout1.addView(saveEditButton);
 				edit.setEnabled(false);
-				
 
 				saveEditButton.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						final ArrayList<Map<String, String>> editClientNote = new ArrayList<Map<String, String>>();
@@ -185,14 +195,31 @@ public class ClientNoteView extends Fragment {
 						editClientNote.add(it);
 						Log.d("editClientNote", editClientNote.get(0).toString());
 						changeDataToParse(editClientNote, id);
-						
-						Toast.makeText(getActivity(), "saved", Toast.LENGTH_LONG).show();
 
+						Toast.makeText(getActivity(), "saved", Toast.LENGTH_LONG).show();
+						// go back to list
+						getActivity()
+								.getFragmentManager()
+								.beginTransaction()
+								.replace(R.id.content_frame, new ClientNoteList())
+								.commit();
 					}
 				});
-				
+
 			}
-			
+
+		});
+		back.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// go back to list
+				getActivity()
+						.getFragmentManager()
+						.beginTransaction()
+						.replace(R.id.content_frame, new ClientNoteList())
+						.commit();
+			}
 		});
 
 		return v;

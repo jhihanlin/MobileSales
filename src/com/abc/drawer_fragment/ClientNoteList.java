@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -42,12 +43,18 @@ public class ClientNoteList extends Fragment {
 
 	ListView listView;
 	Button addEvent;
+	Button searchButton;
+	EditText inputClient;
+	String s = "";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_listview, container, false);
 		listView = (ListView) v.findViewById(R.id.listView1);
+		inputClient = (EditText) v.findViewById(R.id.editText1);
+		searchButton = (Button) v.findViewById(R.id.button2);
+
 		addEvent = (Button) v.findViewById(R.id.button1);
 		loadDataFromParse();
 		addEvent.setOnClickListener(new OnClickListener() {
@@ -57,6 +64,90 @@ public class ClientNoteList extends Fragment {
 				FragmentManager fragmentManager = getFragmentManager();
 				fragmentManager.beginTransaction()
 						.replace(R.id.content_frame, new ClientNote()).commit();
+			}
+		});
+
+		searchButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading
+				// bar
+				progressDialog.setCancelable(false);
+				progressDialog.setTitle("Loading...");
+				progressDialog.show();
+				s = inputClient.getText().toString();
+				Log.d("s", s);
+				final ArrayList<Map<String, String>> searchClientData = new ArrayList<Map<String, String>>();
+				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+				ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
+						"ClientNote");
+				query.orderByDescending("date");
+				query.findInBackground(new FindCallback<ParseObject>() {
+
+					@Override
+					public void done(List<ParseObject> objects, ParseException e) {
+						progressDialog.dismiss();
+
+						for (ParseObject ob : objects) {
+							if (ob.getString("client").equals(s)) {
+								Map<String, String> item = new HashMap<String, String>();
+								item.put("title", ob.getString("title"));
+								item.put("client", ob.getString("client"));
+								item.put("id", ob.getObjectId());
+								searchClientData.add(item);
+								
+								Map<String, String> item2 = new HashMap<String, String>();
+								item2.put("title", ob.getString("title"));
+								item2.put("client", ob.getString("client"));
+								item2.put("purpose", ob.getString("purpose"));
+								item2.put("date", ob.getString("date"));
+								item2.put("time", ob.getString("time"));
+								item2.put("content", ob.getString("content"));
+								item2.put("location", ob.getString("location"));
+								item2.put("remind", ob.getString("remind"));
+								item2.put("remarks", ob.getString("remarks"));
+								item2.put("id", ob.getObjectId());
+								list.add(item2);
+
+							}
+							try {
+								final SimpleAdapter adapter = new SimpleAdapter(getActivity(),
+										searchClientData, android.R.layout.simple_list_item_2,
+										new String[] { "title", "client" }, new int[] {
+												android.R.id.text1, android.R.id.text2 });
+								listView.setAdapter(adapter);
+								listView.setOnItemClickListener(new OnItemClickListener() {
+
+									@Override
+									public void onItemClick(AdapterView<?> parent,
+											View view, int position, long id) {
+
+										sendValueToClientNoteView(list, position);
+									}
+								});
+								listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+									@Override
+									public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+										showDeleteDialog(searchClientData, position,
+												adapter);
+										// Toast.makeText(getActivity(),
+										// "deleted",
+										// Toast.LENGTH_LONG).show();
+
+										return true;
+									}
+								});
+
+							} catch (Exception e3) {
+								e3.printStackTrace();
+							}
+						}
+					}
+				});
 			}
 		});
 		return v;
