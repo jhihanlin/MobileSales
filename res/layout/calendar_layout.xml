@@ -18,15 +18,16 @@
             android:id="@+id/importCalendar"
             android:layout_width="30sp"
             android:layout_height="28sp"
+            android:layout_marginLeft="10dp"
             android:background="@drawable/calendar_import"
             android:ems="20" />
 
         <ImageView
             android:id="@+id/prevMonth"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
             android:layout_gravity="center"
-            android:layout_marginLeft="30sp"
+            android:layout_marginLeft="12dp"
             android:background="#FFFFFF"
             android:src="@drawable/calendar_left_selector" >
         </ImageView>
@@ -44,8 +45,8 @@
 
         <ImageView
             android:id="@+id/nextMonth"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
+            android:layout_width="35sp"
+            android:layout_height="35sp"
             android:layout_gravity="center"
             android:layout_marginRight="10sp"
             android:background="#FFFFFF"

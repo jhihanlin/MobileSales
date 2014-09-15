@@ -166,10 +166,10 @@ public class CalendarFragment extends Fragment {
 				// fragment,
 				// and add the transaction to the back stack
 
-				ClientNote clientNote = new ClientNote();// press addEvent
+				CalendarAddNote calendarAddNote = new CalendarAddNote();// press addEvent
 															// Button will
 
-				transaction.replace(R.id.content_frame, clientNote);
+				transaction.replace(R.id.content_frame, calendarAddNote);
 				transaction.addToBackStack(null);
 
 				// Commit the transaction
