@@ -166,8 +166,9 @@ public class CalendarFragment extends Fragment {
 				// fragment,
 				// and add the transaction to the back stack
 
-				CalendarAddNote calendarAddNote = new CalendarAddNote();// press addEvent
-															// Button will
+				CalendarAddNote calendarAddNote = new CalendarAddNote();// press
+																		// addEvent
+				// Button will
 
 				transaction.replace(R.id.content_frame, calendarAddNote);
 				transaction.addToBackStack(null);
@@ -240,6 +241,7 @@ public class CalendarFragment extends Fragment {
 			Log.d("debug", item.toString());
 		}
 		// Toast.makeText(getActivity(), allTitle, Toast.LENGTH_LONG).show();
+		adapter.notifyDataSetChanged();
 	}
 
 	private void loadClientNoteFromParse() {
@@ -548,7 +550,16 @@ public class CalendarFragment extends Fragment {
 								R.color.blue));
 					}
 				}
+				if(calendarEvents !=null){
+					for (Map<String, String> event : calendarEvents) {
+						if (event.get("date").equals(formatDate)) {
+							gridcell.setTextColor(getResources().getColor(
+									R.color.blue));
+						}
+					}
+				}
 			}
+			
 			if (day_color[1].equals("BLUE")) {
 				gridcell.setTextColor(getResources().getColor(R.color.orrange));
 			}

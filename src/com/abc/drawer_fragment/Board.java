@@ -1,6 +1,7 @@
 package com.abc.drawer_fragment;
 
 import android.app.Fragment;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
@@ -25,9 +27,15 @@ public class Board extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.board_layout, container, false);
 		
-		final EditText push_content = (EditText) v.findViewById(R.id.push_content);
-		Button push_btn = (Button) v.findViewById(R.id.push_btn);
+		Typeface typeface = Typeface.createFromAsset(getActivity()
+				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
 		
+		final EditText push_content = (EditText) v.findViewById(R.id.push_content);
+		push_content.setTypeface(typeface);
+		TextView push_title=(TextView) v.findViewById(R.id.push_title);
+		push_title.setTypeface(typeface);
+		Button push_btn = (Button) v.findViewById(R.id.push_btn);
+		push_btn.setTypeface(typeface);
 		push_btn.setOnClickListener(new OnClickListener() {
 
 			@Override
