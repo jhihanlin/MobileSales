@@ -19,6 +19,7 @@ import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.PushService;
 import com.parse.SignUpCallback;
 
 public class LoginActivity extends Activity {
@@ -39,7 +40,9 @@ public class LoginActivity extends Activity {
 
 		Parse.initialize(this, "8mNYYPLOR08iJAkCt535lP8BfOcNo1ouO2bTbdte",
 				"5Jsm0reTBpRnhope1dRrmXMgpCZjXCO40jlAYBdC");
-
+		PushService.setDefaultPushCallback(this, MainActivity.class);
+		PushService.subscribe(this, "all", MainActivity.class);
+		
 		Log.d("debug", "login activity");
 
 		progressDialog = new ProgressDialog(this);// loading bar

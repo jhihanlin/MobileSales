@@ -4,12 +4,12 @@
     <string name="app_name">MobileSales</string>
 
     <string-array name="planets_array">
-        <item >People</item>
+        <item>People</item>
         <item>Client Note</item>
         <item>Calendar</item>
-        <item>Recent</item>
         <item>Search</item>
         <item>Message</item>
+        <item>Board</item>
     </string-array>
 
     <string name="drawer_open">Open navigation drawer</string>

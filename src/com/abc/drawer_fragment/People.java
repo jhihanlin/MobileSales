@@ -16,7 +16,7 @@ public class People extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View v =inflater.inflate(R.layout.recent_layout, container, false); 
+		View v =inflater.inflate(R.layout.people_layout, container, false); 
 		return v;
 	}
 

@@ -23,7 +23,7 @@ import com.abc.drawer_fragment.MessageList;
 import com.abc.drawer_fragment.Notify;
 import com.abc.drawer_fragment.People;
 import com.abc.drawer_fragment.ClientNote;
-import com.abc.drawer_fragment.Recent;
+import com.abc.drawer_fragment.Board;
 import com.abc.drawer_fragment.Search;
 import com.abc.model.R;
 
@@ -72,19 +72,19 @@ public class MainActivity extends FragmentActivity {
 		R.drawable.drawer, /* nav drawer image to replace 'Up' caret */
 		R.string.drawer_open, /* "open drawer" description for accessibility */
 		R.string.drawer_close /* "close drawer" description for accessibility */
-		) {
-			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(my_Title);
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
-			}
+				) {
+					public void onDrawerClosed(View view) {
+						getActionBar().setTitle(my_Title);
+						invalidateOptionsMenu(); // creates call to
+													// onPrepareOptionsMenu()
+					}
 
-			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(my_DrawerTitle);
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
-			}
-		};
+					public void onDrawerOpened(View drawerView) {
+						getActionBar().setTitle(my_DrawerTitle);
+						invalidateOptionsMenu(); // creates call to
+													// onPrepareOptionsMenu()
+					}
+				};
 		my_DrawerLayout.setDrawerListener(my_DrawerToggle);
 
 		if (savedInstanceState == null) {
@@ -121,7 +121,7 @@ public class MainActivity extends FragmentActivity {
 		switch (item.getItemId()) {
 		case R.id.action_notice:
 			getFragmentManager().beginTransaction()
-			.replace(R.id.content_frame, new Notify()).commit();
+					.replace(R.id.content_frame, new Notify()).commit();
 			break;
 		// case R.id.action_websearch:
 		// // create intent to perform web search for this planet
@@ -155,7 +155,7 @@ public class MainActivity extends FragmentActivity {
 		People people = new People();
 		ClientNote clientNote = new ClientNote();
 		CalendarFragment calendarFragment = new CalendarFragment();
-		Recent recent = new Recent();
+		Board board = new Board();
 		Search search = new Search();
 		Message message = new Message();
 
@@ -178,21 +178,21 @@ public class MainActivity extends FragmentActivity {
 			break;
 		case 3: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, recent).commit();
+					.replace(R.id.content_frame, search).commit();
 		}
 			break;
 		case 4: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, search).commit();
+					.replace(R.id.content_frame, new MessageList()).commit();
 		}
 			break;
 		case 5: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, new MessageList()).commit();
+					.replace(R.id.content_frame, board).commit();
 		}
 			break;
 		default:
- 
+
 			return;
 
 		}
