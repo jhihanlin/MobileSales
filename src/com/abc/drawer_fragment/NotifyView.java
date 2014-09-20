@@ -90,15 +90,24 @@ public class NotifyView extends Fragment {
 		final LinearLayout linearLayout1 = (LinearLayout) v.findViewById(R.id.LinearLayout1);
 		final Button edit = (Button) v.findViewById(R.id.edit);
 		final Button back = (Button) v.findViewById(R.id.back);
+		final Button save = (Button) v.findViewById(R.id.save);
 		final String id = list.get(0).get("id");
+		save.setVisibility(View.GONE);
 
 		getTitle.setText(list.get(0).get("title"));
 		getTitle.setInputType(InputType.TYPE_NULL);// can't edit
 
 		final String client = list.get(0).get("client");
+		getClient.setEnabled(false);
+
 		final String purpose = list.get(0).get("purpose");
+		getPurpose.setEnabled(false);
+
 		String date = list.get(0).get("date");
 		String time = list.get(0).get("time");
+		getDateButton.setClickable(false);
+		getTimeButton.setClickable(false);
+		
 		String content = list.get(0).get("content");
 		
 		getContent.setText(content);
@@ -112,6 +121,7 @@ public class NotifyView extends Fragment {
 		getContent.setSingleLine(false);  
 		//水平滚动设置为False  
 		getContent.setHorizontallyScrolling(false);  
+		getRemind.setEnabled(false);
 		
 		String location = list.get(0).get("location");
 		getLocation.setText(location);
@@ -122,21 +132,10 @@ public class NotifyView extends Fragment {
 
 		getDateButton.setText(date);
 		getTimeButton.setText(time);
-
-		getDateButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				onCreateDialog(getDateButton).show();
-			}
-		});
-		getTimeButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				onCreateDialog2(getTimeButton).show();
-			}
-		});
+		getDateButton.setClickable(false);
+		getTimeButton.setClickable(false);
+		getRemind.setEnabled(false);
+		
 
 		loadClientNameSpinner(getClient, client);
 		loadPurposeSpinner(getPurpose, purpose, progressDialog);
@@ -156,26 +155,42 @@ public class NotifyView extends Fragment {
 				progressDialog.setCancelable(false);
 				progressDialog.setTitle("Loading...");
 				progressDialog.show();
-
+				
 				getTitle.setInputType(InputType.TYPE_CLASS_TEXT);
 				getContent.setInputType(InputType.TYPE_CLASS_TEXT);
 				getLocation.setInputType(InputType.TYPE_CLASS_TEXT);
 				getRemarks.setInputType(InputType.TYPE_CLASS_TEXT);
+				getClient.setEnabled(true);
+				getPurpose.setEnabled(true);
+				getRemind.setEnabled(true);
+				getDateButton.setClickable(true);
+				getTimeButton.setClickable(true);
+				
+				getDateButton.setOnClickListener(new OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						onCreateDialog(getDateButton).show();
+					}
+				});
+				getTimeButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						onCreateDialog2(getTimeButton).show();
+					}
+				});
+				
 				createSaveButton(id);
-
 				progressDialog.dismiss();
 
 			}
 
 			private void createSaveButton(final String id) {
-
-				Button saveEditButton = new Button(getActivity());
-				saveEditButton.setText("save");
-				linearLayout1.addView(saveEditButton);
-				edit.setEnabled(false);
-
-				saveEditButton.setOnClickListener(new OnClickListener() {
+				save.setVisibility(View.VISIBLE);
+				edit.setVisibility(View.GONE);
+				
+				save.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
@@ -217,7 +232,7 @@ public class NotifyView extends Fragment {
 				getActivity()
 						.getFragmentManager()
 						.beginTransaction()
-						.replace(R.id.content_frame, new ClientNoteList())
+						.replace(R.id.content_frame, new Notify())
 						.commit();
 			}
 		});

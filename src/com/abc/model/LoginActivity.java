@@ -152,6 +152,7 @@ public class LoginActivity extends Activity {
 		});
 
 		loadDataFromSharedPreference();
+		goToMainActivity();
 	}
 
 	private void loadDataFromSharedPreference() {

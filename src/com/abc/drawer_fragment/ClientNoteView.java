@@ -89,23 +89,28 @@ public class ClientNoteView extends Fragment {
 		final EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
 		final LinearLayout linearLayout1 = (LinearLayout) v.findViewById(R.id.LinearLayout1);
 		final Button edit = (Button) v.findViewById(R.id.edit);
+		final Button save = (Button) v.findViewById(R.id.save);
 		final Button back = (Button) v.findViewById(R.id.back);
 		final String id = list.get(0).get("id");
+		save.setVisibility(View.GONE);
 
 		getTitle.setText(list.get(0).get("title"));
 		getTitle.setInputType(InputType.TYPE_NULL);// can't edit
-
+		getClient.setEnabled(false);
 		final String client = list.get(0).get("client");
 		final String purpose = list.get(0).get("purpose");
+		getPurpose.setEnabled(false);
 		String date = list.get(0).get("date");
 		String time = list.get(0).get("time");
 		String content = list.get(0).get("content");
-		
+		getDateButton.setClickable(false);
+		getTimeButton.setClickable(false);
+
 		getContent.setText(content);
 		
 		getContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);  
 		getContent.setInputType(InputType.TYPE_NULL);  
-		
+		getRemind.setEnabled(false);
 		//文本显示的位置在EditText的最上方  
 		getContent.setGravity(Gravity.TOP);  
 		//改变默认的单行模式  
@@ -122,21 +127,6 @@ public class ClientNoteView extends Fragment {
 
 		getDateButton.setText(date);
 		getTimeButton.setText(time);
-
-		getDateButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				onCreateDialog(getDateButton).show();
-			}
-		});
-		getTimeButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				onCreateDialog2(getTimeButton).show();
-			}
-		});
 
 		loadClientNameSpinner(getClient, client);
 		loadPurposeSpinner(getPurpose, purpose, progressDialog);
@@ -161,7 +151,25 @@ public class ClientNoteView extends Fragment {
 				getContent.setInputType(InputType.TYPE_CLASS_TEXT);
 				getLocation.setInputType(InputType.TYPE_CLASS_TEXT);
 				getRemarks.setInputType(InputType.TYPE_CLASS_TEXT);
+				getClient.setEnabled(true);
+				getPurpose.setEnabled(true);
+				getRemind.setEnabled(true);
+				getDateButton.setClickable(true);
+				getTimeButton.setClickable(true);
+				getDateButton.setOnClickListener(new OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						onCreateDialog(getDateButton).show();
+					}
+				});
+				getTimeButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						onCreateDialog2(getTimeButton).show();
+					}
+				});
 				createSaveButton(id);
 
 				progressDialog.dismiss();
@@ -170,12 +178,10 @@ public class ClientNoteView extends Fragment {
 
 			private void createSaveButton(final String id) {
 
-				Button saveEditButton = new Button(getActivity());
-				saveEditButton.setText("save");
-				linearLayout1.addView(saveEditButton);
-				edit.setEnabled(false);
+				save.setVisibility(View.VISIBLE);
+				edit.setVisibility(View.GONE);
 
-				saveEditButton.setOnClickListener(new OnClickListener() {
+				save.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {

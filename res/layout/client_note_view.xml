@@ -118,15 +118,20 @@
 
         <Button
             android:id="@+id/edit"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:text="edit" />
-
+      <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="right"
+            android:text="save" />
         <Button
             android:id="@+id/back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="Back List" />
 
     </LinearLayout>
