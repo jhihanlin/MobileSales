@@ -20,6 +20,7 @@ import com.abc.drawer_fragment.CalendarFragment;
 import com.abc.drawer_fragment.ClientNoteList;
 import com.abc.drawer_fragment.Message;
 import com.abc.drawer_fragment.MessageList;
+import com.abc.drawer_fragment.Notify;
 import com.abc.drawer_fragment.People;
 import com.abc.drawer_fragment.ClientNote;
 import com.abc.drawer_fragment.Recent;
@@ -118,6 +119,10 @@ public class MainActivity extends FragmentActivity {
 		}
 		// Handle action buttons
 		switch (item.getItemId()) {
+		case R.id.action_notice:
+			getFragmentManager().beginTransaction()
+			.replace(R.id.content_frame, new Notify()).commit();
+			break;
 		// case R.id.action_websearch:
 		// // create intent to perform web search for this planet
 		// Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
@@ -130,9 +135,8 @@ public class MainActivity extends FragmentActivity {
 		// Toast.LENGTH_LONG).show();
 		// }
 		// return true;
-		default:
-			return super.onOptionsItemSelected(item);
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private class DrawerItemClickListener implements
