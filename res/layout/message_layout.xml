@@ -24,11 +24,10 @@
 
         <Button
             android:id="@+id/peopleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#99CCCC"
-            android:text="people"
-            android:textColor="#FFFFFF" />
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/people" />
 
     </LinearLayout>
 
@@ -120,10 +119,10 @@
             android:id="@+id/sendButton"
             android:layout_width="124dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.63"
+            android:layout_weight="1"
             android:background="#99CCCC"
-            android:textColor="#FFFFFF"
             android:text=" Send "
+            android:textColor="#FFFFFF"
             android:textSize="20sp" />
  
         <Button
@@ -131,10 +130,12 @@
             android:layout_width="137dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10sp"
+            android:layout_weight="1"
             android:background="#FFFFFF"
             android:text=" Cancel"
             android:textColor="#99CCCC"
             android:textSize="20sp" />
+
     </LinearLayout>
  
 </LinearLayout>
