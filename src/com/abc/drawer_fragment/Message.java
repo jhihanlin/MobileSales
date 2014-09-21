@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.telephony.SmsManager;
@@ -72,7 +73,11 @@ public class Message extends Fragment {
 		contentEditText = (EditText) v.findViewById(R.id.contentEditText);
 		modelSpinner = (Spinner) v.findViewById(R.id.modelSpinner);
 		receiverTextView = (TextView) v.findViewById(R.id.receiverTextView);
-
+		TextView ms_tx1=(TextView) v.findViewById(R.id.ms_tx1);
+		Typeface typeface = Typeface.createFromAsset(getActivity()
+				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+		ms_tx1.setTypeface(typeface);
+		
 		progressDialog = new ProgressDialog(getActivity());
 		loadMessageModelFromParse();
 
