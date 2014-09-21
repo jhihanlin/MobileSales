@@ -42,20 +42,30 @@
         android:hint="password"
         android:inputType="textPassword" />
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/passwordEditText"
+        android:layout_alignLeft="@+id/passwordEditText"
         android:layout_below="@+id/passwordEditText"
-        android:text="login" />
+        android:layout_marginTop="22dp" >
 
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/passwordEditText"
-        android:layout_toLeftOf="@+id/loginButton"
-        android:text="register" />
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#99CCCC"
+            android:text="login"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="register"
+            android:textColor="#99CCCC" />
+    </LinearLayout>
 
 </RelativeLayout>

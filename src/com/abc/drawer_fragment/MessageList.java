@@ -9,10 +9,12 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.abc.model.R;
 import com.parse.FindCallback;
@@ -42,7 +45,12 @@ public class MessageList extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.message_listview, container, false);
+		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/Quicksand-Regular.ttf");// font
+
 		listView = (ListView) v.findViewById(R.id.listView);
+		TextView message_tx1=(TextView) v.findViewById(R.id.message_tx1);
+		message_tx1.setTypeface(typeface);
 		addEvent = (Button) v.findViewById(R.id.addButton);
 		loadDataFromParse();
 		addEvent.setOnClickListener(new OnClickListener() {

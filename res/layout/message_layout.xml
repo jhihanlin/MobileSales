@@ -12,22 +12,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        
-        
         <TextView
             android:id="@+id/receiverTextView"
-            android:layout_width="236dp"
-            android:layout_height="54dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint="create receiver" />
 
         <Button
             android:id="@+id/peopleButton"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/people" />
+            android:layout_width="60dp"
+            android:layout_height="70dp"
+            android:background="@drawable/people"
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 
@@ -59,23 +57,15 @@
         android:layout_height="44dp" />
  
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
- 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.01"
-           
-            android:textAppearance="?android:attr/textAppearanceSmall" />
  
         <Button
             android:id="@+id/modelButton"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="160dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="create model" />
+            android:text="create new model" />
     </LinearLayout>
 
     <TextView
@@ -111,28 +101,28 @@
  
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="62dp"
+        android:layout_height="wrap_content"
         android:layout_margin="20sp"
         android:orientation="horizontal" >
  
         <Button
             android:id="@+id/sendButton"
-            android:layout_width="124dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text=" Send "
+            android:text=" send "
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
  
         <Button
             android:id="@+id/cancelButton"
-            android:layout_width="137dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10sp"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text=" Cancel"
+            android:text=" cancel"
             android:textColor="#99CCCC"
             android:textSize="20sp" />
 
