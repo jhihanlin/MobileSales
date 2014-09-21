@@ -10,8 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/lightgray" >
+        android:layout_height="wrap_content" >
 
         <Button
             android:id="@+id/button1"

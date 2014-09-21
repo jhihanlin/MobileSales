@@ -19,7 +19,6 @@
         android:layout_height="30dp"
         android:gravity="center"
         android:text="name"
-       
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -31,15 +30,19 @@
     <ListView
         android:id="@+id/message_view"
         android:layout_width="match_parent"
-        android:layout_height="316dp" >
+        android:layout_height="316dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" >
     </ListView>
 
     <Button
         android:id="@+id/doneButton"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="Done" />
+        android:background="#99CCCC"
+        android:text="back"
+        android:textColor="#FFFFFF" />
 
-    </LinearLayout>
-    
+</LinearLayout>

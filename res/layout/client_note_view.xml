@@ -55,7 +55,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
         <Button
@@ -63,7 +63,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#99CCCC"
             android:text="date"
+            android:textColor="#FFFFFF"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -71,9 +73,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#FFFFFF"
             android:text="time"
+            android:textColor="#99CCCC"
             tools:ignore="ButtonStyle" />
-
     </LinearLayout>
 
     <EditText
@@ -112,7 +115,7 @@
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right" >
 
@@ -121,19 +124,29 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="right"
-            android:text="edit" />
-      <Button
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="edit"
+            android:textColor="#99CCCC" />
+
+        <Button
             android:id="@+id/save"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="right"
-            android:text="save" />
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="save"
+            android:textColor="#99CCCC" />
+
         <Button
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:text="Back List" />
-
+            android:layout_weight="1"
+            android:background="#99CCCC"
+            android:text="back List"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

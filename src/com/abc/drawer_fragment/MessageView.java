@@ -47,9 +47,11 @@ public class MessageView extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.message_view, container, false);
 		message_view = (ListView) v.findViewById(R.id.message_view);
+		message_view.setClickable(false);
+		message_view.setEnabled(false);
 		message_name = (TextView) v.findViewById(R.id.message_name);
 		doneButton = (Button) v.findViewById(R.id.doneButton);
-
+		message_view.setClickable(false);
 		Bundle arguments = getArguments();
 		Log.d("bundle2", arguments.getBundle("bundle2").toString());
 		Bundle bundle = arguments.getBundle("bundle2");

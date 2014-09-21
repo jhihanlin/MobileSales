@@ -15,8 +15,9 @@
         android:layout_gravity="center|center_vertical"
         android:layout_marginTop="10dp"
         android:layout_weight="0.25"
-        android:text="Board:"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="Board"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,11 +32,10 @@
             android:ems="10"
             android:gravity="top|left"
             android:hint="input you message" />
-
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_weight="1" >
@@ -44,8 +44,19 @@
             android:id="@+id/push_btn"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:text="send" />
+            android:layout_weight="1"
+            android:background="#99CCCC"
+            android:text="send"
+            android:textColor="#FFFFFF" />
 
+        <Button
+            android:id="@+id/look_all"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="board list"
+            android:textColor="#99CCCC" />
     </LinearLayout>
 
 </LinearLayout>

@@ -34,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -53,11 +52,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
-
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
         <Button
@@ -65,7 +63,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#99CCCC"
             android:text="date"
+            android:textColor="#FFFFFF"
             tools:ignore="ButtonStyle" />
 
         <Button
@@ -73,7 +73,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#FFFFFF"
             android:text="time"
+            android:textColor="#99CCCC"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
 
@@ -111,7 +113,7 @@
     </EditText>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right" >
 
@@ -120,15 +122,20 @@
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_gravity="right"
-            android:text="cancel" />
+            android:layout_weight="1"
+            android:background="#99CCCC"
+            android:text="cancel"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/save"
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_gravity="right"
-            android:text="save" />
-
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="save"
+            android:textColor="#99CCCC" />
     </LinearLayout>
 
 </LinearLayout>

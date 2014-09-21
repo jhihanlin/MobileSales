@@ -7,12 +7,18 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
-      
-      <Button
-        android:id="@+id/addButton"
-        android:layout_width="match_parent"
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="add Event" />
+        android:layout_gravity="right" >
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="30sp"
+            android:layout_height="40sp"
+            android:background="@drawable/add_icon" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listView"
