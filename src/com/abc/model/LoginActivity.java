@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ public class LoginActivity extends Activity {
 	private EditText passwordEditText;
 	private Button registerButton;
 	private Button loginButton;
+	private CheckBox loginCheckBox;
 	private ProgressDialog progressDialog;
 
 	private SharedPreferences sp;
@@ -42,13 +44,16 @@ public class LoginActivity extends Activity {
 				"5Jsm0reTBpRnhope1dRrmXMgpCZjXCO40jlAYBdC");
 		PushService.setDefaultPushCallback(this, MainActivity.class);
 		PushService.subscribe(this, "all", MainActivity.class);
-		
+
 		Log.d("debug", "login activity");
 
 		progressDialog = new ProgressDialog(this);// loading bar
 
-		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);//use SharedPreferences to store data
-		editor = sp.edit();//editor is SharedPReferences one of class
+		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);// use
+																	// SharedPreferences
+																	// to store
+																	// data
+		editor = sp.edit();// editor is SharedPReferences one of class
 
 		// PushService.setDefaultPushCallback(this, MainActivity.class);
 		// ParseInstallation.getCurrentInstallation().saveInBackground();
@@ -69,61 +74,38 @@ public class LoginActivity extends Activity {
 		passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 		passwordEditText.setTypeface(typeface);
 
+		loginCheckBox = (CheckBox) findViewById(R.id.loginCheckbox);
+		loginCheckBox.setTypeface(typeface);
+
 		loginButton = (Button) findViewById(R.id.loginButton);
 		loginButton.setTypeface(typeface);
 
 		registerButton = (Button) findViewById(R.id.registerButton);
 		registerButton.setTypeface(typeface);
-		
-		//login
-		
+
+		// login
+
 		loginButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				String username = accountEditText.getText().toString();
-				String password = passwordEditText.getText().toString();
-				Log.d("debug", "login:" + username);
-
-				editor.putString("username", username); //when user keyin owen username it will put in editor
-				editor.putString("password", password);
-				editor.commit();
-				
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
-				ParseUser.logInInBackground(username, password,
-						new LogInCallback() {
-							@Override
-							public void done(ParseUser user,
-									com.parse.ParseException e) {
-								progressDialog.dismiss();
-
-								if (user != null && e == null) {
-									goToMainActivity();
-									LoginActivity.this.finish();
-								}
-								if (e != null) {
-									e.printStackTrace();
-									Toast.makeText(LoginActivity.this, "Login failed",
-											Toast.LENGTH_LONG).show();								
-									}
-							}
-						});
+				loginFromParse();
 			}
+
 		});
-		
-		//register
-		
+
+		// register
+
 		registerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				String username = accountEditText.getText().toString();
 				String password = passwordEditText.getText().toString();
-
+				boolean checked = loginCheckBox.isChecked();
 				editor.putString("username", username);
 				editor.putString("password", password);
+				editor.putBoolean("checked", checked);
 				editor.commit();
 
 				Log.d("debug", "signup:" + username);
@@ -135,6 +117,8 @@ public class LoginActivity extends Activity {
 				final ParseUser user = new ParseUser();
 				user.setUsername(username);
 				user.setPassword(password);
+				user.put("checked", checked);
+				Log.d("debug", "checked:" + "status" + loginCheckBox.isChecked());
 				user.signUpInBackground(new SignUpCallback() {
 
 					@Override
@@ -160,6 +144,12 @@ public class LoginActivity extends Activity {
 	private void loadDataFromSharedPreference() {
 		accountEditText.setText(sp.getString("username", ""));
 		passwordEditText.setText(sp.getString("password", ""));
+		loginCheckBox.setChecked(sp.getBoolean("checked", false));
+		if (sp.getBoolean("checked", false)) {
+			if (ParseUser.getCurrentUser() != null) {
+				loginFromParse();
+			}
+		}
 	}
 
 	private void goToMainActivity() {
@@ -168,4 +158,45 @@ public class LoginActivity extends Activity {
 		startActivity(intent);
 	}
 
+	private void loginFromParse() {
+		String username = accountEditText.getText().toString();
+		String password = passwordEditText.getText().toString();
+		boolean checked = loginCheckBox.isChecked();
+		Log.d("debug", "login:" + username);
+		Log.d("debug", "checked:" + "status" + loginCheckBox.isChecked());
+
+		editor.putString("username", username); // when user keyin owen
+												// username it will put
+												// in editor
+		editor.putString("password", password);
+		editor.putBoolean("checked", checked);
+		editor.commit();
+		boolean sp_checked = sp.getBoolean("checked", false);
+		if (sp_checked) {
+			final ParseUser user = new ParseUser();
+			user.put("checked", checked);
+			user.saveInBackground();
+		}
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
+		ParseUser.logInInBackground(username, password,
+				new LogInCallback() {
+					@Override
+					public void done(ParseUser user,
+							com.parse.ParseException e) {
+						progressDialog.dismiss();
+
+						if (user != null && e == null) {
+							goToMainActivity();
+							LoginActivity.this.finish();
+						}
+						if (e != null) {
+							e.printStackTrace();
+							Toast.makeText(LoginActivity.this, "Login failed",
+									Toast.LENGTH_LONG).show();
+						}
+					}
+				});
+	}
 }

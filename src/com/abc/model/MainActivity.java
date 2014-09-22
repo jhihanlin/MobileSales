@@ -1,6 +1,8 @@
 package com.abc.model;
 
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -11,9 +13,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.abc.drawer_fragment.CalendarFragment;
@@ -26,10 +33,12 @@ import com.abc.drawer_fragment.ClientNote;
 import com.abc.drawer_fragment.Board;
 import com.abc.drawer_fragment.Search;
 import com.abc.model.R;
+import com.parse.ParseUser;
 
 public class MainActivity extends FragmentActivity {
 	private DrawerLayout my_DrawerLayout;
 	private ListView my_DrawerList;
+	private RelativeLayout my_LeftDrawer;
 	private ActionBarDrawerToggle my_DrawerToggle;
 
 	private CharSequence my_DrawerTitle;
@@ -49,18 +58,31 @@ public class MainActivity extends FragmentActivity {
 
 		my_PlanetTitles = getResources().getStringArray(R.array.planets_array);
 		my_DrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		my_DrawerList = (ListView) findViewById(R.id.left_drawer);
+		my_DrawerList = (ListView) findViewById(R.id.left_drawer_list);
+		my_LeftDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
+		TextView username = (TextView) findViewById(R.id.username);
+		Button logoutBtn = (Button) findViewById(R.id.logoutBtn);
+		logoutBtn.setTypeface(typeface);
 
+		logoutBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				ParseUser.logOut();
+				goToLoginActivity();
+				MainActivity.this.finish();
+			}
+		});
+		username.setText(ParseUser.getCurrentUser().getUsername());
+		username.setTypeface(typeface);
 		// set a custom shadow that overlays the main content when the drawer
 		// opens
 		// my_DrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
 		// GravityCompat.START);
 
 		// set up the drawer's list view with items and click listener
-		my_DrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, my_PlanetTitles));
+		my_DrawerList.setAdapter(new MenuAdapter(this));
 		my_DrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
@@ -105,7 +127,7 @@ public class MainActivity extends FragmentActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the nav drawer is open, hide action items related to the content
 		// view
-		boolean drawerOpen = my_DrawerLayout.isDrawerOpen(my_DrawerList);
+		boolean drawerOpen = my_DrawerLayout.isDrawerOpen(my_LeftDrawer);
 		menu.findItem(R.id.action_notice).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -153,11 +175,9 @@ public class MainActivity extends FragmentActivity {
 
 		FragmentManager fragmentManager = getFragmentManager();
 		People people = new People();
-		ClientNote clientNote = new ClientNote();
 		CalendarFragment calendarFragment = new CalendarFragment();
 		Board board = new Board();
 		Search search = new Search();
-		Message message = new Message();
 
 		switch (position) {
 		case 0: {
@@ -191,6 +211,7 @@ public class MainActivity extends FragmentActivity {
 					.replace(R.id.content_frame, board).commit();
 		}
 			break;
+
 		default:
 
 			return;
@@ -200,7 +221,13 @@ public class MainActivity extends FragmentActivity {
 		my_DrawerList.setItemChecked(position, true);
 		setTitle(my_PlanetTitles[position]);
 
-		my_DrawerLayout.closeDrawer(my_DrawerList);
+		my_DrawerLayout.closeDrawer(my_LeftDrawer);
+	}
+
+	private void goToLoginActivity() {
+		Intent intent = new Intent();
+		intent.setClass(this, LoginActivity.class);
+		startActivity(intent);
 	}
 
 	@Override

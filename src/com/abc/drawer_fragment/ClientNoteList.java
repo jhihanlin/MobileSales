@@ -12,6 +12,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
@@ -51,10 +53,15 @@ public class ClientNoteList extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_listview, container, false);
+		Typeface typeface = Typeface.createFromAsset(getActivity()
+				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+
 		listView = (ListView) v.findViewById(R.id.listView1);
 		inputClient = (EditText) v.findViewById(R.id.editText1);
 		searchButton = (Button) v.findViewById(R.id.button2);
-
+		TextView clientlist_tx = (TextView) v.findViewById(R.id.clientlist_tx);
+		clientlist_tx.setTypeface(typeface);
+		
 		addEvent = (Button) v.findViewById(R.id.button1);
 		loadDataFromParse();
 		addEvent.setOnClickListener(new OnClickListener() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"    
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -22,30 +22,33 @@
 
         <Button
             android:id="@+id/addButton"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
+            android:layout_width="28sp"
+            android:layout_height="32sp"
             android:background="@drawable/add_icon" />
     </LinearLayout>
-<LinearLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/textView1"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
             android:layout_weight="2"
-            android:text="Message history" />
+            android:text="Message history"
+            android:textColor="@color/gray" />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dp"
             android:layout_marginTop="5dp"
             android:layout_weight="0.5"
-            android:background="#000000" />
-
+            android:background="@color/lightgray" />
     </LinearLayout>
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"

@@ -11,7 +11,7 @@
         android:id="@+id/AutoCompleteTextView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="enter address / client name" >
+        android:hint="search address / client name" >
     </AutoCompleteTextView>
 
     <com.google.android.gms.maps.MapView

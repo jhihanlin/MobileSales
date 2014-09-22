@@ -19,6 +19,7 @@
             android:layout_width="30sp"
             android:layout_height="28sp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/calendar_import"
             android:ems="20" />
 
@@ -57,8 +58,11 @@
             android:id="@+id/addEvent"
             android:layout_width="30sp"
             android:layout_height="35sp"
+            android:layout_marginRight="11dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/add_icon"
             android:ems="20" />
+
     </LinearLayout>
 
     <Button
