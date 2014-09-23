@@ -1,44 +1,45 @@
 package com.abc.drawer_fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.AdapterView.OnItemClickListener;
 
-import com.abc.drawer_fragment.MessageExpandable.SavedTabsListAdapter;
 import com.abc.model.R;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -48,384 +49,77 @@ import com.parse.SaveCallback;
 
 public class People extends Fragment {
 
-	private Button modelButton, sendButton, cancelButton, peopleButton,
-			tagButton;
-	private EditText contentEditText;
-	private TextView receiverTextView;
-	private Spinner modelSpinner, peopleSpinner;
-	private ProgressDialog progressDialog;
-
-	protected List<ParseObject> messageModels, peoples;
-	protected String receiverPhoneNumbers;
-
 	public People() {
 	}
+
+	public ListView listView;
+	public View v;
+	public Button addPeople, imbtndel, imbtnupdata;
+	public Button peopleButton, tagButton;
+	public AutoCompleteTextView autoComplete;
+	public ArrayList<HashMap<String, String>> contactsArrayList;
+	public String[] contactsName;
+	private ProgressDialog dialog;
+	private EditText edtname, edtbirthday, edttel, edtemail, edtadd, edttag,
+			edtnote;
+	public int size = 0;
+	public boolean start = true;
+	private ProgressDialog progressDialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.message_layout, container, false);
-
-		sendButton = (Button) v.findViewById(R.id.sendButton);
-		cancelButton = (Button) v.findViewById(R.id.cancelButton);
-		modelButton = (Button) v.findViewById(R.id.modelButton);
-		peopleButton = (Button) v.findViewById(R.id.peopleButton);
-		contentEditText = (EditText) v.findViewById(R.id.contentEditText);
-		modelSpinner = (Spinner) v.findViewById(R.id.modelSpinner);
-		receiverTextView = (TextView) v.findViewById(R.id.receiverTextView);
-		TextView ms_tx1=(TextView) v.findViewById(R.id.ms_tx1);
+		View v = inflater.inflate(R.layout.people_layout, container, false);
 		Typeface typeface = Typeface.createFromAsset(getActivity()
 				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
-		ms_tx1.setTypeface(typeface);
-		
+		listView = (ListView) v.findViewById(R.id.lvPEOPLE);
+		addPeople = (Button) v.findViewById(R.id.addPeople);
+		TextView peoplelist_tx = (TextView) v.findViewById(R.id.peoplelist_tx);
+		peoplelist_tx.setTypeface(typeface);
+
+		autoComplete = (AutoCompleteTextView) v.findViewById(R.id.autoComplete);
 		progressDialog = new ProgressDialog(getActivity());
-		loadMessageModelFromParse();
+		getParseDate("");
 
-		sendButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String content = contentEditText.getText().toString();
-				// String receiver = receiverEditText.getText().toString();
-				String receiver = receiverPhoneNumbers;
-				Log.d("receiver", receiver);
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
-
-				ParseObject object = new ParseObject("Message");
-				object.put("Message_content", content);
-				object.put("Message_receiver", receiverTextView.getText()
-						.toString());
-				object.setACL(new ParseACL(ParseUser.getCurrentUser()));
-				object.saveInBackground(new SaveCallback() {
-
-					public void done(ParseException e) {
-						progressDialog.dismiss();
-						if (e == null) {
-							Toast.makeText(getActivity(), "Successful",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Toast.makeText(getActivity(), "Error",
-									Toast.LENGTH_SHORT).show();
-						}
-					}
-
-				});
-				// �Q��Toast���R�A�禡makeText�ӫإ�Toast����
-				Toast.makeText(getActivity().getBaseContext(), "Sent!",
-						Toast.LENGTH_SHORT).show();
-				SmsManager smsManager = SmsManager.getDefault();
-				String[] temp = null;
-				if (receiverPhoneNumbers.contains(",")) {
-
-					temp = receiverPhoneNumbers.split(",");
-
-				}
-				for (int i = 0; i < temp.length; i++) {
-					try {
-						smsManager.sendTextMessage(temp[i].toString(), null,
-								contentEditText.getText().toString(),
-								PendingIntent.getBroadcast(getActivity(), 0,
-										new Intent(), 0), null);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					;
-				}
-			}
-		});
-
-		modelButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				onCreateDialog();
-
-			}
-		});
-
-		cancelButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, new MessageList())
-						.commit();
-			}
-		});
+		peopleButton = (Button) v.findViewById(R.id.peopleButton);
+		tagButton = (Button) v.findViewById(R.id.tagButton);
 
 		peopleButton.setOnClickListener(new OnClickListener() {
+
+			@Override
 			public void onClick(View v) {
-
-				onCreateDialog1();
+				// TODO Auto-generated method stub
+				FragmentManager fragmentManager = getFragmentManager();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, new People()).commit();
 			}
 		});
+
+		tagButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				FragmentManager fragmentManager = getFragmentManager();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, new People_tag()).commit();
+			}
+		});
+
+		addPeople.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				People_add ppadd = new People_add();
+				ppadd.setMode("add");
+				Fragment fg = ppadd;
+				FragmentManager fragmentManager = getFragmentManager();
+				fragmentManager.beginTransaction()
+						.replace(R.id.content_frame, fg).commit();
+			}
+		});
+
 		return v;
-	}
-
-	private void loadPeopleFromParse() {
-		ParseQuery<ParseObject> query1 = new ParseQuery<ParseObject>("Client"); // get
-		// Parse
-		// table:Client
-		query1.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNames
-					peoples = objects;
-					Log.d("debug", "objects.size()=" + objects.size());
-				}
-
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_list_item_1,
-						getPeopleData());
-				// �]�w�۰ʶ��J�����r���e
-
-				peopleSpinner.setAdapter(adapter);
-				progressDialog.dismiss();
-			}
-		});
-
-	}
-
-	private void loadMessageModelFromParse() {
-		progressDialog.setTitle("Loading...");
-		progressDialog.setCancelable(false);
-		progressDialog.show();
-
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-				"MessageModel"); // get
-		// Parse
-		// table:Client
-		query.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNames
-					messageModels = objects;
-					Log.d("debug", "objects.size()=" + objects.size());
-				}
-
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_list_item_1,
-						getMessageModelData());
-				// �]�w�۰ʶ��J�����r���e
-				modelSpinner.setAdapter(adapter);
-				modelSpinner
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> parent,
-									View view, int position, long id) {
-
-								// TODO Auto-generated method stub
-								// Toast.makeText(null,
-								// "�A�諸�O+ getMessageModelData().get(position)",
-								// Toast.LENGTH_SHORT).show();
-								String sModel = (getMessageModelData()
-										.get(position));
-								contentEditText.setText(sModel);
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent) {
-								// TODO Auto-generated method stub
-
-							}
-						});
-				progressDialog.dismiss();
-			}
-		});
-	}
-
-	protected List<String> getPeopleData() {
-		List<String> data = new ArrayList<String>();
-		if (peoples != null) {
-			for (ParseObject message : peoples) {
-				Log.d("debug", message.getString("name"));
-				String nameAndTel = "";
-				if ((message.getString("name")) != null) {
-					nameAndTel += message.getString("name");
-				}
-				if ((message.getString("tel")) != null) {
-					nameAndTel += "," + message.getString("tel");
-				}
-				if ((message.getString("tag")) != null) {
-					nameAndTel += "," + message.getString("tag");
-				}
-				data.add(nameAndTel);
-			}
-
-		}
-
-		return data;
-	}
-
-	protected List<String> getMessageModelData() {
-
-		List<String> data = new ArrayList<String>();
-		if (messageModels != null) {
-			for (ParseObject message : messageModels) {
-				Log.d("debug", message.getString("Model_content"));
-				String modelName = "";
-				if ((message.getString("Model_content")) != null) {
-					modelName += message.getString("Model_content");
-				}
-				data.add(modelName);
-			}
-
-		}
-
-		return data;
-	}
-
-	protected Dialog onCreateDialog() {
-		Dialog dialog = null;
-		/*
-		 * calendar final SimpleAdapter simpleAdapter = new SimpleAdapter(
-		 * getActivity(), data, R.layout.message_model, new String[] {"model" },
-		 * new int[] { R.id.modelEditText});
-		 */
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		final View v = inflater.inflate(R.layout.message_model, null);
-
-		new AlertDialog.Builder(getActivity())
-				.setTitle("Add Model Text")
-				.setView(v)
-				.setPositiveButton("Done",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								EditText modelEditText = (EditText) (v
-										.findViewById(R.id.modelEditText));
-								String model = modelEditText.getText()
-										.toString();
-								contentEditText.setText(model);
-
-								progressDialog.setCancelable(false);
-								progressDialog.setTitle("Loading...");
-								progressDialog.show();
-
-								ParseObject object = new ParseObject(
-										"MessageModel");
-								object.put("Model_content", model);
-								object.setACL(new ParseACL(ParseUser
-										.getCurrentUser()));
-								object.saveInBackground(new SaveCallback() {
-
-									@Override
-									public void done(ParseException e) {
-										progressDialog.dismiss();
-										if (e == null) {
-											Toast.makeText(getActivity(),
-													"Successful",
-													Toast.LENGTH_LONG).show();
-										} else {
-											Toast.makeText(getActivity(),
-													"Error", Toast.LENGTH_SHORT)
-													.show();
-										}
-									}
-								});
-
-							}
-						})
-
-				.setNeutralButton("Cancel",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-							}
-						}).show();
-
-		progressDialog.setTitle("Loading...");
-		progressDialog.setCancelable(false);
-		progressDialog.show();
-
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-				"MessageModel"); // get
-		// Parse
-		// table:Client
-		query.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNames
-					messageModels = objects;
-					Log.d("debug", "objects.size()=" + objects.size());
-				}
-
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_list_item_1,
-						getMessageModelData());
-				// �]�w�۰ʶ��J�����r���e
-				modelSpinner.setAdapter(adapter);
-				modelSpinner
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> parent,
-									View view, int position, long id) {
-
-								// TODO Auto-generated method stub
-								// Toast.makeText(null,
-								// "�A�諸�O+ getMessageModelData().get(position)",
-								// Toast.LENGTH_SHORT).show();
-								String sModel = (getMessageModelData()
-										.get(position));
-								contentEditText.setText(sModel);
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent) {
-								// TODO Auto-generated method stub
-
-							}
-						});
-				progressDialog.dismiss();
-			}
-		});
-
-		return dialog;
-	}
-
-	protected Dialog onCreateDialog1() {
-		// TODO Auto-generated method stub
-		Dialog dialog = null;
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		final View v = inflater.inflate(R.layout.message_expandable_fragment,
-				null);
-
-		new AlertDialog.Builder(getActivity())
-				.setTitle("People")
-				.setView(v)
-				.setPositiveButton("Done",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								MessageExpandable mEX = (MessageExpandable) getFragmentManager()
-										.findFragmentById(R.id.fragment1);
-
-								receiverPhoneNumbers = mEX.getPhoneNumbers();
-								receiverTextView.setText(mEX.getName());
-
-								Log.d("123", "123");
-
-							}
-						})
-				.setNegativeButton("Cancel",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Canceled.
-							}
-						}).show();
-
-		return dialog;
 	}
 
 	@Override
@@ -434,4 +128,282 @@ public class People extends Fragment {
 		super.onCreate(savedInstanceState);
 	}
 
+	public void setAutoCompleteTextView() {
+		// Log.v("", ""+contactsName.length);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_spinner_item, contactsName);
+		autoComplete.setAdapter(adapter);
+
+		autoComplete.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				// getAssignedPhoneBookData(autoComplete.getText().toString());
+				listView.setAdapter(null);
+				getParseDate(autoComplete.getText().toString());
+
+				/*
+				 * SimpleAdapter adapter = new
+				 * SimpleAdapter(getActivity(),contactsArrayList
+				 * ,R.layout.people_contact_entry,new String[] { "NAME","NUMBER"
+				 * }, new int[] { R.id.txtNAMEPHONE,R.id.txtDATAPHONE });
+				 * listView.setAdapter(adapter);
+				 */
+			}
+		});
+
+		autoComplete.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				Log.v("", "--" + autoComplete.getText().toString().length());
+				if (autoComplete.getText().toString().length() == 0
+						&& listView.getCount() < size) {
+					listView.setAdapter(null);
+					getParseDate("");
+					Log.v("score", "121: " + contactsArrayList.size() + "=="
+							+ listView.getCount() + "==" + size);
+					/*
+					 * SimpleAdapter adapter = new
+					 * SimpleAdapter(getActivity(),contactsArrayList
+					 * ,R.layout.people_contact_entry,new String[] {
+					 * "NAME","NUMBER" }, new int[] {
+					 * R.id.txtNAMEPHONE,R.id.txtDATAPHONE });
+					 * listView.setAdapter(adapter);
+					 */
+				}
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+	}
+
+	public void setListView() {
+		SimpleAdapter adapter = new SimpleAdapter(getActivity(),
+				contactsArrayList, R.layout.people_contact_entry, new String[] {
+						"NAME", "NUMBER" }, new int[] { R.id.txtNAMEPHONE,
+						R.id.txtDATAPHONE });
+		listView.setAdapter(adapter);
+
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				final String Oid = contactsArrayList.get(position).get("ID");
+				final String name = contactsArrayList.get(position).get("NAME");
+				final String number = contactsArrayList.get(position).get(
+						"NUMBER");
+				new AlertDialog.Builder(getActivity())
+						.setTitle(number)
+						.setItems(new String[] { "Detail", "Call" },
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										switch (which) {
+										case 0:
+											People_add ppadd = new People_add();
+											ppadd.setMode("edit");
+											ppadd.setID(Oid);
+
+											Fragment fg = ppadd;
+											FragmentManager fragmentManager = getFragmentManager();
+											fragmentManager
+													.beginTransaction()
+													.replace(
+															R.id.content_frame,
+															fg).commit();
+
+											break;
+
+										case 1:
+											Intent call = new Intent(
+													Intent.ACTION_CALL, Uri
+															.parse("tel:"
+																	+ number));
+											startActivity(call);
+
+											break;
+										}
+
+									}
+								})
+						.setNegativeButton("Cancel",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// TODO Auto-generated method stub
+									}
+								}).show();
+			}
+
+		});
+
+	}
+
+	public void getParseDate(final String name) {
+		contactsArrayList = new ArrayList<HashMap<String, String>>();
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
+		// query.whereEqualTo("ID", ParseUser.getCurrentUser().getObjectId());
+
+		if (!name.equals("")) {
+			query.whereEqualTo("name", name);
+		}
+
+		query.findInBackground(new FindCallback<ParseObject>() {
+			@Override
+			public void done(List<ParseObject> objects, ParseException e) {
+				// TODO Auto-generated method stub
+				progressDialog.dismiss();
+				if (e == null) {
+					// Log.v("score", "Retrieved " + objects.size() +
+					// " scores");
+					contactsName = new String[objects.size()];
+					if (name.equals("")) {
+						size = objects.size();
+					}
+
+					for (int i = 0; i < objects.size(); i++) {
+						HashMap<String, String> hm = new HashMap<String, String>();
+						hm.put("ID", objects.get(i).getObjectId().toString());
+						hm.put("NAME", objects.get(i).get("name").toString());
+						hm.put("NUMBER", objects.get(i).get("tel").toString());
+						contactsArrayList.add(hm);
+						contactsName[i] = objects.get(i).get("name").toString();
+					}
+
+					// Log.v("score", "111: " + objects.size());
+
+					setListView();
+
+					if (start) {
+						setAutoCompleteTextView();
+						start = false;
+					}
+
+				} else {
+					Log.v("score", "Error: " + e.getMessage());
+				}
+			}
+		});
+		query.clearCachedResult();
+
+	}
+
+	public void setParseData() {
+		String id;
+		String mimetype;
+
+		ContentResolver contentResolver = getActivity().getContentResolver();
+
+		Cursor cursor = contentResolver
+				.query(android.provider.ContactsContract.Contacts.CONTENT_URI,
+						new String[] { android.provider.ContactsContract.Contacts._ID },
+						null, null, null);
+		while (cursor.moveToNext()) {
+			ParseObject testObject = new ParseObject("Client");
+			id = cursor
+					.getString(cursor
+							.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
+
+			// 從一個Cursor獲取所有的信息
+			Cursor contactInfoCursor = contentResolver.query(
+					android.provider.ContactsContract.Data.CONTENT_URI,
+					new String[] {
+							android.provider.ContactsContract.Data.CONTACT_ID,
+							android.provider.ContactsContract.Data.MIMETYPE,
+							android.provider.ContactsContract.Data.DATA1 },
+					android.provider.ContactsContract.Data.CONTACT_ID + "="
+							+ id, null, null);
+			String name = "";
+			String email = "";
+			String phone = "";
+			String postal = "";
+			String birthday = "";
+			while (contactInfoCursor.moveToNext()) {
+				mimetype = contactInfoCursor
+						.getString(contactInfoCursor
+								.getColumnIndex(android.provider.ContactsContract.Data.MIMETYPE));
+				String value = contactInfoCursor
+						.getString(contactInfoCursor
+								.getColumnIndex(android.provider.ContactsContract.Data.DATA1));
+				if (mimetype.contains("/name")) {
+					System.out.println("Name=" + value);
+					name = value;
+				} else if (mimetype.contains("/email")) {
+					System.out.println("Email=" + value);
+					email = value;
+				} else if (mimetype.contains("/phone")) {
+					System.out.println("Tel=" + value);
+					phone = value;
+				} else if (mimetype.contains("/postal")) {
+					System.out.println("Address=" + value);
+					postal = value;
+				} else if (mimetype.contains("/birthday")) {
+					System.out.println("birthday=" + value);
+					birthday = value;
+				}
+
+				progressDialog.dismiss();
+
+				// testObject.put("ID",
+				// ParseUser.getCurrentUser().getObjectId());
+
+				Log.v("", "" + mimetype);
+
+			}
+			testObject.put("name", name);
+			testObject.put("email", email);
+			testObject.put("tel", phone);
+			testObject.put("add", postal);
+			testObject.put("birthday", birthday);
+			testObject.put("tag", "");
+			testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
+			testObject.saveInBackground(new SaveCallback() {
+				@Override
+				// 彈跳視窗
+				public void done(ParseException ex) {
+					// TODO Auto-generated method stub
+					if (ex == null) {
+						// Toast.makeText(getActivity(), "存檔成功",
+						// Toast.LENGTH_LONG).show();
+					} else {
+						// Toast.makeText(getActivity(),
+						// "存檔失敗:"+ex.getMessage().toString(),
+						// Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+
+			System.out.println("*********");
+			contactInfoCursor.close();
+		}
+		cursor.close();
+	}
+
+	private void setContentView(int peopleAdd) {
+		// TODO Auto-generated method stub
+
+	}
 }

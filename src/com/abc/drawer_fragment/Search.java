@@ -70,7 +70,8 @@ public class Search extends Fragment implements LocationListener {
 		gmap = mapView.getMap();
 		locMgr = (LocationManager) getActivity().getSystemService(
 				context.LOCATION_SERVICE);
-		autoTV = (AutoCompleteTextView) v.findViewById(R.id.AutoCompleteTextView1);
+		autoTV = (AutoCompleteTextView) v
+				.findViewById(R.id.AutoCompleteTextView1);
 		nearButton = (Button) v.findViewById(R.id.nearButton);
 		searchButton = (Button) v.findViewById(R.id.btSubmit);
 
@@ -80,14 +81,14 @@ public class Search extends Fragment implements LocationListener {
 		Criteria criteria = new Criteria();
 		bestProv = locMgr.getBestProvider(criteria, true);
 
-		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL); // ä¸€èˆ¬åœ°åœ–
-		// gmap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);//è¡›æ˜Ÿç©ºç…§åœ–
-		// gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);// é“è·¯åœ°åœ–
+		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL); // 瓣繡�癡�珍汀冕汀��
+		// gmap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);//癡癒�疑竹蜆岑怏疑把�汕岔汀��
+		// gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);// 矇��阬溘紐汀冕汀��
 		// gmap.setMapType(GoogleMap.MAP_TYPE_HYBRID);//
-		// é“è·¯åœ°åœ–æ··åˆç©ºç…§åœ–ã€‚
+		// 矇��阬溘紐汀冕汀�汕溘溼氐岑怏疑把�汕岔汀�����
 		gmap.getUiSettings().setZoomGesturesEnabled(true);
-		gmap.setMyLocationEnabled(true);// é¡¯ç¤ºè‡ªå·±ä½ç½®
-		gmap.setTrafficEnabled(true);// é¡¯ç¤ºäº¤é€šè³‡è¨Š
+		gmap.setMyLocationEnabled(true);// 矇癒簪癟瞻繙癡�¯秉氐溘掙刈蝓岑蝓�
+		gmap.setTrafficEnabled(true);// 矇癒簪癟瞻繙瓣繙瞻矇�禳癡糧�￣阬乳�
 		gmap.getUiSettings().setZoomGesturesEnabled(true);
 		gmap.setMyLocationEnabled(true);
 
@@ -152,8 +153,10 @@ public class Search extends Fragment implements LocationListener {
 			public void onClick(View v) {
 				List<String> latLongData = getLatlongData();
 				for (int i = 0; i < latLongData.size(); i++) {
-					double lati = Double.parseDouble(latLongData.get(i).split(",")[1].trim());
-					double lng = Double.parseDouble(latLongData.get(i).split(",")[2].trim());
+					double lati = Double.parseDouble(latLongData.get(i).split(
+							",")[1].trim());
+					double lng = Double.parseDouble(latLongData.get(i).split(
+							",")[2].trim());
 					gmap.addMarker(new MarkerOptions()
 							.position(new LatLng(lati, lng))
 							.title(latLongData.get(i).split(",")[0].trim())
@@ -187,7 +190,7 @@ public class Search extends Fragment implements LocationListener {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						getActivity(), android.R.layout.simple_list_item_1,
 						getAutoCompleteData());
-				// è¨­å®šè‡ªå‹•å¡«å…¥çš„æ–‡å­—å…§å®¹
+				// 癡穡簫疇簧禳癡�¯秉乒�嫖�〡氐¯姻乒�汕永巫﹦�色��￣氐凌�乒�汕岔氐捍�
 				autoTV.setAdapter(adapter);
 				progressDialog.dismiss();
 
@@ -197,7 +200,7 @@ public class Search extends Fragment implements LocationListener {
 		});
 	}
 
-	// å„²å­˜parseçš„è³‡æ–™,åœ°å€è·Ÿå§“å
+	// 疇�笛氐倒arse癟禳�阬喇�￣色�,疇�冕氐癡繚顫疇禮�氐�
 	private List<String> getAutoCompleteData() {
 
 		List<String> data = new ArrayList<String>();
@@ -223,25 +226,34 @@ public class Search extends Fragment implements LocationListener {
 
 		List<String> data1 = new ArrayList<String>();
 		if (clientNames != null) {
+
 			for (ParseObject clientName : clientNames) {
 				Log.d("debug", clientName.getString("name"));
 				String nameAndLatlong = "";
-				if ((clientName.getString("name")) != null) {
-					nameAndLatlong += clientName.getString("name");
-				}
+
 				if ((clientName.getString("addLatLong")) != null) {
-					nameAndLatlong += ","
-							+ clientName.getString("addLatLong");
+
+					if ((clientName.getString("name")) != null) {
+
+						if ((clientName.getString("addLatLong")) != null) {
+							nameAndLatlong += clientName.getString("name");
+							nameAndLatlong += ","
+									+ clientName.getString("addLatLong");
+
+							if ((clientName.getString("tel")) != null) {
+								nameAndLatlong += ","
+										+ clientName.getString("tel");
+							}
+							if ((clientName.getString("add")) != null) {
+								nameAndLatlong += ","
+										+ clientName.getString("add");
+							}
+						}
+
+					}
+					data1.add(nameAndLatlong);
+
 				}
-				if ((clientName.getString("tel")) != null) {
-					nameAndLatlong += ","
-							+ clientName.getString("tel");
-				}
-				if ((clientName.getString("add")) != null) {
-					nameAndLatlong += ","
-							+ clientName.getString("add");
-				}
-				data1.add(nameAndLatlong);
 			}
 
 		}
@@ -262,10 +274,11 @@ public class Search extends Fragment implements LocationListener {
 		List<String> latLongData = getLatlongData();
 
 		for (int i = 0; i < latLongData.size(); i++) {
-			double lati = Double.parseDouble(latLongData.get(i).split(",")[1].trim());
-			double lng = Double.parseDouble(latLongData.get(i).split(",")[2].trim());
-			gmap.addMarker(new MarkerOptions()
-					.position(new LatLng(lati, lng))
+			double lati = Double.parseDouble(latLongData.get(i).split(",")[1]
+					.trim());
+			double lng = Double.parseDouble(latLongData.get(i).split(",")[2]
+					.trim());
+			gmap.addMarker(new MarkerOptions().position(new LatLng(lati, lng))
 					.title(latLongData.get(i).split(",")[0].trim()));
 		}
 
@@ -309,15 +322,14 @@ public class Search extends Fragment implements LocationListener {
 
 	@Override
 	public void onResume() {
-		super.onResume(); // å¦‚æžœGPSæˆ–ç¶²è·¯å®šä½é–‹å•Ÿï¼Œæ›´æ–°ä½ç½®
+		super.onResume(); // 疇礎�汍嬝PS疆��岑黑笛阬溘紐氐敉￣刈蝓抽��嘔乒�〣蜆純敷色�甄棺色�冕刈蝓岑蝓�
 		mapView.onResume();
 		if (locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)
 				|| locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 			locMgr.requestLocationUpdates(bestProv, 1000, 1, this);
 		} else {
 			Toast.makeText(getActivity().getBaseContext(),
-					"please check your GPS on", Toast.LENGTH_SHORT)
-					.show();
+					"please check your GPS on", Toast.LENGTH_SHORT).show();
 		}
 	}
 
