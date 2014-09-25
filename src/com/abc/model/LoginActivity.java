@@ -1,8 +1,10 @@
 package com.abc.model;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -108,37 +110,46 @@ public class LoginActivity extends Activity {
 				editor.putBoolean("checked", checked);
 				editor.commit();
 
-				Log.d("debug", "signup:" + username);
+				if ("".equals(accountEditText.getText().toString().trim())) {
+					showInputErrorDialog();
+				}
+				else if (accountEditText.getText().toString().trim().length() > 10) {
+					showInputErrorDialog();
+				}
+				else {
 
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
+					Log.d("debug", "signup:" + username);
 
-				final ParseUser user = new ParseUser();
-				user.setUsername(username);
-				user.setPassword(password);
-				user.put("checked", checked);
-				Log.d("debug", "checked:" + "status" + loginCheckBox.isChecked());
-				user.signUpInBackground(new SignUpCallback() {
+					progressDialog.setCancelable(false);
+					progressDialog.setTitle("Loading...");
+					progressDialog.show();
 
-					@Override
-					public void done(ParseException e) {
+					final ParseUser user = new ParseUser();
+					user.setUsername(username);
+					user.setPassword(password);
+					user.put("checked", checked);
+					Log.d("debug", "checked:" + "status" + loginCheckBox.isChecked());
+					user.signUpInBackground(new SignUpCallback() {
 
-						progressDialog.dismiss();
-						if (e != null) {
-							e.printStackTrace();
-							Toast.makeText(LoginActivity.this, "Username already exists",
-									Toast.LENGTH_LONG).show();
-						} else {
-							goToMainActivity();
-							LoginActivity.this.finish();
+						@Override
+						public void done(ParseException e) {
+
+							progressDialog.dismiss();
+							if (e != null) {
+								e.printStackTrace();
+								Toast.makeText(LoginActivity.this, "Username already exists",
+										Toast.LENGTH_LONG).show();
+							} else {
+								goToMainActivity();
+								LoginActivity.this.finish();
+							}
 						}
-					}
-				});
+					});
+				}
+				loadDataFromSharedPreference();
 			}
 		});
 
-		loadDataFromSharedPreference();
 	}
 
 	private void loadDataFromSharedPreference() {
@@ -198,5 +209,27 @@ public class LoginActivity extends Activity {
 						}
 					}
 				});
+	}
+
+	private void showInputErrorDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+		builder.setTitle("Tips");
+		builder.setMessage("You must input a-z or 0-9 & length < 10");
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+		});
+		// builder.setNegativeButton("Cancel", new
+		// DialogInterface.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(DialogInterface dialog, int which) {
+		//
+		// }
+		// });
+		builder.show();
 	}
 }

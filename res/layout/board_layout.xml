@@ -45,7 +45,7 @@
             android:layout_height="fill_parent"
             android:ems="10"
             android:gravity="top|left"
-            android:hint="input you message" />
+            android:hint="input your message" />
     </LinearLayout>
 
     <LinearLayout

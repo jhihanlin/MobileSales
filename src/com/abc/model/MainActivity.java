@@ -1,14 +1,30 @@
 package com.abc.model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Space;
@@ -33,7 +50,14 @@ import com.abc.drawer_fragment.ClientNote;
 import com.abc.drawer_fragment.Board;
 import com.abc.drawer_fragment.Search;
 import com.abc.model.R;
+import com.google.android.gms.drive.internal.v;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class MainActivity extends FragmentActivity {
 	private DrawerLayout my_DrawerLayout;
@@ -45,6 +69,11 @@ public class MainActivity extends FragmentActivity {
 	private CharSequence my_Title;
 	private String[] my_PlanetTitles;
 	private Typeface typeface;
+	private ProgressDialog progressDialog;
+	private String userId;
+	private static final int PHOTO_SUCCESS = 1;
+
+	ImageView profile;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +82,7 @@ public class MainActivity extends FragmentActivity {
 
 		typeface = Typeface.createFromAsset(getAssets(),
 				"fonts/Quicksand-Regular.ttf");
-
+		progressDialog = new ProgressDialog(this);
 		my_Title = my_DrawerTitle = getTitle();
 
 		my_PlanetTitles = getResources().getStringArray(R.array.planets_array);
@@ -61,7 +90,10 @@ public class MainActivity extends FragmentActivity {
 		my_DrawerList = (ListView) findViewById(R.id.left_drawer_list);
 		my_LeftDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
 		TextView username = (TextView) findViewById(R.id.username);
+		Button select_photo = (Button) findViewById(R.id.select_photo);
 		Button logoutBtn = (Button) findViewById(R.id.logoutBtn);
+		profile = (ImageView) findViewById(R.id.profile);
+		loadFromParse();
 		logoutBtn.setTypeface(typeface);
 
 		logoutBtn.setOnClickListener(new OnClickListener() {
@@ -71,6 +103,33 @@ public class MainActivity extends FragmentActivity {
 				ParseUser.logOut();
 				goToLoginActivity();
 				MainActivity.this.finish();
+			}
+		});
+		select_photo.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				builder.setTitle("Edit Photo");
+				builder.setPositiveButton("Choose from Gallery", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+						intent.setType("image/*");
+						intent.addCategory(Intent.CATEGORY_OPENABLE);
+						startActivityForResult(intent, PHOTO_SUCCESS);
+
+					}
+				});
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
+				builder.show();
 			}
 		});
 		username.setText(ParseUser.getCurrentUser().getUsername());
@@ -255,4 +314,71 @@ public class MainActivity extends FragmentActivity {
 		// Pass any configuration change to the drawer toggls
 		my_DrawerToggle.onConfigurationChanged(newConfig);
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d("debug", "photo" + resultCode);
+		Uri selectedImageUri = data.getData();
+		profile.setImageURI(selectedImageUri);
+
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
+		saveToParse(selectedImageUri);
+		super.onActivityResult(requestCode, resultCode, data);
+
+	}
+
+	private void saveToParse(Bitmap bitmap) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bitmap.compress(CompressFormat.PNG, 90, baos);
+		byte[] bytes = baos.toByteArray();
+
+		final ParseFile file = new ParseFile("photo.png", bytes);
+		ParseUser user = ParseUser.getCurrentUser();
+		user.put("file", file);
+		user.saveInBackground(new SaveCallback() {
+
+			@Override
+			public void done(ParseException e) {
+				progressDialog.dismiss();
+				if (e == null) {
+					String url = file.getUrl();
+					Log.d("debug", url);
+				}
+			}
+		});
+	}
+
+	private void saveToParse(Uri uri) {
+		try {
+			Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+					getContentResolver(), uri);
+			saveToParse(bitmap);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void loadFromParse() {
+
+		ParseUser user = ParseUser.getCurrentUser();
+
+		ParseFile file = user.getParseFile("file");
+		try {
+			if (file != null) {
+				byte[] data = file.getData();
+				Bitmap bitmap = BitmapFactory.decodeByteArray(data,
+						0, data.length);
+				profile.setImageBitmap(bitmap);
+			}
+
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
 }

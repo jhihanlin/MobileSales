@@ -14,8 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="62dp"
+        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM"
         android:ems="10"
-        android:hint="account" >
+        android:hint="account"
+        android:inputType="text" >
 
         <requestFocus />
     </EditText>
