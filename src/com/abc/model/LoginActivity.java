@@ -146,10 +146,10 @@ public class LoginActivity extends Activity {
 						}
 					});
 				}
-				loadDataFromSharedPreference();
+
 			}
 		});
-
+		loadDataFromSharedPreference();
 	}
 
 	private void loadDataFromSharedPreference() {
