@@ -61,7 +61,7 @@ public class ClientNoteList extends Fragment {
 		searchButton = (Button) v.findViewById(R.id.button2);
 		TextView clientlist_tx = (TextView) v.findViewById(R.id.clientlist_tx);
 		clientlist_tx.setTypeface(typeface);
-		
+
 		addEvent = (Button) v.findViewById(R.id.button1);
 		loadDataFromParse();
 		addEvent.setOnClickListener(new OnClickListener() {
@@ -99,7 +99,7 @@ public class ClientNoteList extends Fragment {
 							progressDialog.dismiss();
 
 							for (ParseObject ob : objects) {
-								if (ob.getString("client").equals(s)) {
+								if (ob.getString("client").equals(s) || (ob.getString("client").indexOf(s) != -1)) {
 									Map<String, String> item = new HashMap<String, String>();
 									item.put("title", ob.getString("title"));
 									item.put("client", ob.getString("client"));
@@ -120,11 +120,13 @@ public class ClientNoteList extends Fragment {
 									list.add(item2);
 
 								}
+
 								try {
+
 									final SimpleAdapter adapter = new SimpleAdapter(getActivity(),
-											searchClientData, android.R.layout.simple_list_item_2,
+											searchClientData, R.layout.client_note_listview,
 											new String[] { "title", "client" }, new int[] {
-													android.R.id.text1, android.R.id.text2 });
+													R.id.clientNote_tx1, R.id.clientNote_tx2 });
 									listView.setAdapter(adapter);
 									listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -190,7 +192,7 @@ public class ClientNoteList extends Fragment {
 				for (ParseObject ob : objects) {
 					Map<String, String> item = new HashMap<String, String>();
 					item.put("title", ob.getString("title"));
-					item.put("client", ob.getString("client"));
+					item.put("client", ob.getString("client") + "\n" + ob.getString("date"));
 					item.put("id", ob.getObjectId());
 
 					data.add(item);
@@ -210,9 +212,10 @@ public class ClientNoteList extends Fragment {
 				}
 				try {
 					final SimpleAdapter adapter = new SimpleAdapter(getActivity(),
-							data, android.R.layout.simple_list_item_2,
+							data, R.layout.client_note_listview,
 							new String[] { "title", "client" }, new int[] {
-									android.R.id.text1, android.R.id.text2 });
+									R.id.clientNote_tx1, R.id.clientNote_tx2 });
+
 					listView.setAdapter(adapter);
 					listView.setOnItemClickListener(new OnItemClickListener() {
 
