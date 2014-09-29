@@ -25,6 +25,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -379,6 +380,33 @@ public class MainActivity extends FragmentActivity {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			ConfirmExit();
+			return true;
+
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	private void ConfirmExit() {
+		AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
+		ad.setTitle("Back");
+		ad.setMessage("Are you sure you want to leave?");
+		ad.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int i) {
+				MainActivity.this.finish();
+
+			}
+		});
+		ad.setNegativeButton("not yet", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int i) {
+
+			}
+		});
+		ad.show();
 	}
 
 }
