@@ -336,10 +336,6 @@ public class NotifyView extends Fragment {
 		query.getInBackground(id, new GetCallback<ParseObject>() {
 			public void done(ParseObject ob, ParseException e) {
 				if (e == null) {
-					// Now let's update it with some new data. In this case,
-					// only cheatMode and score
-					// will get sent to the Parse Cloud. playerName hasn't
-					// changed.
 					ob.put("title", ed.get(0).get("title"));
 					ob.put("client", ed.get(0).get("client"));
 					ob.put("purpose", ed.get(0).get("purpose"));

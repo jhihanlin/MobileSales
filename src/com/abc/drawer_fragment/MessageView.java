@@ -139,19 +139,6 @@ public class MessageView extends Fragment {
 						getActivity(), android.R.layout.simple_list_item_1,
 						data);
 				message_view.setAdapter(adapter);
-		/*		message_view.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-					@Override
-					public boolean onItemLongClick(AdapterView<?> parent,
-							View view, int position, long id) {
-
-						showDeleteDialog(data, position, adapter);
-						// Toast.makeText(getActivity(), "deleted",
-						// Toast.LENGTH_LONG).show();
-
-						return true;
-					}
-				});*/
 				progressDialog.dismiss();
 
 			}

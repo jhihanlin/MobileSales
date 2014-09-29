@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.R.integer;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
@@ -20,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -40,6 +42,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abc.drawer_fragment.CalendarFragment;
 import com.abc.drawer_fragment.ClientNoteList;
@@ -73,6 +76,7 @@ public class MainActivity extends FragmentActivity {
 	private ProgressDialog progressDialog;
 	private String userId;
 	private static final int PHOTO_SUCCESS = 1;
+	boolean doubleBackToExitPressedOnce = false;
 
 	ImageView profile;
 
@@ -382,31 +386,23 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			ConfirmExit();
-			return true;
-
+	@Override
+	public void onBackPressed() {
+		if (doubleBackToExitPressedOnce) {
+			super.onBackPressed();
+			return;
 		}
-		return super.onKeyDown(keyCode, event);
-	}
 
-	private void ConfirmExit() {
-		AlertDialog.Builder ad = new AlertDialog.Builder(MainActivity.this);
-		ad.setTitle("Back");
-		ad.setMessage("Are you sure you want to leave?");
-		ad.setPositiveButton("yes", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int i) {
-				MainActivity.this.finish();
+		this.doubleBackToExitPressedOnce = true;
+		Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
 
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				doubleBackToExitPressedOnce = false;
 			}
-		});
-		ad.setNegativeButton("not yet", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int i) {
-
-			}
-		});
-		ad.show();
+		}, 2000);
 	}
 
 }

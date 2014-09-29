@@ -57,10 +57,6 @@ public class LoginActivity extends Activity {
 																	// data
 		editor = sp.edit();// editor is SharedPReferences one of class
 
-		// PushService.setDefaultPushCallback(this, MainActivity.class);
-		// ParseInstallation.getCurrentInstallation().saveInBackground();
-		// ParseAnalytics.trackAppOpened(getIntent());
-
 		Typeface typeface = Typeface.createFromAsset(getAssets(),
 				"fonts/Quicksand-Regular.ttf");// font
 
@@ -222,14 +218,6 @@ public class LoginActivity extends Activity {
 
 			}
 		});
-		// builder.setNegativeButton("Cancel", new
-		// DialogInterface.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		//
-		// }
-		// });
 		builder.show();
 	}
 }

@@ -85,7 +85,7 @@ public class Message extends Fragment {
 			@Override
 			public void onClick(View v) {
 				String content = contentEditText.getText().toString();
-				// String receiver = receiverEditText.getText().toString();
+
 				String receiver = receiverPhoneNumbers;
 				Log.d("receiver", receiver);
 				progressDialog.setCancelable(false);
@@ -111,7 +111,6 @@ public class Message extends Fragment {
 					}
 
 				});
-				// �Q��Toast���R�A�禡makeText�ӫإ�Toast����
 				Toast.makeText(getActivity().getBaseContext(), "Sent!",
 						Toast.LENGTH_SHORT).show();
 				SmsManager smsManager = SmsManager.getDefault();
@@ -178,7 +177,6 @@ public class Message extends Fragment {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						getActivity(), android.R.layout.simple_list_item_1,
 						getPeopleData());
-				// �]�w�۰ʶ��J�����r���e
 
 				peopleSpinner.setAdapter(adapter);
 				progressDialog.dismiss();
@@ -280,11 +278,6 @@ public class Message extends Fragment {
 
 	protected Dialog onCreateDialog() {
 		Dialog dialog = null;
-		/*
-		 * calendar final SimpleAdapter simpleAdapter = new SimpleAdapter(
-		 * getActivity(), data, R.layout.message_model, new String[] {"model" },
-		 * new int[] { R.id.modelEditText});
-		 */
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		final View v = inflater.inflate(R.layout.message_model, null);
 
@@ -361,7 +354,6 @@ public class Message extends Fragment {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						getActivity(), android.R.layout.simple_list_item_1,
 						getMessageModelData());
-				// �]�w�۰ʶ��J�����r���e
 				modelSpinner.setAdapter(adapter);
 				modelSpinner
 						.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -370,10 +362,6 @@ public class Message extends Fragment {
 							public void onItemSelected(AdapterView<?> parent,
 									View view, int position, long id) {
 
-								// TODO Auto-generated method stub
-								// Toast.makeText(null,
-								// "�A�諸�O+ getMessageModelData().get(position)",
-								// Toast.LENGTH_SHORT).show();
 								String sModel = (getMessageModelData()
 										.get(position));
 								contentEditText.setText(sModel);

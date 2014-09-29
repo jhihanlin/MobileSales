@@ -157,8 +157,6 @@ public class MessageExpandable extends Fragment {
 
 	public class SavedTabsListAdapter extends BaseExpandableListAdapter {
 
-		// private boolean[] groupChecked;
-		// private boolean[][] childChecked;
 
 		private Map<String, List<ParseObject>> tagPeople;
 		private String[] groups;

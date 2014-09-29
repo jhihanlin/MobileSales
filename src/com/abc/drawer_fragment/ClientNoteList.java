@@ -144,9 +144,6 @@ public class ClientNoteList extends Fragment {
 
 											showDeleteDialog(searchClientData, position,
 													adapter);
-											// Toast.makeText(getActivity(),
-											// "deleted",
-											// Toast.LENGTH_LONG).show();
 
 											return true;
 										}
@@ -233,8 +230,6 @@ public class ClientNoteList extends Fragment {
 
 							showDeleteDialog(data, position,
 									adapter);
-							// Toast.makeText(getActivity(), "deleted",
-							// Toast.LENGTH_LONG).show();
 
 							return true;
 						}

@@ -82,8 +82,6 @@ public class MessageList extends Fragment {
 							ob.getString("Message_receiver"));
 					item.put("Message_content", ob.getString("Message_content"));
 					item.put("id", ob.getObjectId());
-				//	Log.d("Message_receiver", ob.getString("Message_receiver"));
-				//	Log.d("Message_content", ob.getString("Message_content"));
 					data.add(item);
 
 					Map<String, String> item2 = new HashMap<String, String>();

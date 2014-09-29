@@ -114,8 +114,6 @@ public class Notify extends Fragment {
 
 								showDeleteDialog(list, position,
 										adapter);
-								// Toast.makeText(getActivity(), "deleted",
-								// Toast.LENGTH_LONG).show();
 
 								return true;
 							}
