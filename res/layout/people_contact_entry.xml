@@ -3,21 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/txtNAMEPHONE"
-        android:layout_width="wrap_content"
+       <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/linearLayout1"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="TextView"
-        android:textSize="20dp" />
+        android:layout_alignParentRight="true" >
 
-    <TextView
-        android:id="@+id/txtDATAPHONE"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/txtNAMEPHONE"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/tagname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.11"
+            android:gravity="center_vertical"
+            android:textSize="30dp"
+            android:text="TextView" />
+    </LinearLayout>
 
 </RelativeLayout>

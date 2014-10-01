@@ -42,11 +42,6 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
-		Parse.initialize(this, "8mNYYPLOR08iJAkCt535lP8BfOcNo1ouO2bTbdte",
-				"5Jsm0reTBpRnhope1dRrmXMgpCZjXCO40jlAYBdC");
-		PushService.setDefaultPushCallback(this, MainActivity.class);
-		PushService.subscribe(this, "all", MainActivity.class);
-
 		Log.d("debug", "login activity");
 
 		progressDialog = new ProgressDialog(this);// loading bar

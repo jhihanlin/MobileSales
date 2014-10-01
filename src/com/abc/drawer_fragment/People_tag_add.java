@@ -149,22 +149,29 @@ public class People_tag_add extends Fragment {
 				}
 				if (checksave) {
 					if (mode.equals("add")) {
-						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager.beginTransaction()
+						getActivity().getFragmentManager()
+						.beginTransaction()
 								.replace(R.id.content_frame, new People_tag())
 								.commit();
 					} else if (mode.equals("gadd")) {
-						People_tag_list ppadd = new People_tag_list();
-						ppadd.setTag(tag);
-						Fragment fg = (Fragment) ppadd;
-						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager.beginTransaction()
-								.replace(R.id.content_frame, fg).commit();
-					}
-
-				}
-
-			}
+						
+						Thread thread = new Thread(){ 
+				            @Override
+				            public void run(){ 
+				                try{
+				                	Thread.sleep(2000);
+									People_tag_list ppadd = new People_tag_list();
+									ppadd.setTag(tag);
+									Fragment fg = (Fragment) ppadd;
+									getActivity().getFragmentManager()
+									.beginTransaction()
+											.replace(R.id.content_frame, fg).commit();
+				                }catch (Exception e){
+				                    e.printStackTrace();
+				                }finally{
+				                }}};
+				                thread.start();
+					}}}
 		});
 
 		buttonNO.setOnClickListener(new OnClickListener() {
@@ -172,8 +179,8 @@ public class People_tag_add extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager()
+				.beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});
@@ -311,24 +318,41 @@ public class People_tag_add extends Fragment {
 				itemView.cb = (CheckBox) convertView
 						.findViewById(valueViewID[0]);
 				;
-				for (int i = 0; i < ischeck.length; i++) {
-					ischeck[i] = false;
-				}
+				//for (int i = 0; i < ischeck.length; i++) {
+				//	ischeck[i] = false;
+				//}
+				
 				convertView.setTag(itemView);
 			}
-
+			
+			
 			if (mAppList != null) {
-
+				
+				
 				if (!tag.equals("")) {
 					if (mAppList.get(position).get(keyString[1]).toString()
 							.equals(tag)) {
 						itemView.cb.setChecked(true);
+						ischeck[position] = true;
 					}
+				}else{
+					ischeck[position] = false;
 				}
-
+				
+				
 				itemView.cb.setText(mAppList.get(position).get(keyString[0])
 						.toString());
-				itemView.cb
+				final int pos = position; 
+				itemView.cb.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						CheckBox cb = (CheckBox) v; 
+						ischeck[pos]=cb.isChecked(); 
+					}});
+				
+				/*itemView.cb
 						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 							@Override
@@ -339,10 +363,38 @@ public class People_tag_add extends Fragment {
 								Log.v("", "id:" + position + " ck:" + isChecked);
 							}
 						});
+				
+				 final  int  pos = position; 
+				    // ç•¶checked boxè¢«é»žæ“Šï¼Œå³é¸å®šç‹€æ…‹ç™¼ç”Ÿæ”¹è®Šæ™‚ï¼Œæ›´æ–°ç‹€æ…‹List 
+				 itemView.cb.setOnClickListener( new  CheckBox.OnClickListener() { 
+				      @Override 
+				      public  void  onClick(View v) { 
+				        CheckBox cb = (CheckBox) v; 
+				        mAppList.set(pos, cb.isChecked()); 
+				      } 
+				    }); 
+				*/
+				
 			}
-
+			itemView.cb.setChecked(ischeck[position]);
+			
 			return convertView;
 		}
+		
+		
 
 	}
+	
+	@Override 
+	  public void onResume() { 
+	    super.onResume(); 
+	    
+	    People_lv_BtnAdapter_check Btnadapter = new People_lv_BtnAdapter_check(
+				getActivity(), contactsArrayList,
+				R.layout.people_tag_checkbox_1, new String[] {
+						"NAME", "TAG" }, new int[] { R.id.check1 });
+	    
+	    listView.setAdapter(Btnadapter);
+	    
+	  } 
 }

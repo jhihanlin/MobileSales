@@ -81,14 +81,10 @@ public class Search extends Fragment implements LocationListener {
 		Criteria criteria = new Criteria();
 		bestProv = locMgr.getBestProvider(criteria, true);
 
-		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL); // 瓣繡�癡�珍汀冕汀��
-		// gmap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);//癡癒�疑竹蜆岑怏疑把�汕岔汀��
-		// gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);// 矇��阬溘紐汀冕汀��
-		// gmap.setMapType(GoogleMap.MAP_TYPE_HYBRID);//
-		// 矇��阬溘紐汀冕汀�汕溘溼氐岑怏疑把�汕岔汀�����
+		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL); 
 		gmap.getUiSettings().setZoomGesturesEnabled(true);
-		gmap.setMyLocationEnabled(true);// 矇癒簪癟瞻繙癡�¯秉氐溘掙刈蝓岑蝓�
-		gmap.setTrafficEnabled(true);// 矇癒簪癟瞻繙瓣繙瞻矇�禳癡糧�￣阬乳�
+		gmap.setMyLocationEnabled(true);
+		gmap.setTrafficEnabled(true);
 		gmap.getUiSettings().setZoomGesturesEnabled(true);
 		gmap.setMyLocationEnabled(true);
 
@@ -190,7 +186,6 @@ public class Search extends Fragment implements LocationListener {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						getActivity(), android.R.layout.simple_list_item_1,
 						getAutoCompleteData());
-				// 癡穡簫疇簧禳癡�¯秉乒�嫖�〡氐¯姻乒�汕永巫﹦�色��￣氐凌�乒�汕岔氐捍�
 				autoTV.setAdapter(adapter);
 				progressDialog.dismiss();
 
@@ -200,7 +195,6 @@ public class Search extends Fragment implements LocationListener {
 		});
 	}
 
-	// 疇�笛氐倒arse癟禳�阬喇�￣色�,疇�冕氐癡繚顫疇禮�氐�
 	private List<String> getAutoCompleteData() {
 
 		List<String> data = new ArrayList<String>();
@@ -297,7 +291,7 @@ public class Search extends Fragment implements LocationListener {
 		}
 
 		if (addressList == null || addressList.isEmpty()) {
-			Toast.makeText(getActivity().getBaseContext(), "can't found",
+			Toast.makeText(getActivity().getBaseContext(), "can't find",
 					Toast.LENGTH_SHORT).show();
 		} else {
 
@@ -322,7 +316,7 @@ public class Search extends Fragment implements LocationListener {
 
 	@Override
 	public void onResume() {
-		super.onResume(); // 疇礎�汍嬝PS疆��岑黑笛阬溘紐氐敉￣刈蝓抽��嘔乒�〣蜆純敷色�甄棺色�冕刈蝓岑蝓�
+		super.onResume();
 		mapView.onResume();
 		if (locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)
 				|| locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {

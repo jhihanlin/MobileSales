@@ -95,8 +95,8 @@ public class People_tag_list extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager()
+				.beginTransaction()
 						.replace(R.id.content_frame, new People()).commit();
 			}
 		});
@@ -106,8 +106,8 @@ public class People_tag_list extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager()
+				.beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});
@@ -117,18 +117,25 @@ public class People_tag_list extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				People_tag_add ppadd = new People_tag_add();
-				ppadd.setTag(tag);
-				ppadd.setMode("gadd");
-
-				Fragment fg = ppadd;
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, fg).commit();
-
-			}
-		});
+				Thread thread = new Thread(){ 
+		            @Override
+		            public void run(){ 
+		                try{
+		                	Thread.sleep(2000);
+		                	People_tag_add ppadd = new People_tag_add();
+							ppadd.setTag(tag);
+							ppadd.setMode("gadd");
+			
+							Fragment fg = ppadd;
+							getActivity().getFragmentManager()
+							.beginTransaction()
+									.replace(R.id.content_frame, fg).commit();
+							}catch (Exception e){
+		                    e.printStackTrace();
+		                }finally{
+		                }}};
+		            thread.start();
+		            }});
 
 		return v;
 	}
@@ -142,8 +149,7 @@ public class People_tag_list extends Fragment {
 				getActivity(), contactsArrayList,
 				R.layout.people_contact_entry,
 				new String[] { "NAME", "NUMBER" }, new int[] {
-						R.id.txtNAMEPHONE, R.id.txtDATAPHONE,
-						R.id.group_list_item_text }, getFragmentManager());
+						R.id.txtNAMEPHONE, R.id.txtDATAPHONE}, getFragmentManager());
 		listView.setAdapter(Btnadapter);
 
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -196,25 +202,40 @@ public class People_tag_list extends Fragment {
 																			// method
 																			// stub
 																			if (ex == null) {
-
-																				People_tag_list ppadd = new People_tag_list();
-																				ppadd.setTag(tag);
-																				Fragment fg = ppadd;
-																				FragmentManager fragmentManager = getFragmentManager();
-																				fragmentManager
-																						.beginTransaction()
-																						.replace(
-																								R.id.content_frame,
-																								fg)
-																						.commit();
+																				Thread thread = new Thread(){ 
+																		            @Override
+																		            public void run(){ 
+											
+																		            	try{
+																		                	//1000 ç‚ºä¸€ç§’ 
+																		                    Thread.sleep(300);
+																		                    Message msg = new Message();
+																		                    People_tag_list ppadd = new People_tag_list();
+																							ppadd.setTag(tag);
+																							Fragment fg = ppadd;
+																							getActivity().getFragmentManager()
+																							.beginTransaction()
+																									.replace(
+																											R.id.content_frame,
+																											fg)
+																									.commit();
+																		                }catch (Exception e){
+																		                    e.printStackTrace();
+																		                }finally{
+																		                }
+																		            }
+																		        };
+																		        //é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
+																		        thread.start();
+																				
 																			} else {
-																				Toast.makeText(
+																				/*Toast.makeText(
 																						getActivity(),
-																						"�R������:"
+																						"åš™ç£‹åš™è¸è•­åš™è¸è•­åš™è¸è•­:"
 																								+ ex.getMessage()
 																										.toString(),
 																						Toast.LENGTH_LONG)
-																						.show();
+																						.show();*/
 
 																			}
 																		}
@@ -256,9 +277,8 @@ public class People_tag_list extends Fragment {
 											ppadd.setID(Oid);
 
 											Fragment fg = ppadd;
-											FragmentManager fragmentManager = getFragmentManager();
-											fragmentManager
-													.beginTransaction()
+											getActivity().getFragmentManager()
+											.beginTransaction()
 													.replace(
 															R.id.content_frame,
 															fg).commit();
@@ -435,7 +455,7 @@ public class People_tag_list extends Fragment {
 		private class ItemView {
 			TextView tvname;
 			TextView tvnumber;
-			TextView tvtag;
+
 
 		}
 
@@ -499,36 +519,18 @@ public class People_tag_list extends Fragment {
 						.findViewById(valueViewID[0]);
 				itemView.tvnumber = (TextView) convertView
 						.findViewById(valueViewID[1]);
-				itemView.tvtag = (TextView) convertView
-						.findViewById(valueViewID[2]);
 				convertView.setTag(itemView);
 			}
 
 			// HashMap<String, Object> appInfo = mAppList.get(position);
 			if (mAppList != null) {
 				if (mAppList.size() > 0) {
-					if (mAppList.get(position).get(keyString[0]).toString()
-							.equals("tag")) {
-						itemView.tvtag.setText(mAppList.get(position)
-								.get(keyString[1]).toString());
 
-						itemView.tvtag.setEnabled(false);
-						itemView.tvtag.setVisibility(0);
-
-						itemView.tvname.setVisibility(8);
-						itemView.tvnumber.setVisibility(8);
-					} else {
-						itemView.tvtag.setEnabled(true);
-						itemView.tvtag.setVisibility(8);
-
-						itemView.tvname.setVisibility(0);
-						itemView.tvnumber.setVisibility(0);
 
 						itemView.tvname.setText(mAppList.get(position)
 								.get(keyString[0]).toString());
 						itemView.tvnumber.setText(mAppList.get(position)
 								.get(keyString[1]).toString());
-					}
 				}
 
 			}

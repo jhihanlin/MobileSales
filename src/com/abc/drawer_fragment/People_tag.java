@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -17,6 +19,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,7 +63,6 @@ public class People_tag extends Fragment {
 	public ArrayList<HashMap<String, Object>> contactsArrayList;
 	private ProgressDialog progressDialog;
 	public TextView tagName, m1, m2;
-
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -91,8 +93,8 @@ public class People_tag extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager()
+				.beginTransaction()
 						.replace(R.id.content_frame, new People()).commit();
 			}
 		});
@@ -102,8 +104,8 @@ public class People_tag extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager()
+				.beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});
@@ -118,8 +120,8 @@ public class People_tag extends Fragment {
 				ppadd.setTag("");
 				ppadd.setMode("add");
 				Fragment fg = (Fragment) ppadd;
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager()
+				.beginTransaction()
 						.replace(R.id.content_frame, fg).commit();
 
 			}
@@ -127,14 +129,14 @@ public class People_tag extends Fragment {
 
 		return v;
 	}
-
+	
+	  
 	public void setListView() {
 		People_lv_BtnAdapter Btnadapter = new People_lv_BtnAdapter(
 				getActivity(), contactsArrayList,
 				R.layout.people_contact_entry,
-				new String[] { "NAME", "NUMBER" }, new int[] {
-						R.id.txtNAMEPHONE, R.id.txtDATAPHONE,
-						R.id.group_list_item_text }, getFragmentManager());
+				new String[] { "NAME" }, new int[] {
+						R.id.tagname }, getFragmentManager());
 		listView.setAdapter(Btnadapter);
 
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -157,7 +159,7 @@ public class People_tag extends Fragment {
 										// User clicked OK button
 										ParseQuery<ParseObject> querytag = ParseQuery
 												.getQuery("Tag");
-										querytag.whereEqualTo("name", number);
+										querytag.whereEqualTo("name", name);
 										querytag.findInBackground(new FindCallback<ParseObject>() {
 											@Override
 											public void done(
@@ -189,7 +191,7 @@ public class People_tag extends Fragment {
 
 										ParseQuery<ParseObject> query = ParseQuery
 												.getQuery("Client");
-										query.whereEqualTo("tag", number);
+										query.whereEqualTo("tag", name);
 										query.findInBackground(new FindCallback<ParseObject>() {
 											@Override
 											public void done(
@@ -208,7 +210,7 @@ public class People_tag extends Fragment {
 																		new SaveCallback() {
 
 																			@Override
-																			// �u����
+																			// åš™ç·šåš™è¸è•­åš™è¸è•­
 																			public void done(
 																					ParseException ex) {
 																				// TODO
@@ -228,12 +230,24 @@ public class People_tag extends Fragment {
 											}
 										});
 
-										FragmentManager fragmentManager = getFragmentManager();
-										fragmentManager
-												.beginTransaction()
-												.replace(R.id.content_frame,
-														new People_tag())
-												.commit();
+										Thread thread = new Thread(){ 
+								            @Override
+								            public void run(){ 
+								                try{
+								                    Thread.sleep(1000);
+								                    Message msg = new Message();
+								                    getActivity().getFragmentManager()
+								    				.beginTransaction()
+								    						.replace(R.id.content_frame, new People_tag()).commit();
+								                }catch (Exception e){
+								                    e.printStackTrace();
+								                }finally{
+								                }
+								            }
+								        };
+								        //é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
+								        thread.start();
+										
 
 									}
 								}).setNegativeButton("Cancel", null).show();
@@ -255,10 +269,10 @@ public class People_tag extends Fragment {
 						.get("NUMBER").toString();
 
 				People_tag_list ppadd = new People_tag_list();
-				ppadd.setTag(number);
+				ppadd.setTag(name);
 				Fragment fg = (Fragment) ppadd;
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager()
+				.beginTransaction()
 						.replace(R.id.content_frame, fg).commit();
 
 			}
@@ -283,21 +297,14 @@ public class People_tag extends Fragment {
 					String[] tag = new String[objects.size()];
 					for (int tagi = 0; tagi < objects.size(); tagi++) {
 						HashMap<String, Object> hm = new HashMap<String, Object>();
-						// hm.put("ID",objects.get(tagi).getObjectId().toString());
-						// hm.put("NAME", "tag");
-						// hm.put("NUMBER",
-						// objects.get(tagi).get("name").toString());
 						hm.put("ID", objects.get(tagi).getObjectId().toString());
-						hm.put("NAME", "tag");
-						hm.put("NUMBER", objects.get(tagi).get("name")
-								.toString());
+						hm.put("NAME", objects.get(tagi).get("name").toString());
+						hm.put("NUMBER","" );
 						Log.v("score", ": "
 								+ objects.get(tagi).get("name").toString());
 						contactsArrayList.add(hm);
 					}
-					// getParseDate(tag);
 					if (contactsArrayList.size() > 0) {
-						// tag��Ʈw�S�Ȥ��n��slistview
 						setListView();
 					}
 
@@ -311,80 +318,6 @@ public class People_tag extends Fragment {
 
 	}
 
-	public void setParseData() {
-		String id;
-		String mimetype;
-
-		ContentResolver contentResolver = getActivity().getContentResolver();
-		// �u�ݭn�qContacts�����ID�A��L�����i�H���n�A�q�L�d�ݤW���sĶ�᪺SQL�y�y�A�i�H�ݥX�N�ĤG�ӰѼ�
-		// �]�m��null�A�q�{��^���C�D�`�h�A�O�@�ظ귽���O�C
-		Cursor cursor = contentResolver
-				.query(android.provider.ContactsContract.Contacts.CONTENT_URI,
-						new String[] { android.provider.ContactsContract.Contacts._ID },
-						null, null, null);
-		while (cursor.moveToNext()) {
-			ParseObject testObject = new ParseObject("Client");
-			id = cursor
-					.getString(cursor
-							.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
-
-			Cursor contactInfoCursor = contentResolver.query(
-					android.provider.ContactsContract.Data.CONTENT_URI,
-					new String[] {
-							android.provider.ContactsContract.Data.CONTACT_ID,
-							android.provider.ContactsContract.Data.MIMETYPE,
-							android.provider.ContactsContract.Data.DATA1 },
-					android.provider.ContactsContract.Data.CONTACT_ID + "="
-							+ id, null, null);
-			while (contactInfoCursor.moveToNext()) {
-				mimetype = contactInfoCursor
-						.getString(contactInfoCursor
-								.getColumnIndex(android.provider.ContactsContract.Data.MIMETYPE));
-				String value = contactInfoCursor
-						.getString(contactInfoCursor
-								.getColumnIndex(android.provider.ContactsContract.Data.DATA1));
-				if (mimetype.contains("/name")) {
-					System.out.println("Name=" + value);
-					testObject.put("name", value);
-				} else if (mimetype.contains("/email")) {
-					System.out.println("Email=" + value);
-					testObject.put("email", value);
-				} else if (mimetype.contains("/phone")) {
-					System.out.println("Tel=" + value);
-					testObject.put("tel", value);
-				} else if (mimetype.contains("/postal")) {
-					System.out.println("Address=" + value);
-					testObject.put("add", value);
-				} else if (mimetype.contains("/birthday")) {
-					System.out.println("birthday=" + value);
-					testObject.put("birthday", value);
-				}
-				progressDialog.dismiss();
-
-				// testObject.put("ID",
-				// ParseUser.getCurrentUser().getObjectId());
-				testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
-				Log.v("", "" + mimetype);
-
-			}
-			testObject.saveInBackground(new SaveCallback() {
-				@Override
-				// �u����
-				public void done(ParseException ex) {
-					// TODO Auto-generated method stub
-					if (ex == null) {
-
-					} else {
-
-					}
-				}
-			});
-
-			System.out.println("*********");
-			contactInfoCursor.close();
-		}
-		cursor.close();
-	}
 
 	private void setContentView(int peopleAdd) {
 		// TODO Auto-generated method stub
@@ -406,8 +339,6 @@ public class People_tag extends Fragment {
 		private ProgressDialog progressDialog;
 
 		private class ItemView {
-			TextView tvname;
-			TextView tvnumber;
 			TextView tvtag;
 
 		}
@@ -457,36 +388,20 @@ public class People_tag extends Fragment {
 				itemView = (ItemView) convertView.getTag();
 			} else {
 				convertView = mInflater
-						.inflate(R.layout.people_tag_entry, null);
+						.inflate(R.layout.people_contact_entry, null);
 				itemView = new ItemView();
-				itemView.tvname = (TextView) convertView
-						.findViewById(valueViewID[0]);
-				itemView.tvnumber = (TextView) convertView
-						.findViewById(valueViewID[1]);
+
 				itemView.tvtag = (TextView) convertView
-						.findViewById(valueViewID[2]);
+						.findViewById(valueViewID[0]);
 				convertView.setTag(itemView);
 			}
 
 			// HashMap<String, Object> appInfo = mAppList.get(position);
 			if (mAppList != null) {
 
-				if (mAppList.get(position).get(keyString[0]).toString()
-						.equals("tag")) {
-					itemView.tvtag.setText(mAppList.get(position)
-							.get(keyString[1]).toString());
-					itemView.tvtag.setEnabled(false);
-					itemView.tvtag.setVisibility(0);
-					itemView.tvname.setVisibility(8);
-					itemView.tvnumber.setVisibility(8);
-				} else {
-					// itemView.tvtag.setEnabled(true);
-					// itemView.tvtag.setVisibility(8);
-					// itemView.tvname.setVisibility(0);
-					// itemView.tvnumber.setVisibility(0);
-					// itemView.tvname.setText(mAppList.get(position).get(keyString[0]).toString());
-					// itemView.tvnumber.setText(mAppList.get(position).get(keyString[1]).toString());
-				}
+
+					itemView.tvtag.setText(mAppList.get(position).get(keyString[0]).toString());
+
 
 			}
 

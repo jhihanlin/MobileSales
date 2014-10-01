@@ -8,60 +8,78 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
-
+ 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" >
-
+        android:layout_height="136dp" >
+ 
         <LinearLayout
             android:layout_width="195dp"
             android:layout_height="match_parent"
             android:orientation="vertical" >
-
+ 
             <EditText
                 android:id="@+id/edtname"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:layout_weight="1"
                 android:hint="Name" >
-
+ 
                 <requestFocus />
             </EditText>
-
+ 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" >
-
+ 
                 <TextView
                     android:id="@+id/textView1"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Tag:" />
-
-                <Spinner
+ 
+                 <Spinner
                     android:id="@+id/sptag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </LinearLayout>
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_weight="0.80"
-            android:src="@drawable/people_icon" />
+ 
+        <GridLayout
+            android:layout_width="102dp"
+            android:layout_height="match_parent" >
+ 
+            <ImageView
+                android:id="@+id/photoImage"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_row="0"
+                android:src="@drawable/user_icon" />
+ 
+            <Button
+                android:id="@+id/photoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="152dp"
+                android:layout_column="0"
+                android:layout_gravity="center"
+                android:layout_row="0"
+                android:background="#00000000" />
+        </GridLayout>
+ 
     </LinearLayout>
-
+ 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2" >
-
+ 
         <TextView
             android:id="@+id/txtaddbirthday"
             android:layout_width="wrap_content"
@@ -69,21 +87,21 @@
             android:layout_gravity="center_vertical"
             android:text="birth"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
+ 
         <DatePicker
             android:id="@+id/datePicker1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="10"
             android:calendarViewShown="false" />
+ 
     </LinearLayout>
-
+ 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
-
+ 
         <EditText
             android:id="@+id/edttel"
             android:layout_width="fill_parent"
@@ -93,12 +111,12 @@
             android:hint="Phone number"
             android:inputType="phone" />
     </LinearLayout>
-
+ 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
-
+ 
         <EditText
             android:id="@+id/edtemail"
             android:layout_width="fill_parent"
@@ -108,12 +126,12 @@
             android:hint="E-mail"
             android:inputType="textEmailAddress" />
     </LinearLayout>
-
+ 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
-
+ 
         <EditText
             android:id="@+id/edtaddress"
             android:layout_width="fill_parent"
@@ -122,27 +140,13 @@
             android:ems="10"
             android:hint="Address" />
     </LinearLayout>
-
+ 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
-
-        <EditText
-            android:id="@+id/edtnote"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:hint="Note" >
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_weight="1" >
-
+ 
         <Button
             android:id="@+id/deletePeople"
             android:layout_width="30sp"
@@ -151,15 +155,14 @@
             android:layout_marginLeft="10dp"
             android:background="@drawable/delete_icon"
             android:ems="20" />
-
     </LinearLayout>
-
+ 
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right" >
-
+ 
         <Button
             android:id="@+id/editPeople"
             android:layout_width="wrap_content"
@@ -169,7 +172,7 @@
             android:background="#FFFFFF"
             android:text="edit"
             android:textColor="#99CCCC" />
-
+ 
         <Button
             android:id="@+id/savePeople"
             android:layout_width="wrap_content"
@@ -179,7 +182,7 @@
             android:background="#FFFFFF"
             android:text="save"
             android:textColor="#99CCCC" />
-
+ 
         <Button
             android:id="@+id/backPeople"
             android:layout_width="wrap_content"
@@ -189,5 +192,5 @@
             android:text="back List"
             android:textColor="#FFFFFF" />
     </LinearLayout>
-
+ 
 </LinearLayout>

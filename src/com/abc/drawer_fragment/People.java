@@ -54,7 +54,7 @@ public class People extends Fragment {
 
 	public ListView listView;
 	public View v;
-	public Button addPeople, imbtndel, imbtnupdata;
+	public Button addPeople, imbtndel, imbtnupdata, importPeople;
 	public Button peopleButton, tagButton;
 	public AutoCompleteTextView autoComplete;
 	public ArrayList<HashMap<String, String>> contactsArrayList;
@@ -70,9 +70,10 @@ public class People extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.people_layout, container, false);
-		Typeface typeface = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/Quicksand-Regular.ttf");// font
 		listView = (ListView) v.findViewById(R.id.lvPEOPLE);
+		importPeople = (Button) v.findViewById(R.id.importPeople);
 		addPeople = (Button) v.findViewById(R.id.addPeople);
 		TextView peoplelist_tx = (TextView) v.findViewById(R.id.peoplelist_tx);
 		peoplelist_tx.setTypeface(typeface);
@@ -89,8 +90,7 @@ public class People extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, new People()).commit();
 			}
 		});
@@ -100,8 +100,7 @@ public class People extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});
@@ -113,9 +112,40 @@ public class People extends Fragment {
 				People_add ppadd = new People_add();
 				ppadd.setMode("add");
 				Fragment fg = ppadd;
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
+				getActivity().getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, fg).commit();
+			}
+		});
+
+		importPeople.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				progressDialog.setCancelable(false);
+				progressDialog.setTitle("Loading...");
+				progressDialog.show();
+
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							// 1000 ç‚ºä¸€ç§’
+							setParseData();
+							// Thread.sleep(1000);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						} finally {
+						}
+					}
+				};
+				// é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
+				thread.start();
+				Toast.makeText(getActivity(), "Import Successes",
+						Toast.LENGTH_LONG).show();
+				getActivity().getFragmentManager().beginTransaction()
+						.replace(R.id.content_frame, new People()).commit();
+				progressDialog.dismiss();
 			}
 		});
 
@@ -195,7 +225,7 @@ public class People extends Fragment {
 
 	public void setListView() {
 		SimpleAdapter adapter = new SimpleAdapter(getActivity(),
-				contactsArrayList, R.layout.people_contact_entry, new String[] {
+				contactsArrayList, R.layout.people_tag_entry, new String[] {
 						"NAME", "NUMBER" }, new int[] { R.id.txtNAMEPHONE,
 						R.id.txtDATAPHONE });
 		listView.setAdapter(adapter);
@@ -224,8 +254,8 @@ public class People extends Fragment {
 											ppadd.setID(Oid);
 
 											Fragment fg = ppadd;
-											FragmentManager fragmentManager = getFragmentManager();
-											fragmentManager
+											getActivity()
+													.getFragmentManager()
 													.beginTransaction()
 													.replace(
 															R.id.content_frame,
@@ -322,12 +352,11 @@ public class People extends Fragment {
 						new String[] { android.provider.ContactsContract.Contacts._ID },
 						null, null, null);
 		while (cursor.moveToNext()) {
-			ParseObject testObject = new ParseObject("Client");
+
 			id = cursor
 					.getString(cursor
 							.getColumnIndex(android.provider.ContactsContract.Contacts._ID));
 
-			// 從一個Cursor獲取所有的信息
 			Cursor contactInfoCursor = contentResolver.query(
 					android.provider.ContactsContract.Data.CONTENT_URI,
 					new String[] {
@@ -373,6 +402,7 @@ public class People extends Fragment {
 				Log.v("", "" + mimetype);
 
 			}
+			ParseObject testObject = new ParseObject("Client");
 			testObject.put("name", name);
 			testObject.put("email", email);
 			testObject.put("tel", phone);
@@ -382,20 +412,20 @@ public class People extends Fragment {
 			testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
 			testObject.saveInBackground(new SaveCallback() {
 				@Override
-				// 彈跳視窗
+				// æ•¶ïŽ‰æ­²é–¬î¡¾ï¿½
 				public void done(ParseException ex) {
 					// TODO Auto-generated method stub
 					if (ex == null) {
-						// Toast.makeText(getActivity(), "存檔成功",
+						// Toast.makeText(getActivity(), "æ‘®î¦·ï¿½ï¿½î“Žï¿½",
 						// Toast.LENGTH_LONG).show();
 					} else {
 						// Toast.makeText(getActivity(),
-						// "存檔失敗:"+ex.getMessage().toString(),
+						// "æ‘®î¦·ï¿½æ†­æœ›ï¿½:"+ex.getMessage().toString(),
 						// Toast.LENGTH_LONG).show();
 					}
 				}
 			});
-
+			testObject = null;
 			System.out.println("*********");
 			contactInfoCursor.close();
 		}

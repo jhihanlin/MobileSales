@@ -3,43 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/linearLayout1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" >
-
-        <TextView
-            android:id="@+id/group_list_item_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2.11"
-            android:gravity="center_vertical"
-            android:textSize="30dp" />
-    </LinearLayout>
-
+ 
+ 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:orientation="vertical" >
-
+ 
         <TextView
             android:id="@+id/txtNAMEPHONE"
-            android:layout_width="fill_parent"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textSize="20dp" />
-
+ 
         <TextView
             android:id="@+id/txtDATAPHONE"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="TextView" />
     </LinearLayout>
-
+ 
 </LinearLayout>
