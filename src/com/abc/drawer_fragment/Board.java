@@ -35,7 +35,7 @@ public class Board extends Fragment {
 		View v = inflater.inflate(R.layout.board_layout, container, false);
 		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
 		Typeface typeface = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+				.getAssets(), "fonts/NotoSansCJKtc-Thin.otf");// font
 
 		final EditText push_content = (EditText) v.findViewById(R.id.push_content);
 		push_content.setTypeface(typeface);

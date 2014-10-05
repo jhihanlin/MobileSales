@@ -15,6 +15,9 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="27sp"
+        android:textColor="#666666"
+        android:textStyle="bold" />
 
 </LinearLayout>

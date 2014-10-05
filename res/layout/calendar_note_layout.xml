@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="title"
+        android:hint="請輸入標題"
         android:inputType="text" />
 
     <LinearLayout
@@ -27,7 +27,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Client:" />
+            android:text="客戶" />
 
         <Spinner
             android:id="@+id/clientSpinner_1"
@@ -45,7 +45,7 @@
             android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Purpose:" />
+            android:text="目的" />
 
         <Spinner
             android:id="@+id/purposeSpinner_1"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text="date"
+            android:text="日期"
             android:textColor="#FFFFFF"
             tools:ignore="ButtonStyle" />
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="time"
+            android:text="時間"
             android:textColor="#99CCCC"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
@@ -84,7 +84,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="content"
+        android:hint="請輸入內容"
         android:inputType="textMultiLine" />
 
     <EditText
@@ -92,7 +92,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="location"
+        android:hint="請輸入地址"
         android:inputType="textPostalAddress" />
 
     <Spinner
@@ -106,7 +106,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="remarks"
+        android:hint="請輸入備註"
         android:inputType="text" >
 
         <requestFocus />
@@ -124,7 +124,7 @@
             android:layout_gravity="right"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text="cancel"
+            android:text="取消"
             android:textColor="#FFFFFF" />
 
         <Button
@@ -134,7 +134,7 @@
             android:layout_gravity="right"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="save"
+            android:text="儲存"
             android:textColor="#99CCCC" />
     </LinearLayout>
 

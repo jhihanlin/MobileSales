@@ -554,7 +554,7 @@ public class CalendarFragment extends Fragment {
 					for (Map<String, String> event : calendarEvents) {
 						if (event.get("date").equals(formatDate)) {
 							gridcell.setTextColor(getResources().getColor(
-									R.color.blue));
+									R.color.pink));
 						}
 					}
 				}

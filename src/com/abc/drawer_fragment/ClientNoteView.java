@@ -35,6 +35,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 public class ClientNoteView extends Fragment {
 	protected List<ParseObject> clientName;
@@ -107,17 +108,17 @@ public class ClientNoteView extends Fragment {
 		getTimeButton.setClickable(false);
 
 		getContent.setText(content);
-		
-		getContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);  
-		getContent.setInputType(InputType.TYPE_NULL);  
+
+		getContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+		getContent.setInputType(InputType.TYPE_NULL);
 		getRemind.setEnabled(false);
-		//文本显示的位置在EditText的最上方  
-		getContent.setGravity(Gravity.TOP);  
-		//改变默认的单行模式  
-		getContent.setSingleLine(false);  
-		//水平滚动设置为False  
-		getContent.setHorizontallyScrolling(false);  
-		
+		// 文本显示的位置在EditText的最上方
+		getContent.setGravity(Gravity.TOP);
+		// 改变默认的单行模式
+		getContent.setSingleLine(false);
+		// 水平滚动设置为False
+		getContent.setHorizontallyScrolling(false);
+
 		String location = list.get(0).get("location");
 		getLocation.setText(location);
 		getLocation.setInputType(InputType.TYPE_NULL);
@@ -202,13 +203,6 @@ public class ClientNoteView extends Fragment {
 						Log.d("editClientNote", editClientNote.get(0).toString());
 						changeDataToParse(editClientNote, id);
 
-						Toast.makeText(getActivity(), "saved", Toast.LENGTH_LONG).show();
-						// go back to list
-						getActivity()
-								.getFragmentManager()
-								.beginTransaction()
-								.replace(R.id.content_frame, new ClientNoteList())
-								.commit();
 					}
 				});
 
@@ -327,7 +321,6 @@ public class ClientNoteView extends Fragment {
 		query.getInBackground(id, new GetCallback<ParseObject>() {
 			public void done(ParseObject ob, ParseException e) {
 				if (e == null) {
-
 					ob.put("title", ed.get(0).get("title"));
 					ob.put("client", ed.get(0).get("client"));
 					ob.put("purpose", ed.get(0).get("purpose"));
@@ -337,7 +330,18 @@ public class ClientNoteView extends Fragment {
 					ob.put("location", ed.get(0).get("location"));
 					ob.put("remind", ed.get(0).get("remind"));
 					ob.put("remarks", ed.get(0).get("remarks"));
-					ob.saveInBackground();
+					ob.saveInBackground(new SaveCallback() {
+						@Override
+						public void done(ParseException e) {
+							Toast.makeText(getActivity(), "saved", Toast.LENGTH_LONG).show();
+							// go back to list
+							getActivity()
+									.getFragmentManager()
+									.beginTransaction()
+									.replace(R.id.content_frame, new ClientNoteList())
+									.commit();
+						}
+					});
 				}
 			}
 		});

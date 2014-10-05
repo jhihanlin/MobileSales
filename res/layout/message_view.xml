@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:background="#99CCCC"
-        android:text="back"
+        android:text="返回簡訊列表"
         android:textColor="#FFFFFF" />
 
 </LinearLayout>

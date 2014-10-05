@@ -53,7 +53,7 @@ public class LoginActivity extends Activity {
 		editor = sp.edit();// editor is SharedPReferences one of class
 
 		Typeface typeface = Typeface.createFromAsset(getAssets(),
-				"fonts/Quicksand-Regular.ttf");// font
+				"fonts/NotoSansCJKtc-Thin.otf");// font
 
 		// action bar (title)
 		int titleId = getResources().getIdentifier("action_bar_title", "id",

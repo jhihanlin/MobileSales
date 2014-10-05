@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="input a phone number or choose people" />
+            android:hint="請輸入電話號碼或選擇聯絡人" />
 
         <Button
             android:id="@+id/peopleButton"
@@ -45,7 +45,7 @@
         android:layout_height="30dp"
         android:background="#99CCCC"
         android:gravity="center"
-        android:text="Model Text"
+        android:text="預設簡訊"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="14dp"
-            android:text="Create a new text model......" />
+            android:text="建立新的簡訊模組......" />
 
         <Button
             android:id="@+id/modelButton"
@@ -73,7 +73,6 @@
             android:layout_height="30dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/eyes" />
-
     </LinearLayout>
 
     <TextView
@@ -91,7 +90,7 @@
             android:layout_height="30dp"
             android:background="#99cccc"
             android:gravity="center"
-            android:text="Content"
+            android:text="內容"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>
@@ -103,7 +102,7 @@
         android:layout_margin="10sp"
         android:layout_weight="0.25"
         android:gravity="top|left"
-        android:hint="Content..." />
+        android:hint="請輸入簡訊內容" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -112,25 +111,25 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#99CCCC"
-            android:text=" send "
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
-
-        <Button
             android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10sp"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text=" cancel"
+            android:text=" 取消"
             android:textColor="#99CCCC"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#99CCCC"
+            android:text="送出 "
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </LinearLayout>

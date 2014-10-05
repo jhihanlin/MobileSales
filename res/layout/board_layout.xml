@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Bulletin Board"
+            android:text="公告欄"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="30sp" />
 
@@ -45,7 +45,7 @@
             android:layout_height="fill_parent"
             android:ems="10"
             android:gravity="top|left"
-            android:hint="input your message" />
+            android:hint="請輸入公告內容" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,7 +60,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text="push"
+            android:text="發送"
             android:textColor="#FFFFFF" />
 
         <Button
@@ -69,7 +69,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="board list"
+            android:text="返回公告欄列表"
             android:textColor="#99CCCC" />
     </LinearLayout>
 

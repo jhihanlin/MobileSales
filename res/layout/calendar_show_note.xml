@@ -14,7 +14,7 @@
             android:layout_height="30dp"
             android:background="@color/lightgray"
             android:gravity="center"
-            android:text="Date"
+            android:text="日期"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -36,7 +36,7 @@
             android:layout_height="30dp"
             android:background="@color/lightgray"
             android:gravity="center"
-            android:text="Time"
+            android:text="時間"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -58,7 +58,7 @@
             android:layout_height="30dp"
             android:background="@color/lightgray"
             android:gravity="center"
-            android:text="Client"
+            android:text="客戶"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -80,7 +80,7 @@
             android:layout_height="30dp"
             android:background="@color/lightgray"
             android:gravity="center"
-            android:text="Purpose"
+            android:text="目的"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -102,7 +102,7 @@
             android:layout_height="30dp"
             android:background="@color/lightgray"
             android:gravity="center"
-            android:text="Content"
+            android:text="內容"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -124,7 +124,7 @@
             android:layout_height="30dp"
             android:background="@color/lightgray"
             android:gravity="center"
-            android:text="Location"
+            android:text="地址"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -146,7 +146,7 @@
             android:layout_height="30dp"
             android:background="@color/lightgray"
             android:gravity="center"
-            android:text="Remarks"
+            android:text="備註"
             android:textStyle="bold" />
     </LinearLayout>
 

@@ -16,7 +16,7 @@
         android:layout_marginTop="62dp"
         android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM"
         android:ems="10"
-        android:hint="account"
+        android:hint="帳號"
         android:inputType="text" >
 
         <requestFocus />
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:ems="10"
-        android:hint="password"
+        android:hint="密碼"
         android:inputType="textPassword" />
 
     <LinearLayout
@@ -52,7 +52,7 @@
             android:id="@+id/loginCheckbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="auto login" />
+            android:text="自動登入" />
     </LinearLayout>
 
     <LinearLayout
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text="login"
+            android:text="登入"
             android:textColor="#FFFFFF" />
 
         <Button
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="register"
+            android:text="註冊"
             android:textColor="#99CCCC" />
     </LinearLayout>
 

@@ -29,7 +29,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/AutoCompleteTextView1"
         android:background="#99cccc"
-        android:text="near"
+        android:text="附近客戶"
         android:textColor="#ffffff" />
 
     <Button
@@ -42,7 +42,7 @@
         android:layout_toRightOf="@+id/nearButton"
         android:background="#ffffff"
         android:onClick="onLoactionNameClick"
-        android:text="search"
+        android:text="搜尋"
         android:textColor="#99cccc" />
 
 </RelativeLayout>

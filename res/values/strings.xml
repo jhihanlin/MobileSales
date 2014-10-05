@@ -4,12 +4,12 @@
     <string name="app_name">MobileSales</string>
 
     <string-array name="planets_array">
-        <item>People</item>
-        <item>Client Note</item>
-        <item>Calendar</item>
-        <item>Search</item>
-        <item>Message</item>
-        <item>Board</item>
+        <item>通訊錄</item>
+        <item>客戶記事</item>
+        <item>行事曆</item>
+        <item>搜尋</item>
+        <item>行銷簡訊</item>
+        <item>公告欄</item>
     </string-array>
 
     <string name="drawer_open">Open navigation drawer</string>

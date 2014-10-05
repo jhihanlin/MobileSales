@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="title"
+        android:hint="標題"
         android:inputType="text" />
 
     <LinearLayout
@@ -27,7 +27,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Client:" />
+            android:text="客戶" />
 
         <Spinner
             android:id="@+id/view_clientSpinner"
@@ -45,7 +45,7 @@
             android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Purpose:" />
+            android:text="目的" />
 
         <Spinner
             android:id="@+id/view_purposeSpinner"
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:gravity="top|left"
-        android:hint="content"
+        android:hint="內容"
         android:inputType="textMultiLine" />
 
     <EditText
@@ -93,7 +93,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="location"
+        android:hint="地址"
         android:inputType="textPostalAddress" />
 
     <Spinner
@@ -107,7 +107,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="remarks"
+        android:hint="備註"
         android:inputType="text" >
 
         <requestFocus />
@@ -126,7 +126,7 @@
             android:layout_gravity="right"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="edit"
+            android:text="編輯"
             android:textColor="#99CCCC" />
 
         <Button
@@ -136,7 +136,7 @@
             android:layout_gravity="right"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="save"
+            android:text="儲存"
             android:textColor="#99CCCC" />
 
         <Button
@@ -145,7 +145,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text="back List"
+            android:text="返回客戶記事列表"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 

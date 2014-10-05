@@ -84,7 +84,7 @@
                     android:layout_width="240dp"
                     android:layout_height="wrap_content"
                     android:background="#99CCCC"
-                    android:text="LogOut"
+                    android:text="登出"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>

@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -64,6 +65,8 @@ public class Search extends Fragment implements LocationListener {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.search_layout, container, false);
+		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/NotoSansCJKtc-Thin.otf");// font
 
 		mapView = (MapView) v.findViewById(R.id.map);
 		mapView.onCreate(savedInstanceState);
@@ -73,7 +76,9 @@ public class Search extends Fragment implements LocationListener {
 		autoTV = (AutoCompleteTextView) v
 				.findViewById(R.id.AutoCompleteTextView1);
 		nearButton = (Button) v.findViewById(R.id.nearButton);
+		nearButton.setTypeface(typeface);
 		searchButton = (Button) v.findViewById(R.id.btSubmit);
+		searchButton.setTypeface(typeface);
 
 		progressDialog = new ProgressDialog(getActivity());
 		loadClientFromParse();
@@ -81,7 +86,7 @@ public class Search extends Fragment implements LocationListener {
 		Criteria criteria = new Criteria();
 		bestProv = locMgr.getBestProvider(criteria, true);
 
-		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL); 
+		gmap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 		gmap.getUiSettings().setZoomGesturesEnabled(true);
 		gmap.setMyLocationEnabled(true);
 		gmap.setTrafficEnabled(true);
@@ -156,7 +161,7 @@ public class Search extends Fragment implements LocationListener {
 					gmap.addMarker(new MarkerOptions()
 							.position(new LatLng(lati, lng))
 							.title(latLongData.get(i).split(",")[0].trim())
-							.snippet(latLongData.get(i).split(",")[3].trim()));
+							.snippet(latLongData.get(i).split(",")[4].trim() + "," + latLongData.get(i).split(",")[3]));
 				}
 			}
 		});

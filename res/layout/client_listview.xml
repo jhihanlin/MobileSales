@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/lightgray"
-            android:text="search" />
+            android:text="搜尋" />
     </LinearLayout>
 
     <LinearLayout
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
-            android:text="Write a client note......" />
+            android:text="新增一筆客戶記事....." />
 
         <Button
             android:id="@+id/button1"
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="ClientNote list"
+            android:text="客戶記事列表"
             android:textColor="@color/gray" />
 
         <View
