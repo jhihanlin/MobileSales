@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -53,12 +54,12 @@ public class ClientNoteList extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_listview, container, false);
-		Typeface typeface = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		listView = (ListView) v.findViewById(R.id.listView1);
 		inputClient = (EditText) v.findViewById(R.id.editText1);
 		searchButton = (Button) v.findViewById(R.id.button2);
+		searchButton.setTypeface(typeface);
 		TextView clientlist_tx = (TextView) v.findViewById(R.id.clientlist_tx);
 		clientlist_tx.setTypeface(typeface);
 
@@ -158,7 +159,7 @@ public class ClientNoteList extends Fragment {
 				} else {
 					progressDialog.dismiss();
 					Toast.makeText(getActivity().getBaseContext(),
-							"You didn't enter the client name", Toast.LENGTH_SHORT)
+							"請輸入客戶名稱", Toast.LENGTH_SHORT)
 							.show();
 				}
 
@@ -264,8 +265,8 @@ public class ClientNoteList extends Fragment {
 			final int index,
 			final SimpleAdapter adapter) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("Delete");
-		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+		builder.setTitle("是否刪除");
+		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -280,7 +281,7 @@ public class ClientNoteList extends Fragment {
 				adapter.notifyDataSetChanged();
 			}
 		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

@@ -3,6 +3,7 @@ package com.abc.drawer_fragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseACL;
@@ -54,14 +56,14 @@ public class People extends Fragment {
 
 	public ListView listView;
 	public View v;
-	public Button addPeople, imbtndel, imbtnupdata, importPeople;
+	public Button addPeople, imbtndel, imbtnupdata, importPeople, searchPeople;
 	public Button peopleButton, tagButton;
 	public AutoCompleteTextView autoComplete;
 	public ArrayList<HashMap<String, String>> contactsArrayList;
 	public String[] contactsName;
 	private ProgressDialog dialog;
 	private EditText edtname, edtbirthday, edttel, edtemail, edtadd, edttag,
-			edtnote;
+			edtnote, edtsname;
 	public int size = 0;
 	public boolean start = true;
 	private ProgressDialog progressDialog;
@@ -70,26 +72,27 @@ public class People extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.people_layout, container, false);
-		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
-				"fonts/Quicksand-Regular.ttf");// font
+
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
+
 		listView = (ListView) v.findViewById(R.id.lvPEOPLE);
 		importPeople = (Button) v.findViewById(R.id.importPeople);
 		addPeople = (Button) v.findViewById(R.id.addPeople);
+		searchPeople = (Button) v.findViewById(R.id.btnsearch);
+		edtsname = (EditText) v.findViewById(R.id.editTextname);
 		TextView peoplelist_tx = (TextView) v.findViewById(R.id.peoplelist_tx);
 		peoplelist_tx.setTypeface(typeface);
 
-		autoComplete = (AutoCompleteTextView) v.findViewById(R.id.autoComplete);
 		progressDialog = new ProgressDialog(getActivity());
 		getParseDate("");
 
 		peopleButton = (Button) v.findViewById(R.id.peopleButton);
+		peopleButton.setTypeface(typeface);
 		tagButton = (Button) v.findViewById(R.id.tagButton);
-
+		tagButton.setTypeface(typeface);
 		peopleButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				getActivity().getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, new People()).commit();
 			}
@@ -99,7 +102,7 @@ public class People extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+
 				getActivity().getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
@@ -120,35 +123,110 @@ public class People extends Fragment {
 		importPeople.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				new AlertDialog.Builder(getActivity())
+						.setTitle("確定要匯入手機聯絡人")
+						.setPositiveButton("確認",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										progressDialog.setCancelable(false);
+										progressDialog.setTitle("Loading...");
+										progressDialog.show();
+
+										Thread thread = new Thread() {
+											@Override
+											public void run() {
+												try {
+													setParseData();
+
+												} catch (Exception e) {
+													e.printStackTrace();
+												} finally {
+												}
+											}
+										};
+
+										thread.start();
+										Toast.makeText(getActivity(), "匯入成功",
+												Toast.LENGTH_LONG).show();
+										getActivity().getFragmentManager().beginTransaction()
+												.replace(R.id.content_frame, new People()).commit();
+										progressDialog.dismiss();
+									}
+								}).setNegativeButton("取消", null).show();
+			}
+		});
+		searchPeople.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				progressDialog.setCancelable(false);
 				progressDialog.setTitle("Loading...");
 				progressDialog.show();
+				ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
 
-				Thread thread = new Thread() {
+				query.findInBackground(new FindCallback<ParseObject>() {
 					@Override
-					public void run() {
-						try {
-							// 1000 ç‚ºä¸€ç§’
-							setParseData();
-							// Thread.sleep(1000);
+					public void done(List<ParseObject> arg0, ParseException arg1) {
+						progressDialog.dismiss();
+						// TODO Auto-generated method stub
+						if (arg1 == null) {
+							Log.v("", "SIZE:" + arg0.size() + " scores");
+							if (arg0.size() == 0) {
 
-						} catch (Exception e) {
-							e.printStackTrace();
-						} finally {
+							} else {
+								contactsArrayList.clear();
+								for (int i = 0; i < arg0.size(); i++) {
+									if (edtsname.getText().equals("")) {
+										HashMap<String, String> hm = new HashMap<String, String>();
+										hm.put("ID", arg0.get(i).getObjectId()
+												.toString());
+										hm.put("NAME", arg0.get(i).get("name")
+												.toString());
+										hm.put("NUMBER", arg0.get(i).get("tel")
+												.toString());
+										contactsArrayList.add(hm);
+									} else {
+										if (arg0.get(i).getString("name")
+												.toString()
+												.contains(edtsname.getText())) {
+
+											HashMap<String, String> hm = new HashMap<String, String>();
+											hm.put("ID", arg0.get(i)
+													.getObjectId().toString());
+											hm.put("NAME",
+													arg0.get(i).get("name")
+															.toString());
+											hm.put("NUMBER",
+													arg0.get(i).get("tel")
+															.toString());
+											contactsArrayList.add(hm);
+										}
+									}
+
+								}
+
+								if (contactsArrayList.size() == 0) {
+
+								}
+
+								SimpleAdapter adapter = new SimpleAdapter(
+										getActivity(), contactsArrayList,
+										R.layout.people_tag_entry,
+										new String[] { "NAME", "NUMBER" },
+										new int[] { R.id.txtNAMEPHONE,
+												R.id.txtDATAPHONE });
+								listView.setAdapter(null);
+								listView.setAdapter(adapter);
+							}
+						} else {
+							Log.v("score", "Error: " + arg1.getMessage());
 						}
 					}
-				};
-				// é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
-				thread.start();
-				Toast.makeText(getActivity(), "Import Successes",
-						Toast.LENGTH_LONG).show();
-				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People()).commit();
-				progressDialog.dismiss();
+				});
 			}
 		});
-
 		return v;
 	}
 
@@ -156,71 +234,6 @@ public class People extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-	}
-
-	public void setAutoCompleteTextView() {
-		// Log.v("", ""+contactsName.length);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, contactsName);
-		autoComplete.setAdapter(adapter);
-
-		autoComplete.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				// getAssignedPhoneBookData(autoComplete.getText().toString());
-				listView.setAdapter(null);
-				getParseDate(autoComplete.getText().toString());
-
-				/*
-				 * SimpleAdapter adapter = new
-				 * SimpleAdapter(getActivity(),contactsArrayList
-				 * ,R.layout.people_contact_entry,new String[] { "NAME","NUMBER"
-				 * }, new int[] { R.id.txtNAMEPHONE,R.id.txtDATAPHONE });
-				 * listView.setAdapter(adapter);
-				 */
-			}
-		});
-
-		autoComplete.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// TODO Auto-generated method stub
-				Log.v("", "--" + autoComplete.getText().toString().length());
-				if (autoComplete.getText().toString().length() == 0
-						&& listView.getCount() < size) {
-					listView.setAdapter(null);
-					getParseDate("");
-					Log.v("score", "121: " + contactsArrayList.size() + "=="
-							+ listView.getCount() + "==" + size);
-					/*
-					 * SimpleAdapter adapter = new
-					 * SimpleAdapter(getActivity(),contactsArrayList
-					 * ,R.layout.people_contact_entry,new String[] {
-					 * "NAME","NUMBER" }, new int[] {
-					 * R.id.txtNAMEPHONE,R.id.txtDATAPHONE });
-					 * listView.setAdapter(adapter);
-					 */
-				}
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 	}
 
 	public void setListView() {
@@ -235,14 +248,14 @@ public class People extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
+
 				final String Oid = contactsArrayList.get(position).get("ID");
 				final String name = contactsArrayList.get(position).get("NAME");
 				final String number = contactsArrayList.get(position).get(
 						"NUMBER");
 				new AlertDialog.Builder(getActivity())
 						.setTitle(number)
-						.setItems(new String[] { "Detail", "Call" },
+						.setItems(new String[] { "詳細資料", "撥打電話" },
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -275,7 +288,7 @@ public class People extends Fragment {
 
 									}
 								})
-						.setNegativeButton("Cancel",
+						.setNegativeButton("取消",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -295,7 +308,6 @@ public class People extends Fragment {
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
-		// query.whereEqualTo("ID", ParseUser.getCurrentUser().getObjectId());
 
 		if (!name.equals("")) {
 			query.whereEqualTo("name", name);
@@ -304,11 +316,8 @@ public class People extends Fragment {
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
-				// TODO Auto-generated method stub
 				progressDialog.dismiss();
 				if (e == null) {
-					// Log.v("score", "Retrieved " + objects.size() +
-					// " scores");
 					contactsName = new String[objects.size()];
 					if (name.equals("")) {
 						size = objects.size();
@@ -323,12 +332,9 @@ public class People extends Fragment {
 						contactsName[i] = objects.get(i).get("name").toString();
 					}
 
-					// Log.v("score", "111: " + objects.size());
-
 					setListView();
 
 					if (start) {
-						setAutoCompleteTextView();
 						start = false;
 					}
 
@@ -396,9 +402,6 @@ public class People extends Fragment {
 
 				progressDialog.dismiss();
 
-				// testObject.put("ID",
-				// ParseUser.getCurrentUser().getObjectId());
-
 				Log.v("", "" + mimetype);
 
 			}
@@ -412,16 +415,12 @@ public class People extends Fragment {
 			testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
 			testObject.saveInBackground(new SaveCallback() {
 				@Override
-				// æ•¶ïŽ‰æ­²é–¬î¡¾ï¿½
 				public void done(ParseException ex) {
 					// TODO Auto-generated method stub
 					if (ex == null) {
-						// Toast.makeText(getActivity(), "æ‘®î¦·ï¿½ï¿½î“Žï¿½",
-						// Toast.LENGTH_LONG).show();
+
 					} else {
-						// Toast.makeText(getActivity(),
-						// "æ‘®î¦·ï¿½æ†­æœ›ï¿½:"+ex.getMessage().toString(),
-						// Toast.LENGTH_LONG).show();
+
 					}
 				}
 			});

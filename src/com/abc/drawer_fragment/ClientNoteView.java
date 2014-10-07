@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -30,6 +31,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -41,6 +43,7 @@ public class ClientNoteView extends Fragment {
 	protected List<ParseObject> clientName;
 	protected List<ParseObject> purposeName;
 	Calendar c = null;
+	private ProgressDialog progressDialog;
 
 	int c_index;
 	int p_index;
@@ -56,11 +59,13 @@ public class ClientNoteView extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_note_view, container, false);
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading
 		// bar
+		progressDialog = new ProgressDialog(getActivity());// loading
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
+
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		Bundle arguments = getArguments();
 		Log.d("bundle2", arguments.getBundle("bundle2").toString());
@@ -90,8 +95,11 @@ public class ClientNoteView extends Fragment {
 		final EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
 		final LinearLayout linearLayout1 = (LinearLayout) v.findViewById(R.id.LinearLayout1);
 		final Button edit = (Button) v.findViewById(R.id.edit);
+		edit.setTypeface(typeface);
 		final Button save = (Button) v.findViewById(R.id.save);
+		save.setTypeface(typeface);
 		final Button back = (Button) v.findViewById(R.id.back);
+		back.setTypeface(typeface);
 		final String id = list.get(0).get("id");
 		save.setVisibility(View.GONE);
 
@@ -144,6 +152,7 @@ public class ClientNoteView extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				progressDialog = new ProgressDialog(getActivity());// loading
 				progressDialog.setCancelable(false);
 				progressDialog.setTitle("Loading...");
 				progressDialog.show();
@@ -314,13 +323,16 @@ public class ClientNoteView extends Fragment {
 	}
 
 	private void changeDataToParse(final ArrayList<Map<String, String>> ed, String id) {
-
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("ClientNote");
 
 		// Retrieve the object by id
 		query.getInBackground(id, new GetCallback<ParseObject>() {
 			public void done(ParseObject ob, ParseException e) {
 				if (e == null) {
+					progressDialog.dismiss();
 					ob.put("title", ed.get(0).get("title"));
 					ob.put("client", ed.get(0).get("client"));
 					ob.put("purpose", ed.get(0).get("purpose"));
@@ -333,7 +345,7 @@ public class ClientNoteView extends Fragment {
 					ob.saveInBackground(new SaveCallback() {
 						@Override
 						public void done(ParseException e) {
-							Toast.makeText(getActivity(), "saved", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), "編輯成功", Toast.LENGTH_LONG).show();
 							// go back to list
 							getActivity()
 									.getFragmentManager()

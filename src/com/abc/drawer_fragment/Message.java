@@ -38,6 +38,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.abc.drawer_fragment.MessageExpandable.SavedTabsListAdapter;
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -65,6 +66,7 @@ public class Message extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.message_layout, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		sendButton = (Button) v.findViewById(R.id.sendButton);
 		cancelButton = (Button) v.findViewById(R.id.cancelButton);
@@ -74,8 +76,6 @@ public class Message extends Fragment {
 		modelSpinner = (Spinner) v.findViewById(R.id.modelSpinner);
 		receiverTextView = (TextView) v.findViewById(R.id.receiverTextView);
 		TextView ms_tx1=(TextView) v.findViewById(R.id.ms_tx1);
-		Typeface typeface = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
 		ms_tx1.setTypeface(typeface);
 		
 		progressDialog = new ProgressDialog(getActivity());
@@ -102,16 +102,16 @@ public class Message extends Fragment {
 					public void done(ParseException e) {
 						progressDialog.dismiss();
 						if (e == null) {
-							Toast.makeText(getActivity(), "Successful",
+							Toast.makeText(getActivity(), "發送成功",
 									Toast.LENGTH_SHORT).show();
 						} else {
-							Toast.makeText(getActivity(), "Error",
+							Toast.makeText(getActivity(), "發送失敗",
 									Toast.LENGTH_SHORT).show();
 						}
 					}
 
 				});
-				Toast.makeText(getActivity().getBaseContext(), "Sent!",
+				Toast.makeText(getActivity().getBaseContext(), "送出",
 						Toast.LENGTH_SHORT).show();
 				SmsManager smsManager = SmsManager.getDefault();
 				String[] temp = null;
@@ -192,13 +192,11 @@ public class Message extends Fragment {
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"MessageModel"); // get
-		// Parse
-		// table:Client
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNames
+				if (e == null) { 
 					messageModels = objects;
 					Log.d("debug", "objects.size()=" + objects.size());
 				}
@@ -206,7 +204,6 @@ public class Message extends Fragment {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						getActivity(), android.R.layout.simple_list_item_1,
 						getMessageModelData());
-				// �]�w�۰ʶ��J�����r���e
 				modelSpinner.setAdapter(adapter);
 				modelSpinner
 						.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -215,10 +212,6 @@ public class Message extends Fragment {
 							public void onItemSelected(AdapterView<?> parent,
 									View view, int position, long id) {
 
-								// TODO Auto-generated method stub
-								// Toast.makeText(null,
-								// "�A�諸�O+ getMessageModelData().get(position)",
-								// Toast.LENGTH_SHORT).show();
 								String sModel = (getMessageModelData()
 										.get(position));
 								contentEditText.setText(sModel);
@@ -282,7 +275,7 @@ public class Message extends Fragment {
 		final View v = inflater.inflate(R.layout.message_model, null);
 
 		new AlertDialog.Builder(getActivity())
-				.setTitle("Add Model Text")
+				.setTitle("新增簡訊模組")
 				.setView(v)
 				.setPositiveButton("Done",
 						new DialogInterface.OnClickListener() {
@@ -311,11 +304,11 @@ public class Message extends Fragment {
 										progressDialog.dismiss();
 										if (e == null) {
 											Toast.makeText(getActivity(),
-													"Successful",
+													"新增成功",
 													Toast.LENGTH_LONG).show();
 										} else {
 											Toast.makeText(getActivity(),
-													"Error", Toast.LENGTH_SHORT)
+													"新增失敗", Toast.LENGTH_SHORT)
 													.show();
 										}
 									}
@@ -340,13 +333,11 @@ public class Message extends Fragment {
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"MessageModel"); // get
-		// Parse
-		// table:Client
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNames
+				if (e == null) { 
 					messageModels = objects;
 					Log.d("debug", "objects.size()=" + objects.size());
 				}
@@ -369,7 +360,6 @@ public class Message extends Fragment {
 
 							@Override
 							public void onNothingSelected(AdapterView<?> parent) {
-								// TODO Auto-generated method stub
 
 							}
 						});
@@ -381,7 +371,7 @@ public class Message extends Fragment {
 	}
 
 	protected Dialog onCreateDialog1() {
-		// TODO Auto-generated method stub
+
 		Dialog dialog = null;
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		final View v = inflater.inflate(R.layout.message_expandable_fragment,

@@ -1,25 +1,17 @@
 package com.abc.drawer_fragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,31 +19,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.DatePicker;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
-import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class People_tag extends Fragment {
@@ -63,14 +44,15 @@ public class People_tag extends Fragment {
 	public ArrayList<HashMap<String, Object>> contactsArrayList;
 	private ProgressDialog progressDialog;
 	public TextView tagName, m1, m2;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 		v = inflater.inflate(R.layout.people_tag, container, false);
-		Typeface typeface = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/Quicksand-Regular.ttf");// font
 		
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
+
 		peopleButton = (Button) v.findViewById(R.id.peopleButton);
 		tagButton = (Button) v.findViewById(R.id.tagButton);
 		listView = (ListView) v.findViewById(R.id.lvTAGPEOPLE);
@@ -84,17 +66,20 @@ public class People_tag extends Fragment {
 		m1.setTypeface(typeface);
 		m2 = (TextView) v.findViewById(R.id.message_tx2);
 		m2.setTypeface(typeface);
+
 		m1.setVisibility(0);
 		m2.setVisibility(8);
 		tagName.setVisibility(8);
+
+		peopleButton.setTypeface(typeface);
+		tagButton.setTypeface(typeface);
 
 		peopleButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				getActivity().getFragmentManager()
-				.beginTransaction()
+						.beginTransaction()
 						.replace(R.id.content_frame, new People()).commit();
 			}
 		});
@@ -103,9 +88,8 @@ public class People_tag extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				getActivity().getFragmentManager()
-				.beginTransaction()
+						.beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});
@@ -114,14 +98,13 @@ public class People_tag extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 
 				People_tag_add ppadd = new People_tag_add();
 				ppadd.setTag("");
 				ppadd.setMode("add");
 				Fragment fg = (Fragment) ppadd;
 				getActivity().getFragmentManager()
-				.beginTransaction()
+						.beginTransaction()
 						.replace(R.id.content_frame, fg).commit();
 
 			}
@@ -129,8 +112,7 @@ public class People_tag extends Fragment {
 
 		return v;
 	}
-	
-	  
+
 	public void setListView() {
 		People_lv_BtnAdapter Btnadapter = new People_lv_BtnAdapter(
 				getActivity(), contactsArrayList,
@@ -230,24 +212,23 @@ public class People_tag extends Fragment {
 											}
 										});
 
-										Thread thread = new Thread(){ 
-								            @Override
-								            public void run(){ 
-								                try{
-								                    Thread.sleep(1000);
-								                    Message msg = new Message();
-								                    getActivity().getFragmentManager()
-								    				.beginTransaction()
-								    						.replace(R.id.content_frame, new People_tag()).commit();
-								                }catch (Exception e){
-								                    e.printStackTrace();
-								                }finally{
-								                }
-								            }
-								        };
-								        //é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
-								        thread.start();
-										
+										Thread thread = new Thread() {
+											@Override
+											public void run() {
+												try {
+													Thread.sleep(1000);
+													Message msg = new Message();
+													getActivity().getFragmentManager()
+															.beginTransaction()
+															.replace(R.id.content_frame, new People_tag()).commit();
+												} catch (Exception e) {
+													e.printStackTrace();
+												} finally {
+												}
+											}
+										};
+										// é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
+										thread.start();
 
 									}
 								}).setNegativeButton("Cancel", null).show();
@@ -272,7 +253,7 @@ public class People_tag extends Fragment {
 				ppadd.setTag(name);
 				Fragment fg = (Fragment) ppadd;
 				getActivity().getFragmentManager()
-				.beginTransaction()
+						.beginTransaction()
 						.replace(R.id.content_frame, fg).commit();
 
 			}
@@ -299,7 +280,7 @@ public class People_tag extends Fragment {
 						HashMap<String, Object> hm = new HashMap<String, Object>();
 						hm.put("ID", objects.get(tagi).getObjectId().toString());
 						hm.put("NAME", objects.get(tagi).get("name").toString());
-						hm.put("NUMBER","" );
+						hm.put("NUMBER", "");
 						Log.v("score", ": "
 								+ objects.get(tagi).get("name").toString());
 						contactsArrayList.add(hm);
@@ -317,7 +298,6 @@ public class People_tag extends Fragment {
 		// Log.v("", ""+tag.length);
 
 	}
-
 
 	private void setContentView(int peopleAdd) {
 		// TODO Auto-generated method stub
@@ -399,9 +379,7 @@ public class People_tag extends Fragment {
 			// HashMap<String, Object> appInfo = mAppList.get(position);
 			if (mAppList != null) {
 
-
-					itemView.tvtag.setText(mAppList.get(position).get(keyString[0]).toString());
-
+				itemView.tvtag.setText(mAppList.get(position).get(keyString[0]).toString());
 
 			}
 

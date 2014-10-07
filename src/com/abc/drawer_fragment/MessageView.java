@@ -8,6 +8,7 @@ import java.util.Map;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -46,11 +48,13 @@ public class MessageView extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.message_view, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 		message_view = (ListView) v.findViewById(R.id.message_view);
 		message_view.setClickable(false);
 		message_view.setEnabled(false);
 		message_name = (TextView) v.findViewById(R.id.message_name);
 		doneButton = (Button) v.findViewById(R.id.doneButton);
+		doneButton.setTypeface(typeface);
 		message_view.setClickable(false);
 		Bundle arguments = getArguments();
 		Log.d("bundle2", arguments.getBundle("bundle2").toString());

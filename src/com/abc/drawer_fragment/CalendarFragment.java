@@ -41,9 +41,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -82,8 +82,7 @@ public class CalendarFragment extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.calendar_layout, container, false);
 
-		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
-				"fonts/Quicksand-Regular.ttf");// font
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		_calendar = Calendar.getInstance(Locale.getDefault());
 		month = _calendar.get(Calendar.MONTH) + 1;
@@ -240,7 +239,6 @@ public class CalendarFragment extends Fragment {
 
 			Log.d("debug", item.toString());
 		}
-		// Toast.makeText(getActivity(), allTitle, Toast.LENGTH_LONG).show();
 		adapter.notifyDataSetChanged();
 	}
 
@@ -493,8 +491,7 @@ public class CalendarFragment extends Fragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Typeface typeface = Typeface.createFromAsset(getActivity()
-					.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+			Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 			View row = convertView;
 			if (row == null) {
@@ -569,8 +566,7 @@ public class CalendarFragment extends Fragment {
 
 		@Override
 		public void onClick(View view) {
-			Typeface typeface = Typeface.createFromAsset(getActivity()
-					.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+			Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 			String selectedDate = (String) view.getTag();
 			selectedDayMonthYearButton.setText("Selected: " + selectedDate);
@@ -678,8 +674,8 @@ public class CalendarFragment extends Fragment {
 				List<HashMap<String, String>> list, final int index,
 				final SimpleAdapter simpleAdapter) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setTitle("Delete");
-			builder.setPositiveButton("Delete",
+			builder.setTitle("是否刪除");
+			builder.setPositiveButton("刪除",
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -692,7 +688,7 @@ public class CalendarFragment extends Fragment {
 							simpleAdapter.notifyDataSetChanged();
 						}
 					});
-			builder.setNegativeButton("Cancel",
+			builder.setNegativeButton("取消",
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -706,8 +702,7 @@ public class CalendarFragment extends Fragment {
 		public View crateDiaglogView(List<Map<String, String>> data,
 				List<HashMap<String, String>> list, int position) {
 
-			Typeface typeface = Typeface.createFromAsset(getActivity()
-					.getAssets(), "fonts/Quicksand-Regular.ttf");// font
+			Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 			LayoutInflater factory = LayoutInflater.from(getActivity());
 			View dialogView = factory

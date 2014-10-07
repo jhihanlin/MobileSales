@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -34,8 +35,7 @@ public class Board extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.board_layout, container, false);
 		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-		Typeface typeface = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/NotoSansCJKtc-Thin.otf");// font
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		final EditText push_content = (EditText) v.findViewById(R.id.push_content);
 		push_content.setTypeface(typeface);

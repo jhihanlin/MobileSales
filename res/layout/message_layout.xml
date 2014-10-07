@@ -75,6 +75,12 @@
             android:background="@drawable/eyes" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/modelBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="發佈到公告欄" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"

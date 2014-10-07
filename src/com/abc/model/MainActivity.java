@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Layout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -54,6 +55,7 @@ import com.abc.drawer_fragment.ClientNote;
 import com.abc.drawer_fragment.Board;
 import com.abc.drawer_fragment.Search;
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.google.android.gms.drive.internal.v;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -72,7 +74,6 @@ public class MainActivity extends FragmentActivity {
 	private CharSequence my_DrawerTitle;
 	private CharSequence my_Title;
 	private String[] my_PlanetTitles;
-	private Typeface typeface;
 	private ProgressDialog progressDialog;
 	private String userId;
 	private static final int PHOTO_SUCCESS = 1;
@@ -85,8 +86,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		typeface = Typeface.createFromAsset(getAssets(),
-				"fonts/Quicksand-Regular.ttf");
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(this);
 		progressDialog = new ProgressDialog(this);
 		my_Title = my_DrawerTitle = getTitle();
 
@@ -115,8 +115,8 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-				builder.setTitle("Edit Photo");
-				builder.setPositiveButton("Choose from Gallery", new DialogInterface.OnClickListener() {
+				builder.setTitle("編輯照片");
+				builder.setPositiveButton("從相簿選取相片", new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -127,7 +127,7 @@ public class MainActivity extends FragmentActivity {
 
 					}
 				});
-				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -303,7 +303,7 @@ public class MainActivity extends FragmentActivity {
 		int titleId = getResources().getIdentifier("action_bar_title", "id",
 				"android");
 		TextView yourTextView = (TextView) findViewById(titleId);
-		yourTextView.setTypeface(typeface);
+		yourTextView.setTypeface(TypeFaceHelper.getCurrentTypeface(this));
 	}
 
 	@Override
@@ -394,7 +394,7 @@ public class MainActivity extends FragmentActivity {
 		}
 
 		this.doubleBackToExitPressedOnce = true;
-		Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "再按一次退出MobileSailes", Toast.LENGTH_SHORT).show();
 
 		new Handler().postDelayed(new Runnable() {
 

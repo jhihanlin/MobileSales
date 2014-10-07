@@ -28,6 +28,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -45,8 +46,7 @@ public class MessageList extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.message_listview, container, false);
-		Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
-				"fonts/Quicksand-Regular.ttf");// font
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		listView = (ListView) v.findViewById(R.id.listView);
 		TextView message_tx1=(TextView) v.findViewById(R.id.message_tx1);
@@ -142,8 +142,6 @@ public class MessageList extends Fragment {
 								View view, int position, long id) {
 
 							showDeleteDialog(data, position, adapter);
-							// Toast.makeText(getActivity(), "deleted",
-							// Toast.LENGTH_LONG).show();
 
 							return true;
 						}
@@ -160,9 +158,8 @@ public class MessageList extends Fragment {
 	public void showDeleteDialog(final List<Map<String, String>> data,
 			final int index, final SimpleAdapter adapter) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("Delete");
-		builder.setMessage("Do you want to delete?");
-		builder.setPositiveButton("Delete",
+		builder.setTitle("是否刪除");
+		builder.setPositiveButton("刪除",
 				new DialogInterface.OnClickListener() {
 
 					@Override
@@ -178,7 +175,7 @@ public class MessageList extends Fragment {
 						adapter.notifyDataSetChanged();
 					}
 				});
-		builder.setNegativeButton("Cancel",
+		builder.setNegativeButton("取消",
 				new DialogInterface.OnClickListener() {
 
 					@Override

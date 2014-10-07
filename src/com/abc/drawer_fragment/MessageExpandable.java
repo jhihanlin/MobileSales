@@ -72,13 +72,11 @@ public class MessageExpandable extends Fragment {
 	private void loadPeopleFromParse() {
 
 		ParseQuery<ParseObject> query1 = new ParseQuery<ParseObject>("Client"); // get
-		// Parse
-		// table:Client
 		query1.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNames
+				if (e == null) { 
 					peoples = objects;
 					Log.d("debug", "objects.size()=" + objects.size());
 

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -52,8 +53,7 @@ public class LoginActivity extends Activity {
 																	// data
 		editor = sp.edit();// editor is SharedPReferences one of class
 
-		Typeface typeface = Typeface.createFromAsset(getAssets(),
-				"fonts/NotoSansCJKtc-Thin.otf");// font
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(this);
 
 		// action bar (title)
 		int titleId = getResources().getIdentifier("action_bar_title", "id",

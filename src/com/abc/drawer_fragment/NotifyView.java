@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -30,6 +31,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -43,6 +45,7 @@ public class NotifyView extends Fragment {
 
 	int c_index;
 	int p_index;
+	private ProgressDialog progressDialog;
 
 	String[] remindTime = new String[] { "10 minutes ago", "15 minutes ago",
 			"30 minutes ago", "1 hour ago", "3 hours ago", "12 hours ago",
@@ -54,8 +57,10 @@ public class NotifyView extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.client_note_view, container, false);
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading
+		View v = inflater.inflate(R.layout.notify_view, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
+
+		progressDialog = new ProgressDialog(getActivity());// loading
 		// bar
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
@@ -87,12 +92,9 @@ public class NotifyView extends Fragment {
 		final EditText getLocation = (EditText) v.findViewById(R.id.view_location);
 		final Spinner getRemind = (Spinner) v.findViewById(R.id.view_remind);
 		final EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
-		final LinearLayout linearLayout1 = (LinearLayout) v.findViewById(R.id.LinearLayout1);
-		final Button edit = (Button) v.findViewById(R.id.edit);
-		final Button back = (Button) v.findViewById(R.id.back);
-		final Button save = (Button) v.findViewById(R.id.save);
+		Button back = (Button) v.findViewById(R.id.back);
+		back.setTypeface(typeface);
 		final String id = list.get(0).get("id");
-		save.setVisibility(View.GONE);
 
 		getTitle.setText(list.get(0).get("title"));
 		getTitle.setInputType(InputType.TYPE_NULL);// can't edit
@@ -107,22 +109,22 @@ public class NotifyView extends Fragment {
 		String time = list.get(0).get("time");
 		getDateButton.setClickable(false);
 		getTimeButton.setClickable(false);
-		
+
 		String content = list.get(0).get("content");
-		
+
 		getContent.setText(content);
-		
-		getContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);  
-		getContent.setInputType(InputType.TYPE_NULL);  
-		
-		//文本显示的位置在EditText的最上方  
-		getContent.setGravity(Gravity.TOP);  
-		//改变默认的单行模式  
-		getContent.setSingleLine(false);  
-		//水平滚动设置为False  
-		getContent.setHorizontallyScrolling(false);  
+
+		getContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+		getContent.setInputType(InputType.TYPE_NULL);
+
+		// 文本显示的位置在EditText的最上方
+		getContent.setGravity(Gravity.TOP);
+		// 改变默认的单行模式
+		getContent.setSingleLine(false);
+		// 水平滚动设置为False
+		getContent.setHorizontallyScrolling(false);
 		getRemind.setEnabled(false);
-		
+
 		String location = list.get(0).get("location");
 		getLocation.setText(location);
 		getLocation.setInputType(InputType.TYPE_NULL);
@@ -135,7 +137,6 @@ public class NotifyView extends Fragment {
 		getDateButton.setClickable(false);
 		getTimeButton.setClickable(false);
 		getRemind.setEnabled(false);
-		
 
 		loadClientNameSpinner(getClient, client);
 		loadPurposeSpinner(getPurpose, purpose, progressDialog);
@@ -146,97 +147,18 @@ public class NotifyView extends Fragment {
 		adapterTime
 				.setDropDownViewResource(android.R.layout.simple_spinner_item);
 		getRemind.setAdapter(adapterTime);
-
-		// edit
-		edit.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
-				
-				getTitle.setInputType(InputType.TYPE_CLASS_TEXT);
-				getContent.setInputType(InputType.TYPE_CLASS_TEXT);
-				getLocation.setInputType(InputType.TYPE_CLASS_TEXT);
-				getRemarks.setInputType(InputType.TYPE_CLASS_TEXT);
-				getClient.setEnabled(true);
-				getPurpose.setEnabled(true);
-				getRemind.setEnabled(true);
-				getDateButton.setClickable(true);
-				getTimeButton.setClickable(true);
-				
-				getDateButton.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						onCreateDialog(getDateButton).show();
-					}
-				});
-				getTimeButton.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						onCreateDialog2(getTimeButton).show();
-					}
-				});
-				
-				createSaveButton(id);
-				progressDialog.dismiss();
-
-			}
-
-			private void createSaveButton(final String id) {
-				save.setVisibility(View.VISIBLE);
-				edit.setVisibility(View.GONE);
-				
-				save.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						final ArrayList<Map<String, String>> editClientNote = new ArrayList<Map<String, String>>();
-						Map<String, String> it = new HashMap<String, String>();
-
-						it.put("title", getTitle.getText().toString());
-						it.put("client", getClient.getSelectedItem().toString());
-						Log.d("clientSpinner", getClient.getSelectedItem().toString());
-						it.put("purpose", getPurpose.getSelectedItem().toString());
-						it.put("date", getDateButton.getText().toString());
-						it.put("time", getTimeButton.getText().toString());
-						it.put("content", getContent.getText().toString());
-						it.put("location", getLocation.getText().toString());
-						it.put("remind", getRemind.getSelectedItem().toString());
-						it.put("remarks", getRemarks.getText().toString());
-						editClientNote.add(it);
-						Log.d("editClientNote", editClientNote.get(0).toString());
-						changeDataToParse(editClientNote, id);
-
-						Toast.makeText(getActivity(), "saved", Toast.LENGTH_LONG).show();
-						// go back to list
-						getActivity()
-								.getFragmentManager()
-								.beginTransaction()
-								.replace(R.id.content_frame, new ClientNoteList())
-								.commit();
-					}
-				});
-
-			}
-
-		});
+		
 		back.setOnClickListener(new OnClickListener() {
-
+			
 			@Override
 			public void onClick(View v) {
-				// go back to list
 				getActivity()
-						.getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new Notify())
-						.commit();
+				.getFragmentManager()
+				.beginTransaction()
+				.replace(R.id.content_frame, new Notify())
+				.commit();
 			}
 		});
-
 		return v;
 	}
 
@@ -326,58 +248,6 @@ public class NotifyView extends Fragment {
 				}
 			}
 		});
-	}
-
-	private void changeDataToParse(final ArrayList<Map<String, String>> ed, String id) {
-
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("ClientNote");
-
-		// Retrieve the object by id
-		query.getInBackground(id, new GetCallback<ParseObject>() {
-			public void done(ParseObject ob, ParseException e) {
-				if (e == null) {
-					ob.put("title", ed.get(0).get("title"));
-					ob.put("client", ed.get(0).get("client"));
-					ob.put("purpose", ed.get(0).get("purpose"));
-					ob.put("date", ed.get(0).get("date"));
-					ob.put("time", ed.get(0).get("time"));
-					ob.put("content", ed.get(0).get("content"));
-					ob.put("location", ed.get(0).get("location"));
-					ob.put("remind", ed.get(0).get("remind"));
-					ob.put("remarks", ed.get(0).get("remarks"));
-					ob.saveInBackground();
-				}
-			}
-		});
-	}
-
-	protected Dialog onCreateDialog(final Button btn) {
-		Dialog dialog = null;
-		c = Calendar.getInstance();
-		dialog = new DatePickerDialog(getActivity(),
-				new DatePickerDialog.OnDateSetListener() {
-					public void onDateSet(DatePicker dp, int year, int month,
-							int dayOfMonth) {
-						String text = String.format("%d/%02d/%02d", year,
-								(month + 1), dayOfMonth);
-						btn.setText(text);
-					}
-				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
-				c.get(Calendar.DAY_OF_MONTH));
-		return dialog;
-	}
-
-	protected Dialog onCreateDialog2(final Button btn) {
-		Dialog dialog2 = null;
-		c = Calendar.getInstance();
-		dialog2 = new TimePickerDialog(getActivity(),
-				new TimePickerDialog.OnTimeSetListener() {
-					public void onTimeSet(TimePicker view, int hourOfDay,
-							int minute) {
-						btn.setText(hourOfDay + ":" + minute);
-					}
-				}, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
-		return dialog2;
 	}
 
 	@Override

@@ -181,16 +181,14 @@ public class ClientNote extends Fragment {
 		m_datepickerButton.setText(str);
 		Time t = new Time();
 		t.setToNow();
-		int hour = t.hour; // 0-23 
-		int minute = t.minute; 
-		m_timepickerButton.setText(hour +" : "+minute);
+		int hour = t.hour; // 0-23
+		int minute = t.minute;
+		m_timepickerButton.setText(hour + " : " + minute);
 
 		// DatePickerDialog
 		m_datepickerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
 				onCreateDialog(m_datepickerButton).show();
 			}
 		});
@@ -199,7 +197,6 @@ public class ClientNote extends Fragment {
 		m_timepickerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				onCreateDialog2(m_timepickerButton).show();
 			}
 		});
@@ -240,13 +237,13 @@ public class ClientNote extends Fragment {
 					public void done(ParseException e) {
 						progressDialog.dismiss();
 						if (e == null) {
-							Toast.makeText(getActivity(), "Successful",
+							Toast.makeText(getActivity(), "儲存成功",
 									Toast.LENGTH_SHORT).show();
 							FragmentManager fragmentManager = getFragmentManager();
 							fragmentManager.beginTransaction()
 									.replace(R.id.content_frame, new ClientNoteList()).commit();
 						} else {
-							Toast.makeText(getActivity(), "Error",
+							Toast.makeText(getActivity(), "儲存失敗",
 									Toast.LENGTH_SHORT).show();
 						}
 					}

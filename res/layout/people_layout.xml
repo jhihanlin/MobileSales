@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
-            android:text="Create people......" />
+            android:text="新增聯絡人..... " />
  
         <Button
             android:id="@+id/addPeople"
@@ -47,14 +47,23 @@
         android:layout_height="wrap_content"
         android:background="@color/lightgray" >
  
-        <AutoCompleteTextView
-            android:id="@+id/autoComplete"
-            android:layout_width="match_parent"
+          <EditText
+            android:id="@+id/editTextname"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="3.93"
+            android:layout_weight="3"
             android:ems="10"
-            android:hint="search by people name" />
+            android:hint="請輸入聯絡人名稱" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/btnsearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/lightgray"
+            android:text="搜尋" />
     </LinearLayout>
  
     <LinearLayout
@@ -72,7 +81,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right" >
+        android:layout_gravity="right" 
+        android:gravity= "bottom" >
  
         <Button
             android:id="@+id/peopleButton"
@@ -80,7 +90,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text="PEOPLE"
+            android:text="聯絡人"
             android:textColor="#FFFFFF" />
  
         <Button
@@ -90,7 +100,7 @@
             android:layout_gravity="right"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="TAG"
+            android:text="標籤"
             android:textColor="#99CCCC" />
     </LinearLayout>
  

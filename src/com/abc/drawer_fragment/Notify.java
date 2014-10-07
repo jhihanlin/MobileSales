@@ -149,8 +149,8 @@ public class Notify extends Fragment {
 			final int index,
 			final SimpleAdapter adapter) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("Delete");
-		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+		builder.setTitle("是否刪除");
+		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -165,7 +165,7 @@ public class Notify extends Fragment {
 				adapter.notifyDataSetChanged();
 			}
 		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

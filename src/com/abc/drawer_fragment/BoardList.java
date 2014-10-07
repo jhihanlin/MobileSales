@@ -12,6 +12,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -31,6 +32,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -43,14 +45,17 @@ public class BoardList extends Fragment {
 
 	ListView board_list;
 	Button board_back;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.board_listview, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 		board_list = (ListView) v.findViewById(R.id.board_list);
 		board_back = (Button) v.findViewById(R.id.board_back);
+		board_back.setTypeface(typeface);
 		loadDataFromParse();
-		
+
 		return v;
 	}
 
@@ -131,8 +136,8 @@ public class BoardList extends Fragment {
 			final int index,
 			final SimpleAdapter adapter) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("Delete");
-		builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+		builder.setTitle("是否刪除");
+		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -147,7 +152,7 @@ public class BoardList extends Fragment {
 				adapter.notifyDataSetChanged();
 			}
 		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,6 +40,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -67,6 +69,7 @@ public class People_tag_list extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 		v = inflater.inflate(R.layout.people_tag, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		peopleButton = (Button) v.findViewById(R.id.peopleButton);
 		tagButton = (Button) v.findViewById(R.id.tagButton);
@@ -89,14 +92,15 @@ public class People_tag_list extends Fragment {
 		}
 
 		tagName.setText(tag);
+		peopleButton.setTypeface(typeface);
+		tagButton.setTypeface(typeface);
 
 		peopleButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				getActivity().getFragmentManager()
-				.beginTransaction()
+						.beginTransaction()
 						.replace(R.id.content_frame, new People()).commit();
 			}
 		});
@@ -105,9 +109,8 @@ public class People_tag_list extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				getActivity().getFragmentManager()
-				.beginTransaction()
+						.beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});
@@ -117,25 +120,28 @@ public class People_tag_list extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Thread thread = new Thread(){ 
-		            @Override
-		            public void run(){ 
-		                try{
-		                	Thread.sleep(2000);
-		                	People_tag_add ppadd = new People_tag_add();
+				Thread thread = new Thread() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(2000);
+							People_tag_add ppadd = new People_tag_add();
 							ppadd.setTag(tag);
 							ppadd.setMode("gadd");
-			
+
 							Fragment fg = ppadd;
 							getActivity().getFragmentManager()
-							.beginTransaction()
+									.beginTransaction()
 									.replace(R.id.content_frame, fg).commit();
-							}catch (Exception e){
-		                    e.printStackTrace();
-		                }finally{
-		                }}};
-		            thread.start();
-		            }});
+						} catch (Exception e) {
+							e.printStackTrace();
+						} finally {
+						}
+					}
+				};
+				thread.start();
+			}
+		});
 
 		return v;
 	}
@@ -149,14 +155,14 @@ public class People_tag_list extends Fragment {
 				getActivity(), contactsArrayList,
 				R.layout.people_contact_entry,
 				new String[] { "NAME", "NUMBER" }, new int[] {
-						R.id.txtNAMEPHONE, R.id.txtDATAPHONE}, getFragmentManager());
+						R.id.txtNAMEPHONE, R.id.txtDATAPHONE }, getFragmentManager());
 		listView.setAdapter(Btnadapter);
 
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				// TODO Auto-generated method stub
+
 				final String Oid = contactsArrayList.get(arg2).get("ID")
 						.toString();
 				final String name = contactsArrayList.get(arg2).get("NAME")
@@ -164,18 +170,16 @@ public class People_tag_list extends Fragment {
 				final String number = contactsArrayList.get(arg2).get("NUMBER")
 						.toString();
 				new AlertDialog.Builder(getActivity())
-						.setTitle("Delete")
-						.setPositiveButton("Done",
+						.setTitle("是否刪除")
+						.setPositiveButton("刪除",
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
-										// User clicked OK button
 										progressDialog.setCancelable(false);
 										progressDialog.setTitle("Loading...");
 										progressDialog.show();
 										ParseQuery<ParseObject> query = ParseQuery
 												.getQuery("Client");
-										// Log.v("","ID="+ID);
 
 										query.getInBackground(Oid,
 												new GetCallback<ParseObject>() {
@@ -197,45 +201,32 @@ public class People_tag_list extends Fragment {
 																		@Override
 																		public void done(
 																				ParseException ex) {
-																			// TODO
-																			// Auto-generated
-																			// method
-																			// stub
 																			if (ex == null) {
-																				Thread thread = new Thread(){ 
-																		            @Override
-																		            public void run(){ 
-											
-																		            	try{
-																		                	//1000 ç‚ºä¸€ç§’ 
-																		                    Thread.sleep(300);
-																		                    Message msg = new Message();
-																		                    People_tag_list ppadd = new People_tag_list();
+																				Thread thread = new Thread() {
+																					@Override
+																					public void run() {
+
+																						try {
+																							Thread.sleep(300);
+																							Message msg = new Message();
+																							People_tag_list ppadd = new People_tag_list();
 																							ppadd.setTag(tag);
 																							Fragment fg = ppadd;
 																							getActivity().getFragmentManager()
-																							.beginTransaction()
+																									.beginTransaction()
 																									.replace(
 																											R.id.content_frame,
 																											fg)
 																									.commit();
-																		                }catch (Exception e){
-																		                    e.printStackTrace();
-																		                }finally{
-																		                }
-																		            }
-																		        };
-																		        //é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
-																		        thread.start();
-																				
+																						} catch (Exception e) {
+																							e.printStackTrace();
+																						} finally {
+																						}
+																					}
+																				};
+																				thread.start();
+
 																			} else {
-																				/*Toast.makeText(
-																						getActivity(),
-																						"åš™ç£‹åš™è¸è•­åš™è¸è•­åš™è¸è•­:"
-																								+ ex.getMessage()
-																										.toString(),
-																						Toast.LENGTH_LONG)
-																						.show();*/
 
 																			}
 																		}
@@ -245,7 +236,7 @@ public class People_tag_list extends Fragment {
 												});
 
 									}
-								}).setNegativeButton("Cancel", null).show();
+								}).setNegativeButton("取消", null).show();
 				return true;
 			}
 		});
@@ -264,7 +255,7 @@ public class People_tag_list extends Fragment {
 						.get("NUMBER").toString();
 				new AlertDialog.Builder(getActivity())
 						.setTitle(number)
-						.setItems(new String[] { "Detail", "Call" },
+						.setItems(new String[] { "詳細資料", "撥打電話" },
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -278,7 +269,7 @@ public class People_tag_list extends Fragment {
 
 											Fragment fg = ppadd;
 											getActivity().getFragmentManager()
-											.beginTransaction()
+													.beginTransaction()
 													.replace(
 															R.id.content_frame,
 															fg).commit();
@@ -297,7 +288,7 @@ public class People_tag_list extends Fragment {
 									}
 
 								})
-						.setNegativeButton("Cancel",
+						.setNegativeButton("取消",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -315,14 +306,12 @@ public class People_tag_list extends Fragment {
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
-		Log.v("score", "111: " + tag);
 
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
-		// query.whereEqualTo("tag",tag);
+
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
-				// TODO Auto-generated method stub
 				progressDialog.dismiss();
 				if (e == null) {
 					int index = 0;
@@ -348,7 +337,6 @@ public class People_tag_list extends Fragment {
 					if (index > 0) {
 						setListView();
 					}
-					//
 
 				} else {
 					Log.v("score", "Error: " + e.getMessage());
@@ -409,8 +397,6 @@ public class People_tag_list extends Fragment {
 				}
 				progressDialog.dismiss();
 
-				// testObject.put("ID",
-				// ParseUser.getCurrentUser().getObjectId());
 				testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
 				Log.v("", "" + mimetype);
 
@@ -455,7 +441,6 @@ public class People_tag_list extends Fragment {
 		private class ItemView {
 			TextView tvname;
 			TextView tvnumber;
-
 
 		}
 
@@ -522,15 +507,13 @@ public class People_tag_list extends Fragment {
 				convertView.setTag(itemView);
 			}
 
-			// HashMap<String, Object> appInfo = mAppList.get(position);
 			if (mAppList != null) {
 				if (mAppList.size() > 0) {
 
-
-						itemView.tvname.setText(mAppList.get(position)
-								.get(keyString[0]).toString());
-						itemView.tvnumber.setText(mAppList.get(position)
-								.get(keyString[1]).toString());
+					itemView.tvname.setText(mAppList.get(position)
+							.get(keyString[0]).toString());
+					itemView.tvnumber.setText(mAppList.get(position)
+							.get(keyString[1]).toString());
 				}
 
 			}

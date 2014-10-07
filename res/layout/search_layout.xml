@@ -11,7 +11,7 @@
         android:id="@+id/AutoCompleteTextView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="search by address / client name" >
+        android:hint="請輸入客戶名稱或地址" >
     </AutoCompleteTextView>
 
     <com.google.android.gms.maps.MapView
