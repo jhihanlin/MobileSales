@@ -59,6 +59,15 @@
         android:layout_gravity="right" >
 
         <Button
+            android:id="@+id/buttonNO"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="取消"
+            android:textColor="#99CCCC" />
+
+        <Button
             android:id="@+id/buttonOK"
             android:layout_width="100dp"
             android:layout_height="50dp"
@@ -67,16 +76,6 @@
             android:background="#99CCCC"
             android:text="確定"
             android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/buttonNO"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
-            android:layout_weight="1"
-            android:background="#FFFFFF"
-            android:text="取消"
-            android:textColor="#99CCCC" />
     </LinearLayout>
 
 </LinearLayout>

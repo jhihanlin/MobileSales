@@ -17,11 +17,15 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
@@ -47,6 +51,7 @@ public class ClientNoteList extends Fragment {
 	ListView listView;
 	Button addEvent;
 	Button searchButton;
+	Button groupByBtn;
 	EditText inputClient;
 	String s = "";
 
@@ -55,7 +60,17 @@ public class ClientNoteList extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_listview, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
+		groupByBtn = (Button) v.findViewById(R.id.groupByBtn);
+		groupByBtn.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				Log.d("groupByBtn", "Onclick");
+				getActivity().openContextMenu(groupByBtn);
+			}
+		});
+
+		registerForContextMenu(groupByBtn);
 		listView = (ListView) v.findViewById(R.id.listView1);
 		inputClient = (EditText) v.findViewById(R.id.editText1);
 		searchButton = (Button) v.findViewById(R.id.button2);
@@ -166,6 +181,31 @@ public class ClientNoteList extends Fragment {
 			}
 		});
 		return v;
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.group_by_purpose:
+			Log.d("debug", "group_by_purpose");
+			FragmentManager fragmentManager = getFragmentManager();
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, new ClientNoteGroupsByPurpose()).commit();
+		case R.id.group_by_clientTag:
+			Log.d("debug", "group_by_clientTag");
+
+			return true;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		getActivity().getMenuInflater().inflate(R.menu.client_note_menu, menu);
+		Log.d("menu", "run menu");
 	}
 
 	private void loadDataFromParse() {

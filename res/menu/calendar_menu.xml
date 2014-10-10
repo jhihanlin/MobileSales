@@ -2,7 +2,7 @@
 
     <item
         android:id="@+id/import_calendar"
-        android:title="import Google Calendar">
+        android:title="匯入google行事曆">
     </item>
 
 </menu>

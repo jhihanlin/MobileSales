@@ -137,6 +137,10 @@ public class ClientNote extends Fragment {
 
 							}
 						}
+						if (purposArrayList.size() <= 1) {
+							Log.d("debug", "purposArrayList" + purposArrayList.size());
+							purposArrayList.add("  ");
+						}
 						purposArrayList.add("-新增目的-");
 						final ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
 								getActivity(),

@@ -11,8 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class ClientNoteUtils {
@@ -63,6 +65,8 @@ public class ClientNoteUtils {
 				final String s = ed.getText().toString();
 				ParseObject ps = new ParseObject("Purpose");
 				ps.put("name", s);
+				ps.setACL(new ParseACL(ParseUser.getCurrentUser()));
+
 				ps.saveInBackground(new SaveCallback() {
 
 					@Override
@@ -71,6 +75,7 @@ public class ClientNoteUtils {
 						purposeAdapter.remove("-新增目的-");
 						purposeAdapter.add(s);
 						purposeAdapter.add("-新增目的-");
+						purposeAdapter.remove("  ");
 						purposeAdapter.notifyDataSetChanged();
 					}
 				});

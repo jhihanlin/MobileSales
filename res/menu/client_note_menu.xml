@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/group_by_purpose"
+        android:title="依目的分類">
+    </item>
+    <item
+        android:id="@+id/group_by_clientTag"
+        android:title="依客戶標籤分類">
+    </item>
+</menu>

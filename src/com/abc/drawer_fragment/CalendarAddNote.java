@@ -111,7 +111,7 @@ public class CalendarAddNote extends Fragment {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNotes
+				if (e == null) {
 
 					try {
 						progressDialog.dismiss();
@@ -123,11 +123,19 @@ public class CalendarAddNote extends Fragment {
 								if (purposeObject.getString("name") != null)
 									purposArrayList.add(purposeObject
 											.getString("name"));
-								Log.d("purposeArrayList",
+								Log.d("debug",
 										purposArrayList.toString());
 
 							}
+
 						}
+
+						if (purposArrayList.size() <= 1) {
+							Log.d("debug", "purposArrayList" + purposArrayList.size());
+							purposArrayList.add("  ");
+						}
+						purposArrayList.add("-新增目的-");
+
 						ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
 								getActivity(),
 								android.R.layout.simple_spinner_item,
@@ -135,6 +143,12 @@ public class CalendarAddNote extends Fragment {
 						purposeAdapter
 								.setDropDownViewResource(android.R.layout.simple_spinner_item);
 						m_purpose.setAdapter(purposeAdapter);
+						Log.d("debug", "purposArrayList" + purposArrayList.size());
+
+						m_purpose.setOnItemSelectedListener(new
+								ClientNoteUtils.ClientNoteOnItemSelectedListener(getActivity(),
+										m_purpose));
+
 					} catch (Exception e2) {
 						e2.printStackTrace();
 					}
@@ -186,9 +200,9 @@ public class CalendarAddNote extends Fragment {
 		m_datepickerButton.setText(str);
 		Time t = new Time();
 		t.setToNow();
-		int hour = t.hour; // 0-23 
-		int minute = t.minute; 
-		m_timepickerButton.setText(hour +" : "+minute);
+		int hour = t.hour; // 0-23
+		int minute = t.minute;
+		m_timepickerButton.setText(hour + " : " + minute);
 
 		// DatePickerDialog
 		m_datepickerButton.setOnClickListener(new View.OnClickListener() {

@@ -10,8 +10,11 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -66,7 +69,7 @@ public class LoginActivity extends Activity {
 
 		passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 		passwordEditText.setTypeface(typeface);
-
+		setupUI(findViewById(R.id.loginLayout));
 		loginCheckBox = (CheckBox) findViewById(R.id.loginCheckbox);
 		loginCheckBox.setTypeface(typeface);
 
@@ -214,5 +217,27 @@ public class LoginActivity extends Activity {
 			}
 		});
 		builder.show();
+	}
+
+	public void setupUI(View view) {
+
+		// Set up touch listener for non-text box views to hide keyboard.
+		if (!(view instanceof EditText)) {
+
+			view.setOnTouchListener(new OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					hideSoftKeyboard(LoginActivity.this);
+					return false;
+				}
+
+			});
+		}
+	}
+
+	public void hideSoftKeyboard(Activity activity) {
+		InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 	}
 }

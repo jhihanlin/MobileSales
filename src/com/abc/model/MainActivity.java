@@ -100,6 +100,7 @@ public class MainActivity extends Activity {
 		Button logoutBtn = (Button) findViewById(R.id.logoutBtn);
 		profile = (ImageView) findViewById(R.id.profile);
 		loadFromParse();
+		
 		logoutBtn.setTypeface(typeface);
 
 		logoutBtn.setOnClickListener(new OnClickListener() {
