@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -55,7 +56,7 @@ public class Message extends Fragment {
 	private TextView receiverTextView;
 	private Spinner modelSpinner, peopleSpinner;
 	private ProgressDialog progressDialog;
-
+	private AlertDialog peopleDialog;
 	protected List<ParseObject> messageModels, peoples;
 	protected String receiverPhoneNumbers;
 
@@ -69,15 +70,17 @@ public class Message extends Fragment {
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		sendButton = (Button) v.findViewById(R.id.sendButton);
+		sendButton.setTypeface(typeface);
 		cancelButton = (Button) v.findViewById(R.id.cancelButton);
+		cancelButton.setTypeface(typeface);
 		modelButton = (Button) v.findViewById(R.id.modelButton);
 		peopleButton = (Button) v.findViewById(R.id.peopleButton);
 		contentEditText = (EditText) v.findViewById(R.id.contentEditText);
 		modelSpinner = (Spinner) v.findViewById(R.id.modelSpinner);
 		receiverTextView = (TextView) v.findViewById(R.id.receiverTextView);
-		TextView ms_tx1=(TextView) v.findViewById(R.id.ms_tx1);
+		TextView ms_tx1 = (TextView) v.findViewById(R.id.ms_tx1);
 		ms_tx1.setTypeface(typeface);
-		
+
 		progressDialog = new ProgressDialog(getActivity());
 		loadMessageModelFromParse();
 
@@ -87,49 +90,50 @@ public class Message extends Fragment {
 				String content = contentEditText.getText().toString();
 
 				String receiver = receiverPhoneNumbers;
-				Log.d("receiver", receiver);
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
+				if (receiver != null) {
+					Log.d("receiver", receiver);
+					progressDialog.setCancelable(false);
+					progressDialog.setTitle("Loading...");
+					progressDialog.show();
 
-				ParseObject object = new ParseObject("Message");
-				object.put("Message_content", content);
-				object.put("Message_receiver", receiverTextView.getText()
-						.toString());
-				object.setACL(new ParseACL(ParseUser.getCurrentUser()));
-				object.saveInBackground(new SaveCallback() {
+					ParseObject object = new ParseObject("Message");
+					object.put("Message_content", content);
+					object.put("Message_receiver", receiverTextView.getText()
+							.toString());
+					object.setACL(new ParseACL(ParseUser.getCurrentUser()));
+					object.saveInBackground(new SaveCallback() {
 
-					public void done(ParseException e) {
-						progressDialog.dismiss();
-						if (e == null) {
-							Toast.makeText(getActivity(), "發送成功",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Toast.makeText(getActivity(), "發送失敗",
-									Toast.LENGTH_SHORT).show();
+						public void done(ParseException e) {
+							progressDialog.dismiss();
+							if (e == null) {
+								try {
+									Toast.makeText(getActivity().getBaseContext(), "成功送出訊息",
+											Toast.LENGTH_SHORT).show();
+									SmsManager smsManager = SmsManager.getDefault();
+									String[] temp = null;
+									if (receiverPhoneNumbers.contains(",")) {
+
+										temp = receiverPhoneNumbers.split(",");
+
+									}
+									for (int i = 0; i < temp.length; i++) {
+
+										smsManager.sendTextMessage(temp[i].toString(), null,
+												contentEditText.getText().toString(),
+												PendingIntent.getBroadcast(getActivity(), 0,
+														new Intent(), 0), null);
+
+									}
+								} catch (Exception exception) {
+									exception.printStackTrace();
+								}
+							}
 						}
-					}
 
-				});
-				Toast.makeText(getActivity().getBaseContext(), "送出",
-						Toast.LENGTH_SHORT).show();
-				SmsManager smsManager = SmsManager.getDefault();
-				String[] temp = null;
-				if (receiverPhoneNumbers.contains(",")) {
-
-					temp = receiverPhoneNumbers.split(",");
-
-				}
-				for (int i = 0; i < temp.length; i++) {
-					try {
-						smsManager.sendTextMessage(temp[i].toString(), null,
-								contentEditText.getText().toString(),
-								PendingIntent.getBroadcast(getActivity(), 0,
-										new Intent(), 0), null);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					;
+					});
+				} else {
+					Toast.makeText(getActivity().getBaseContext(), "請選擇聯絡人",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -196,7 +200,7 @@ public class Message extends Fragment {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { 
+				if (e == null) {
 					messageModels = objects;
 					Log.d("debug", "objects.size()=" + objects.size());
 				}
@@ -277,7 +281,7 @@ public class Message extends Fragment {
 		new AlertDialog.Builder(getActivity())
 				.setTitle("新增簡訊模組")
 				.setView(v)
-				.setPositiveButton("Done",
+				.setPositiveButton("完成",
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
@@ -317,7 +321,7 @@ public class Message extends Fragment {
 							}
 						})
 
-				.setNeutralButton("Cancel",
+				.setNeutralButton("取消",
 						new DialogInterface.OnClickListener() {
 
 							@Override
@@ -337,7 +341,7 @@ public class Message extends Fragment {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { 
+				if (e == null) {
 					messageModels = objects;
 					Log.d("debug", "objects.size()=" + objects.size());
 				}
@@ -370,40 +374,41 @@ public class Message extends Fragment {
 		return dialog;
 	}
 
-	protected Dialog onCreateDialog1() {
+	protected void onCreateDialog1() {
 
-		Dialog dialog = null;
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		final View v = inflater.inflate(R.layout.message_expandable_fragment,
-				null);
+		if (peopleDialog == null) {
+			View expandableFragment = inflater.inflate(
+					R.layout.message_expandable_fragment, null);
+			peopleDialog = new AlertDialog.Builder(getActivity())
+					.setTitle("選擇聯絡人")
+					.setView(expandableFragment)
+					.setPositiveButton("完成",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									MessageExpandable mEX = (MessageExpandable) getFragmentManager()
+											.findFragmentById(R.id.fragment1);
 
-		new AlertDialog.Builder(getActivity())
-				.setTitle("People")
-				.setView(v)
-				.setPositiveButton("Done",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								MessageExpandable mEX = (MessageExpandable) getFragmentManager()
-										.findFragmentById(R.id.fragment1);
+									receiverPhoneNumbers = mEX
+											.getPhoneNumbers();
+									receiverTextView.setText(mEX.getName());
 
-								receiverPhoneNumbers = mEX.getPhoneNumbers();
-								receiverTextView.setText(mEX.getName());
+									Log.d("123", "123");
 
-								Log.d("123", "123");
-
-							}
-						})
-				.setNegativeButton("Cancel",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Canceled.
-							}
-						}).show();
-
-		return dialog;
+								}
+							})
+					.setNegativeButton("取消",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+									// Canceled.
+								}
+							}).show();
+		} else {
+			peopleDialog.show();
+		}
 	}
 
 	@Override

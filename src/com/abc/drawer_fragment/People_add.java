@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.Bitmap.CompressFormat;
 import android.location.Address;
 import android.location.Geocoder;
@@ -47,6 +48,7 @@ import android.widget.DatePicker;
 
 import com.abc.model.MainActivity;
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -88,6 +90,7 @@ public class People_add extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.people_add, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		final Calendar TodayDate = Calendar.getInstance();
 		final int sYear = TodayDate.get(Calendar.YEAR);
@@ -98,9 +101,13 @@ public class People_add extends Fragment {
 		progressDialog = new ProgressDialog(getActivity());
 
 		editPeople = (Button) v.findViewById(R.id.editPeople);
+		editPeople.setTypeface(typeface);
 		savePeople = (Button) v.findViewById(R.id.savePeople);
+		savePeople.setTypeface(typeface);
 		delPeople = (Button) v.findViewById(R.id.deletePeople);
+		delPeople.setTypeface(typeface);
 		backPeople = (Button) v.findViewById(R.id.backPeople);
+		backPeople.setTypeface(typeface);
 		edtname = (EditText) v.findViewById(R.id.edtname);
 		edttel = (EditText) v.findViewById(R.id.edttel);
 		edtemail = (EditText) v.findViewById(R.id.edtemail);

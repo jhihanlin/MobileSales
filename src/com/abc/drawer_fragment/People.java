@@ -79,6 +79,7 @@ public class People extends Fragment {
 		importPeople = (Button) v.findViewById(R.id.importPeople);
 		addPeople = (Button) v.findViewById(R.id.addPeople);
 		searchPeople = (Button) v.findViewById(R.id.btnsearch);
+		searchPeople.setTypeface(typeface);
 		edtsname = (EditText) v.findViewById(R.id.editTextname);
 		TextView peoplelist_tx = (TextView) v.findViewById(R.id.peoplelist_tx);
 		peoplelist_tx.setTypeface(typeface);

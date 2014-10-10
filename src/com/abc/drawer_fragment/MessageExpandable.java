@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.R.integer;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.app.ExpandableListActivity;
@@ -39,6 +40,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abc.model.R;
 import com.parse.FindCallback;
@@ -76,20 +78,24 @@ public class MessageExpandable extends Fragment {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { 
-					peoples = objects;
-					Log.d("debug", "objects.size()=" + objects.size());
+				if (e == null) {
+					try {
+						peoples = objects;
+						Log.d("debug", "objects.size()=" + objects.size());
 
-					Map<String, List<ParseObject>> tagPeople = getPeopleData();
+						Map<String, List<ParseObject>> tagPeople = getPeopleData();
 
-					Set<String> tags = tagPeople.keySet();
+						Set<String> tags = tagPeople.keySet();
 
-					String[] tagArray = new String[tags.size()];
+						String[] tagArray = new String[tags.size()];
 
-					tagArray = tags.toArray(tagArray);
-					adapter = new SavedTabsListAdapter();
-					adapter.setData(tagPeople, tagArray);
-					exTV.setAdapter(adapter);
+						tagArray = tags.toArray(tagArray);
+						adapter = new SavedTabsListAdapter();
+						adapter.setData(tagPeople, tagArray);
+						exTV.setAdapter(adapter);
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
 
 				}
 
@@ -101,37 +107,41 @@ public class MessageExpandable extends Fragment {
 	public String getName() {
 
 		String phoneNum = "";
-
-		for (int i = 0; i < adapter.groups.length; i++) {
-			for (int j = 0; j < adapter.tagPeople.get(adapter.groups[i]).size(); j++) {
-				Log.d("debug", "phone numbes:" + i + "," + j + ":"
-						+ childChecked[i][j]);
-				if (childChecked[i][j] == true || groupChecked[i]) {
-					phoneNum += adapter.tagPeople.get(adapter.groups[i]).get(j)
-							.getString("name") + ",";
+		int groups = adapter.groups.length;
+		if (groups != 0) {
+			for (int i = 0; i < groups; i++) {
+				for (int j = 0; j < adapter.tagPeople.get(adapter.groups[i]).size(); j++) {
+					Log.d("debug", "phone numbes:" + i + "," + j + ":"
+							+ childChecked[i][j]);
+					if (childChecked[i][j] == true || groupChecked[i]) {
+						phoneNum += adapter.tagPeople.get(adapter.groups[i]).get(j)
+								.getString("name") + ",";
+					}
 				}
 			}
 		}
+
 		return phoneNum;
 	}
-	
-	
-	public String getPhoneNumbers(){
-		
-		String phoneNum = "";
 
-		for (int i = 0; i < adapter.groups.length; i++) {
-			for (int j = 0; j < adapter.tagPeople.get(adapter.groups[i]).size(); j++) {
-				Log.d("debug", "phone numbes:" + i + "," + j + ":"
-						+ childChecked[i][j]);
-				if (childChecked[i][j] == true || groupChecked[i]) {
-					phoneNum += adapter.tagPeople.get(adapter.groups[i]).get(j)
-							.getString("tel") + ",";
+	public String getPhoneNumbers() {
+
+		String phoneNum = "";
+		int groups = adapter.groups.length;
+		if (groups != 0) {
+			for (int i = 0; i < groups; i++) {
+				for (int j = 0; j < adapter.tagPeople.get(adapter.groups[i]).size(); j++) {
+					Log.d("debug", "phone numbes:" + i + "," + j + ":"
+							+ childChecked[i][j]);
+					if (childChecked[i][j] == true || groupChecked[i]) {
+						phoneNum += adapter.tagPeople.get(adapter.groups[i]).get(j)
+								.getString("tel") + ",";
+					}
 				}
 			}
 		}
 		return phoneNum;
-		
+
 	}
 
 	protected Map<String, List<ParseObject>> getPeopleData() {
@@ -155,7 +165,6 @@ public class MessageExpandable extends Fragment {
 
 	public class SavedTabsListAdapter extends BaseExpandableListAdapter {
 
-
 		private Map<String, List<ParseObject>> tagPeople;
 		private String[] groups;
 
@@ -163,17 +172,20 @@ public class MessageExpandable extends Fragment {
 				String[] tagArray) {
 			this.tagPeople = tagPeople;
 			this.groups = tagArray;
-			groupChecked = new boolean[groups.length];
-
-			childChecked = new boolean[groups.length][];
-			for (int i = 0; i < childChecked.length; i++) {
-				childChecked[i] = new boolean[tagPeople.get(groups[i]).size()];
-
+			if (tagPeople != null && groups != null) {
+				groupChecked = new boolean[groups.length];
+				childChecked = new boolean[groups.length][];
+				for (int i = 0; i < childChecked.length; i++) {
+					childChecked[i] = new boolean[tagPeople.get(groups[i]).size()];
+				}
+			}
+			else {
+				Toast.makeText(getActivity(),
+						"請選擇聯絡人",
+						Toast.LENGTH_LONG).show();
 			}
 		}
 
-		
-		
 		@Override
 		public int getGroupCount() {
 			return groups.length;

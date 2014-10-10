@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.R.integer;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
@@ -65,7 +66,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends Activity {
 	private DrawerLayout my_DrawerLayout;
 	private ListView my_DrawerList;
 	private RelativeLayout my_LeftDrawer;

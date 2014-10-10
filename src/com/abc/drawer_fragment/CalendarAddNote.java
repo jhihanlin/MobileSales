@@ -32,11 +32,13 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -72,6 +74,8 @@ public class CalendarAddNote extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater
 				.inflate(R.layout.calendar_note_layout, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
+
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
@@ -87,8 +91,9 @@ public class CalendarAddNote extends Fragment {
 		m_datepickerButton = (Button) v.findViewById(R.id.datepickerButton_1);
 		m_timepickerButton = (Button) v.findViewById(R.id.timepickerButton_1);
 		saveButton = (Button) v.findViewById(R.id.save_1);
+		saveButton.setTypeface(typeface);
 		Button cancelButton = (Button) v.findViewById(R.id.cancel_1);
-
+		cancelButton.setTypeface(typeface);
 		// remind Spinner
 		ArrayAdapter<String> adapterTime = new ArrayAdapter<String>(
 				this.getActivity(), android.R.layout.simple_spinner_item,

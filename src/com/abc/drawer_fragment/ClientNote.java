@@ -2,6 +2,7 @@ package com.abc.drawer_fragment;
 
 import android.app.Fragment;
 
+import android.location.GpsStatus.Listener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
@@ -10,7 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -25,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -32,11 +39,15 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import com.abc.drawer_fragment.ClientNoteUtils.ClientNoteOnItemSelectedListener;
 import com.abc.model.R;
+import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -72,6 +83,8 @@ public class ClientNote extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater
 				.inflate(R.layout.client_note_layout, container, false);
+		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
+
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
@@ -87,8 +100,9 @@ public class ClientNote extends Fragment {
 		m_datepickerButton = (Button) v.findViewById(R.id.datepickerButton);
 		m_timepickerButton = (Button) v.findViewById(R.id.timepickerButton);
 		saveButton = (Button) v.findViewById(R.id.save);
+		saveButton.setTypeface(typeface);
 		Button cancelButton = (Button) v.findViewById(R.id.cancel);
-
+		cancelButton.setTypeface(typeface);
 		// remind Spinner
 		ArrayAdapter<String> adapterTime = new ArrayAdapter<String>(
 				this.getActivity(), android.R.layout.simple_spinner_item,
@@ -123,13 +137,66 @@ public class ClientNote extends Fragment {
 
 							}
 						}
-						ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
+						purposArrayList.add("-新增目的-");
+						final ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
 								getActivity(),
 								android.R.layout.simple_spinner_item,
 								purposArrayList);
 						purposeAdapter
 								.setDropDownViewResource(android.R.layout.simple_spinner_item);
 						m_purpose.setAdapter(purposeAdapter);
+						m_purpose.setOnItemSelectedListener(new ClientNoteUtils.ClientNoteOnItemSelectedListener(getActivity(), m_purpose));
+						m_purpose.setOnLongClickListener(new OnLongClickListener() {
+
+							@Override
+							public boolean onLongClick(View v) {
+								// if (purposeAdapter.getCount() - 1 ==
+								// position) {
+								// return true;
+								// }
+								// AlertDialog.Builder builder = new
+								// AlertDialog.Builder(getActivity());
+								// builder.setTitle("是否刪除");
+								// builder.setPositiveButton("刪除", new
+								// DialogInterface.OnClickListener() {
+								//
+								// @Override
+								// public void onClick(DialogInterface dialog,
+								// int which) {
+								// final String pp =
+								// purposeAdapter.getItem(position);
+								// ParseQuery<ParseObject> query = new
+								// ParseQuery<ParseObject>("Purpose");
+								// query.whereEqualTo("name", pp);
+								// query.findInBackground(new
+								// FindCallback<ParseObject>() {
+								//
+								// @Override
+								// public void done(List<ParseObject> objects,
+								// ParseException e) {
+								// for (ParseObject object : objects) {
+								// object.deleteEventually();
+								// purposeAdapter.remove(pp);
+								// purposeAdapter.notifyDataSetChanged();
+								// }
+								// }
+								// });
+								// }
+								// });
+								// builder.setNegativeButton("取消", new
+								// DialogInterface.OnClickListener() {
+								//
+								// @Override
+								// public void onClick(DialogInterface dialog,
+								// int which) {
+								//
+								// }
+								// });
+								// builder.show();
+								Log.d("debug", "onLongClick");
+								return true;
+							}
+						});
 					} catch (Exception e2) {
 						e2.printStackTrace();
 					}
@@ -138,7 +205,7 @@ public class ClientNote extends Fragment {
 		});
 
 		ParseQuery<ParseObject> queryClientName = new ParseQuery<ParseObject>(
-				"Client"); // get Parse table:ClientNote
+				"Client");
 		queryClientName.findInBackground(new FindCallback<ParseObject>() {
 			ArrayList<String> clientNameArrayList;
 

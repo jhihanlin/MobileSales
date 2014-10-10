@@ -27,7 +27,8 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="客戶" />
+            android:text="客戶："
+            android:textSize="15sp" />
 
         <Spinner
             android:id="@+id/clientSpinner"
@@ -45,7 +46,8 @@
             android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="目的" />
+            android:text="目的："
+            android:textSize="15sp" />
 
         <Spinner
             android:id="@+id/purposeSpinner"

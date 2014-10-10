@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="請輸入電話號碼或選擇聯絡人" />
+            android:hint="請選擇聯絡人" />
 
         <Button
             android:id="@+id/peopleButton"

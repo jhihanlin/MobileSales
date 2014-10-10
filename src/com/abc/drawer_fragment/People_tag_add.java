@@ -68,6 +68,8 @@ public class People_tag_add extends Fragment {
 		buttonNO = (Button) v.findViewById(R.id.buttonNO);
 		listView = (ListView) v.findViewById(R.id.lvtaggadd);
 		editTexttags = (EditText) v.findViewById(R.id.editTexttags);
+		TextView textViewtagname=(TextView) v.findViewById(R.id.textViewtagname);
+		textViewtagname.setTypeface(typeface);
 		progressDialog = new ProgressDialog(getActivity());
 		if (mode.equals("gadd")) {
 			ll.setVisibility(8);
