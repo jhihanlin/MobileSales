@@ -70,11 +70,10 @@ public class ClientNoteView extends Fragment {
 		Bundle arguments = getArguments();
 		Log.d("bundle2", arguments.getBundle("bundle2").toString());
 		Bundle bundle = arguments.getBundle("bundle2");
-		ArrayList arrayList = new ArrayList();
-		arrayList = bundle.getParcelableArrayList("arrayList");
+		ArrayList arrayList = bundle.getParcelableArrayList("arrayList");
 		Log.d("arrayList", arrayList.toString());
 
-		ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		ArrayList<Map<String, String>> list = arrayList;
 		list = (ArrayList<Map<String, String>>) arrayList;
 		Log.d("list", list.get(0).get("title").toString());
 

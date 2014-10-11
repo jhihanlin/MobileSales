@@ -1,6 +1,5 @@
 package com.abc.drawer_fragment;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +7,8 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -26,23 +23,21 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
-import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 public class ClientNoteGroupsByPurpose extends Fragment {
+	private List<ParseObject> clientNotes;
+	private ListView ls;
+	private Button groupByPurpose_back;
 
 	public ClientNoteGroupsByPurpose() {
 	}
@@ -52,75 +47,207 @@ public class ClientNoteGroupsByPurpose extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_note_purpose, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
-		final ListView ls = (ListView) v.findViewById(R.id.purpose_listview);
+		ls = (ListView) v.findViewById(R.id.purpose_listview);
+		groupByPurpose_back = (Button) v.findViewById(R.id.groupByPurpose_back);
+		groupByPurpose_back.setTypeface(typeface);
+		groupByPurpose_back.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				getActivity()
+						.getFragmentManager()
+						.beginTransaction()
+						.replace(R.id.content_frame, new ClientNoteList())
+						.commit();
+			}
+		});
 		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
-		ParseQuery<ParseObject> query_1 = new ParseQuery<ParseObject>(
+		ParseQuery<ParseObject> queryPurpose = new ParseQuery<ParseObject>(
 				"Purpose");
-		ParseObject ps=new ParseObject("ClientNote");
-		query_1.orderByDescending("createdAt");
-		query_1.findInBackground(new FindCallback<ParseObject>() {
+		queryPurpose.orderByDescending("createdAt");
+		queryPurpose.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
-			public void done(List<ParseObject> objects, ParseException e) {
-				progressDialog.dismiss();
-				final ArrayList<String> arrayList = new ArrayList<String>();
-				for (ParseObject ob : objects) {
-					arrayList.add(ob.getString("name"));
+			public void done(final List<ParseObject> purpose, ParseException e) {
+				ParseQuery<ParseObject> queryClientNote = new ParseQuery<ParseObject>(
+						"ClientNote");
 
-				}
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-						android.R.layout.simple_list_item_1, arrayList);
-				ls.setAdapter(adapter);
-
-				ls.setOnItemClickListener(new OnItemClickListener() {
-					final ArrayList<Map<String, String>> plist = new ArrayList<Map<String, String>>();
+				queryClientNote.findInBackground(new FindCallback<ParseObject>() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-						final String p = arrayList.get(position);
-						Log.d("debug", p);
-						progressDialog.setCancelable(false);
-						progressDialog.setTitle("Loading...");
-						progressDialog.show();
-						ParseQuery<ParseObject> query_2 = new ParseQuery<ParseObject>(
-								"ClientNote");
-						query_2.orderByDescending("date");
-
-						query_2.findInBackground(new FindCallback<ParseObject>() {
-
-							@Override
-							public void done(List<ParseObject> objects, ParseException e) {
-								progressDialog.dismiss();
-								for (ParseObject ps : objects) {
-									if (ps.getString("purpose").equals(p)) {
-										Log.d("debug", "purpose==p" + ps.getString("title"));
-										Map<String, String> item = new HashMap<String, String>();
-										item.put("title", ps.getString("title"));
-										item.put("date", ps.getString("date"));
-										item.put("id", ps.getObjectId());
-										plist.add(item);									}
-								}
-								if(plist.size()>0){
-									
-								}
-								final SimpleAdapter adapter_2 = new SimpleAdapter(getActivity(),
-										plist, R.layout.client_note_listview,
-										new String[] { "title", "date" }, new int[] {
-												R.id.clientNote_tx1, R.id.clientNote_tx2 });
-								ls.setAdapter(adapter_2);
-							}
-						});
-
+					public void done(List<ParseObject> objects, ParseException e) {
+						clientNotes = objects;
+						progressDialog.dismiss();
+						setListViewData(purpose);
 					}
 				});
+
+			}
+
+			private void setListViewData(List<ParseObject> purpose) {
+				final List<String> arrayList = new ArrayList<String>();
+				final List<String> arrayListId = new ArrayList<String>();
+
+				for (ParseObject ob : purpose) {
+					String purposeName = ob.getString("name");
+
+					int count = 0;
+					for (ParseObject note : clientNotes) {
+						if (purposeName.equals(note.getString("purpose")))
+							count++;
+					}
+
+					arrayListId.add(ob.getObjectId());
+					arrayList.add(purposeName + "(" + count + ")");
+				}
+				try {
+					final ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(getActivity(),
+							android.R.layout.simple_list_item_1, arrayList);
+					ls.setAdapter(array_adapter);
+
+					ls.setOnItemClickListener(new OnItemClickListener() {
+						final List<Map<String, String>> plist = new ArrayList<Map<String, String>>();
+						final List<Map<String, String>> plist_view = new ArrayList<Map<String, String>>();
+
+						@Override
+						public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+							String purposeName = arrayList.get(position).split("\\(")[0];
+							Log.d("debug", purposeName);
+
+							for (ParseObject clientNote : clientNotes) {
+
+								if (clientNote.getString("purpose").equals(purposeName) == false)
+									continue;
+
+								Log.d("debug", "purpose==p" + clientNote.getString("title"));
+								Map<String, String> item = new HashMap<String, String>();
+								item.put("title", clientNote.getString("title"));
+								item.put("date", clientNote.getString("date"));
+								item.put("id", clientNote.getObjectId());
+								plist.add(item);
+
+								Map<String, String> item2 = new HashMap<String, String>();
+								item2.put("title", clientNote.getString("title"));
+								item2.put("client", clientNote.getString("client"));
+								item2.put("purpose", clientNote.getString("purpose"));
+								item2.put("date", clientNote.getString("date"));
+								item2.put("time", clientNote.getString("time"));
+								item2.put("content", clientNote.getString("content"));
+								item2.put("location", clientNote.getString("location"));
+								item2.put("remind", clientNote.getString("remind"));
+								item2.put("remarks", clientNote.getString("remarks"));
+								item2.put("id", clientNote.getObjectId());
+								plist_view.add(item2);
+							}
+							if (plist.size() > 0) {
+								try {
+									final SimpleAdapter adapter_2 = new SimpleAdapter(getActivity(),
+											plist, R.layout.client_note_listview,
+											new String[] { "title", "date" }, new int[] {
+													R.id.clientNote_tx1, R.id.clientNote_tx2 });
+									ls.setAdapter(adapter_2);
+									groupByPurpose_back.setText("返回目的分類");
+									groupByPurpose_back.setOnClickListener(new OnClickListener() {
+
+										@Override
+										public void onClick(View v) {
+											getActivity()
+													.getFragmentManager()
+													.beginTransaction()
+													.replace(R.id.content_frame, new ClientNoteGroupsByPurpose())
+													.commit();
+										}
+									});
+									ls.setOnItemClickListener(new OnItemClickListener() {
+
+										@Override
+										public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+											sendValueToClientNoteView(plist_view, position);
+										}
+									});
+								} catch (Exception e2) {
+									e2.printStackTrace();
+								}
+
+							} else {
+								Toast.makeText(getActivity().getBaseContext(),
+										"此分類無記事", Toast.LENGTH_SHORT)
+										.show();
+							}
+						}
+					});
+					ls.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+						@Override
+						public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+							showDeleteDialog(arrayListId, position, array_adapter);
+
+							return true;
+						}
+					});
+				} catch (Exception e3) {
+					e3.printStackTrace();
+				}
 			}
 		});
 
 		return v;
+	}
+
+	public void sendValueToClientNoteView(List<Map<String, String>> list, int position) {
+		Bundle bundle = new Bundle();
+		Log.d("list[position]", list.get(position).toString());
+		ArrayList<Map<String, String>> arrayList = new ArrayList<Map<String, String>>();
+		arrayList.add(list.get(position));
+		bundle.putParcelableArrayList("arrayList", (ArrayList<? extends Parcelable>) arrayList);
+
+		Bundle bundle2 = new Bundle();
+		bundle2.putBundle("bundle2", bundle);
+		ClientNoteView clientNoteView = new ClientNoteView();
+		clientNoteView.setArguments(bundle2);
+		getActivity()
+				.getFragmentManager()
+				.beginTransaction()
+				.replace(R.id.content_frame, clientNoteView)
+				.commit();
+	}
+
+	public void showDeleteDialog(final List<String> data,
+			final int index,
+			final ArrayAdapter<String> array_adapter) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle("是否刪除");
+		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String objectId = data.get(index);
+
+				Log.d("id", objectId);
+				ParseObject obj = ParseObject.createWithoutData(
+						"Purpose", objectId);
+				obj.deleteEventually();
+				data.remove(index);
+				Toast.makeText(getActivity().getBaseContext(),
+						"刪除成功", Toast.LENGTH_SHORT)
+						.show();
+				array_adapter.remove(array_adapter.getItem(index));
+				array_adapter.notifyDataSetChanged();
+			}
+		});
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+		});
+		builder.show();
 	}
 
 	@Override

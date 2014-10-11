@@ -55,6 +55,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:background="#99CCCC"
+            android:gravity="center"
             android:text="新增公告"
             android:textColor="#FFFFFF" />
 

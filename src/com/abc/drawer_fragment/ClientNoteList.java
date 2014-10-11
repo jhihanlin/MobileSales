@@ -164,7 +164,16 @@ public class ClientNoteList extends Fragment {
 											return true;
 										}
 									});
+									listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
+										@Override
+										public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+											showDeleteDialog(list, position, adapter);
+
+											return true;
+										}
+									});
 								} catch (Exception e3) {
 									e3.printStackTrace();
 								}
