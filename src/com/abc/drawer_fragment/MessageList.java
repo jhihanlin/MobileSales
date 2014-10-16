@@ -24,6 +24,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -37,10 +38,12 @@ import com.parse.ParseQuery;
 public class MessageList extends Fragment {
 
 	public MessageList() {
+
 	}
 
-	ListView listView;
-	Button addEvent;
+	private ListView listView;
+	private Button addEvent;
+	private ProgressBar progressBar;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -48,8 +51,9 @@ public class MessageList extends Fragment {
 		View v = inflater.inflate(R.layout.message_listview, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
+		progressBar = (ProgressBar) v.findViewById(R.id.progressBar1);
 		listView = (ListView) v.findViewById(R.id.listView);
-		TextView message_tx1=(TextView) v.findViewById(R.id.message_tx1);
+		TextView message_tx1 = (TextView) v.findViewById(R.id.message_tx1);
 		message_tx1.setTypeface(typeface);
 		addEvent = (Button) v.findViewById(R.id.addButton);
 		loadDataFromParse();
@@ -72,6 +76,8 @@ public class MessageList extends Fragment {
 
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
+
+				progressBar.setVisibility(View.GONE);
 
 				final ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
