@@ -16,7 +16,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/groupByPurpose_tx"
+            android:id="@+id/group_by_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -43,4 +43,5 @@
             android:layout_height="wrap_content" >
         </ListView>
     </LinearLayout>
+
 </LinearLayout>

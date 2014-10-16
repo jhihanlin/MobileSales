@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
+import com.google.android.gms.common.data.f;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -37,6 +38,7 @@ import com.parse.ParseQuery;
 public class ClientNoteGroupsByTag extends Fragment {
 	private List<ParseObject> clientNotes;
 	private ListView ls;
+	private TextView groupByText;
 
 	public ClientNoteGroupsByTag() {
 	}
@@ -44,8 +46,10 @@ public class ClientNoteGroupsByTag extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		final View v = inflater.inflate(R.layout.client_note_purpose, container, false);
+		final View v = inflater.inflate(R.layout.client_note_group_by, container, false);
 		ls = (ListView) v.findViewById(R.id.purpose_listview);
+		groupByText = (TextView) v.findViewById(R.id.group_by_textview);
+		groupByText.setText("依客戶標籤分類記事");
 		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
 		progressDialog.setCancelable(false);
