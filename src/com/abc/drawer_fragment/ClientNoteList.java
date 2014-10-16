@@ -1,6 +1,5 @@
 package com.abc.drawer_fragment;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,14 +10,14 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -30,10 +29,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
@@ -75,8 +72,6 @@ public class ClientNoteList extends Fragment {
 		inputClient = (EditText) v.findViewById(R.id.editText1);
 		searchButton = (Button) v.findViewById(R.id.button2);
 		searchButton.setTypeface(typeface);
-		TextView clientlist_tx = (TextView) v.findViewById(R.id.clientlist_tx);
-		clientlist_tx.setTypeface(typeface);
 
 		addEvent = (Button) v.findViewById(R.id.button1);
 		loadDataFromParse();
@@ -213,8 +208,9 @@ public class ClientNoteList extends Fragment {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
-		getActivity().getMenuInflater().inflate(R.menu.client_note_menu, menu);
-		Log.d("menu", "run menu");
+		// getActivity().getMenuInflater().inflate(R.menu.client_note_menu,
+		// menu);
+		// Log.d("menu", "run menu");
 	}
 
 	private void loadDataFromParse() {
@@ -344,6 +340,40 @@ public class ClientNoteList extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		FragmentManager fragmentManager = getFragmentManager();
+		switch (item.getItemId()) {
+		case R.id.action_add_client_note:
+			fragmentManager.beginTransaction()
+					.add(R.id.content_frame, new ClientNote())
+					.addToBackStack(null)
+					.commit();
+			return true;
+		case R.id.group_by_purpose:
+			Log.d("debug", "group_by_purpose");
+			fragmentManager.beginTransaction()
+					.add(R.id.content_frame, new ClientNoteGroupsByPurpose())
+					.addToBackStack(null)
+					.commit();
+			return true;
+		case R.id.group_by_clientTag:
+			Log.d("debug", "group_by_clientTag");
+			return true;
+
+		default:
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		inflater.inflate(R.menu.clientnote_fragment_menu, menu);
+	}
 }

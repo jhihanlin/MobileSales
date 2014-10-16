@@ -42,25 +42,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right" >
-
-        <TextView
-            android:id="@+id/clientlist_tx"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
-            android:text="新增一筆客戶記事....." />
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="28dp"
-            android:layout_height="32dp"
-            android:background="@drawable/add_icon" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
