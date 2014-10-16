@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
@@ -45,7 +49,7 @@ public class ClientNoteGroupsByPurpose extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.client_note_purpose, container, false);
+		final View v = inflater.inflate(R.layout.client_note_purpose, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 		ls = (ListView) v.findViewById(R.id.purpose_listview);
 		groupByPurpose_back = (Button) v.findViewById(R.id.groupByPurpose_back);
@@ -82,16 +86,23 @@ public class ClientNoteGroupsByPurpose extends Fragment {
 					public void done(List<ParseObject> objects, ParseException e) {
 						clientNotes = objects;
 						progressDialog.dismiss();
-						setListViewData(purpose);
+						setListViewData(purpose, v);
 					}
 				});
 
 			}
 
-			private void setListViewData(List<ParseObject> purpose) {
+			private void setListViewData(List<ParseObject> purpose, View v) {
 				final List<String> arrayList = new ArrayList<String>();
 				final List<String> arrayListId = new ArrayList<String>();
 
+				LinearLayout layout1 = (LinearLayout) v.findViewById(R.id.purpose_layout);
+				if (purpose.size() <= 0) {
+					final TextView tx = new TextView(getActivity());
+					tx.setText("目前無分類");
+					layout1.addView(tx);
+
+				}
 				for (ParseObject ob : purpose) {
 					String purposeName = ob.getString("name");
 
@@ -190,6 +201,7 @@ public class ClientNoteGroupsByPurpose extends Fragment {
 							return true;
 						}
 					});
+
 				} catch (Exception e3) {
 					e3.printStackTrace();
 				}

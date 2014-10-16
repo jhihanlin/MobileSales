@@ -72,10 +72,10 @@ public class ClientNoteUtils {
 					@Override
 					public void done(ParseException e) {
 						progressDialog.dismiss();
-						purposeAdapter.remove("-新增目的-");
+						purposeAdapter.remove("《新增目的》");
 						purposeAdapter.add(s);
-						purposeAdapter.add("-新增目的-");
-						purposeAdapter.remove("  ");
+						purposeAdapter.add("《新增目的》");
+						purposeAdapter.remove("::選擇目的::");
 						purposeAdapter.notifyDataSetChanged();
 					}
 				});

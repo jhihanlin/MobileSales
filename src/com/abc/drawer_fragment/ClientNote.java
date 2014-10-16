@@ -137,11 +137,11 @@ public class ClientNote extends Fragment {
 
 							}
 						}
-						if (purposArrayList.size() <= 1) {
+						if (purposArrayList.size() <= 0) {
 							Log.d("debug", "purposArrayList" + purposArrayList.size());
-							purposArrayList.add("  ");
+							purposArrayList.add("::選擇目的::");
 						}
-						purposArrayList.add("-新增目的-");
+						purposArrayList.add("《新增目的》");
 						final ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
 								getActivity(),
 								android.R.layout.simple_spinner_item,

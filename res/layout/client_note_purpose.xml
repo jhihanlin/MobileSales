@@ -9,8 +9,9 @@
     android:paddingTop="@dimen/activity_vertical_margin" >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <TextView
@@ -18,7 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_weight="2"
             android:text="依目的分類記事"
             android:textColor="@color/gray" />
 
@@ -26,16 +26,24 @@
             android:layout_width="fill_parent"
             android:layout_height="2dp"
             android:layout_marginTop="5dp"
-            android:layout_weight="0.5"
             android:background="@color/lightgray" />
+
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/purpose_listview"
+    <LinearLayout
+        android:id="@+id/purpose_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4" >
-    </ListView>
+        android:layout_weight="8"
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/purpose_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+        </ListView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"

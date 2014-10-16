@@ -265,7 +265,7 @@ public class ClientNoteView extends Fragment {
 								purposeArrayList);
 						purposeNameAdapter
 								.setDropDownViewResource(android.R.layout.simple_spinner_item);
-						purposeNameAdapter.add("-新增目的-");
+						purposeNameAdapter.add("《新增目的》");
 						getPurpose.setAdapter(purposeNameAdapter);
 						getPurpose.setSelection(p_index, true);
 						getPurpose.setOnItemSelectedListener(new ClientNoteUtils.ClientNoteOnItemSelectedListener(getActivity(), getPurpose));
