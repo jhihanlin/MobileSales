@@ -2,29 +2,26 @@ package com.abc.drawer_fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -32,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
-import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -56,22 +52,21 @@ public class ClientNoteGroupsByTag extends Fragment {
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
 		ParseQuery<ParseObject> queryPurpose = new ParseQuery<ParseObject>(
-				"Purpose");
+				"Client");
 		queryPurpose.orderByDescending("createdAt");
 		queryPurpose.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
-			public void done(final List<ParseObject> purpose, ParseException e) {
+			public void done(final List<ParseObject> clients, ParseException e) {
 				ParseQuery<ParseObject> queryClientNote = new ParseQuery<ParseObject>(
 						"ClientNote");
-
 				queryClientNote.findInBackground(new FindCallback<ParseObject>() {
 
 					@Override
 					public void done(List<ParseObject> objects, ParseException e) {
 						clientNotes = objects;
 						progressDialog.dismiss();
-						setListViewData(purpose, v);
+						setListViewData(clients, v);
 					}
 				});
 
@@ -82,28 +77,40 @@ public class ClientNoteGroupsByTag extends Fragment {
 		return v;
 	}
 
-	private void setListViewData(List<ParseObject> purpose, View v) {
+	private String findClientTag(String clientName, List<ParseObject> clients) {
+		for (ParseObject client : clients) {
+			if (client.getString("name").equals(clientName)) {
+				return client.getString("tag");
+			}
+		}
+		return null;
+	}
+
+	private void setListViewData(final List<ParseObject> clients, View v) {
 		final List<String> arrayList = new ArrayList<String>();
 		final List<String> arrayListId = new ArrayList<String>();
+		Set<String> tagHash = new HashSet<String>();
 
 		LinearLayout layout1 = (LinearLayout) v.findViewById(R.id.purpose_layout);
-		if (purpose.size() <= 0) {
+		if (clients.size() <= 0) {
 			final TextView tx = new TextView(getActivity());
 			tx.setText("目前無分類");
 			layout1.addView(tx);
 
 		}
-		for (ParseObject ob : purpose) {
-			String purposeName = ob.getString("name");
-
-			int count = 0;
-			for (ParseObject note : clientNotes) {
-				if (purposeName.equals(note.getString("purpose")))
-					count++;
+		for (ParseObject client : clients) {
+			String tagName = client.getString("tag");
+			if (tagHash.contains(tagName) == false) {
+				tagHash.add(tagName);
+				int count = 0;
+				for (ParseObject note : clientNotes) {
+					if (note.getString("client").equals(client.getString("name")))
+						count++;
+				}
+				arrayListId.add(client.getObjectId());
+				arrayList.add(tagName + "(" + count + ")");
 			}
 
-			arrayListId.add(ob.getObjectId());
-			arrayList.add(purposeName + "(" + count + ")");
 		}
 		try {
 			final ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(getActivity(),
@@ -116,12 +123,13 @@ public class ClientNoteGroupsByTag extends Fragment {
 
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					String purposeName = arrayList.get(position).split("\\(")[0];
-					Log.d("debug", purposeName);
+					String tagName = arrayList.get(position).split("\\(")[0];
+					Log.d("debug", tagName);
 
 					for (ParseObject clientNote : clientNotes) {
 
-						if (clientNote.getString("purpose").equals(purposeName) == false)
+						String clientName = clientNote.getString("client");
+						if (tagName.equals(findClientTag(clientName, clients)) == false)
 							continue;
 
 						Log.d("debug", "purpose==p" + clientNote.getString("title"));
@@ -196,8 +204,7 @@ public class ClientNoteGroupsByTag extends Fragment {
 		bundle2.putBundle("bundle2", bundle);
 		ClientNoteView clientNoteView = new ClientNoteView();
 		clientNoteView.setArguments(bundle2);
-		getActivity()
-				.getFragmentManager()
+		getFragmentManager()
 				.beginTransaction()
 				.add(R.id.content_frame, clientNoteView)
 				.addToBackStack(null)
