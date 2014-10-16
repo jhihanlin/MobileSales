@@ -381,7 +381,7 @@ public class MainActivity extends Activity {
 	public void onBackPressed() {
 		if (getFragmentManager().getBackStackEntryCount() == 1) {
 			if (doubleBackToExitPressedOnce) {
-				super.onBackPressed();
+				finish();
 				return;
 			}
 
