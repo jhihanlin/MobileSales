@@ -58,28 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right" >
-
-        <TextView
-            android:id="@+id/ms_tx1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="14dp"
-            android:text="建立新的簡訊模組......" />
-
-        <Button
-            android:id="@+id/modelButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/eyes" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/modelBoard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="發佈到公告欄" />
 
     <TextView
         android:id="@+id/textView2"

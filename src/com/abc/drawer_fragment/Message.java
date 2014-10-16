@@ -13,6 +13,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.location.GpsStatus.Listener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.telephony.SmsManager;
@@ -39,6 +40,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.abc.drawer_fragment.MessageExpandable.SavedTabsListAdapter;
 import com.abc.model.R;
+import com.abc.model.utils.SpinnerHelper;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
@@ -73,16 +75,33 @@ public class Message extends Fragment {
 		sendButton.setTypeface(typeface);
 		cancelButton = (Button) v.findViewById(R.id.cancelButton);
 		cancelButton.setTypeface(typeface);
-		modelButton = (Button) v.findViewById(R.id.modelButton);
 		peopleButton = (Button) v.findViewById(R.id.peopleButton);
 		contentEditText = (EditText) v.findViewById(R.id.contentEditText);
 		modelSpinner = (Spinner) v.findViewById(R.id.modelSpinner);
 		receiverTextView = (TextView) v.findViewById(R.id.receiverTextView);
-		TextView ms_tx1 = (TextView) v.findViewById(R.id.ms_tx1);
-		ms_tx1.setTypeface(typeface);
 
 		progressDialog = new ProgressDialog(getActivity());
 		loadMessageModelFromParse();
+
+		final OnItemSelectedListener oldListener = modelSpinner.getOnItemSelectedListener();
+		modelSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent,
+					View view, int position, long id) {
+				if (oldListener != null) {
+					oldListener.onItemSelected(parent, view, position, id);
+				}
+				String sModel = (String) modelSpinner.getSelectedItem();
+				contentEditText.setText(sModel);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				if (oldListener != null) {
+					oldListener.onNothingSelected(parent);
+				}
+			}
+		});
 
 		sendButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -138,13 +157,6 @@ public class Message extends Fragment {
 			}
 		});
 
-		modelButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				onCreateDialog();
-
-			}
-		});
-
 		cancelButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -165,71 +177,8 @@ public class Message extends Fragment {
 		return v;
 	}
 
-	private void loadPeopleFromParse() {
-		ParseQuery<ParseObject> query1 = new ParseQuery<ParseObject>("Client"); // get
-		// Parse
-		// table:Client
-		query1.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNames
-					peoples = objects;
-					Log.d("debug", "objects.size()=" + objects.size());
-				}
-
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_list_item_1,
-						getPeopleData());
-
-				peopleSpinner.setAdapter(adapter);
-				progressDialog.dismiss();
-			}
-		});
-
-	}
-
 	private void loadMessageModelFromParse() {
-		progressDialog.setTitle("Loading...");
-		progressDialog.setCancelable(false);
-		progressDialog.show();
-
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-				"MessageModel"); // get
-		query.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) {
-					messageModels = objects;
-					Log.d("debug", "objects.size()=" + objects.size());
-				}
-
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_list_item_1,
-						getMessageModelData());
-				modelSpinner.setAdapter(adapter);
-				modelSpinner
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> parent,
-									View view, int position, long id) {
-
-								String sModel = (getMessageModelData()
-										.get(position));
-								contentEditText.setText(sModel);
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent) {
-								// TODO Auto-generated method stub
-
-							}
-						});
-				progressDialog.dismiss();
-			}
-		});
+		SpinnerHelper.buildCustomerData(getActivity(), modelSpinner, "MessageModel", "範本", null);
 	}
 
 	protected List<String> getPeopleData() {
@@ -255,125 +204,6 @@ public class Message extends Fragment {
 		return data;
 	}
 
-	protected List<String> getMessageModelData() {
-
-		List<String> data = new ArrayList<String>();
-		if (messageModels != null) {
-			for (ParseObject message : messageModels) {
-				Log.d("debug", message.getString("Model_content"));
-				String modelName = "";
-				if ((message.getString("Model_content")) != null) {
-					modelName += message.getString("Model_content");
-				}
-				data.add(modelName);
-			}
-
-		}
-
-		return data;
-	}
-
-	protected Dialog onCreateDialog() {
-		Dialog dialog = null;
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		final View v = inflater.inflate(R.layout.message_model, null);
-
-		new AlertDialog.Builder(getActivity())
-				.setTitle("新增簡訊模組")
-				.setView(v)
-				.setPositiveButton("完成",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								EditText modelEditText = (EditText) (v
-										.findViewById(R.id.modelEditText));
-								String model = modelEditText.getText()
-										.toString();
-								contentEditText.setText(model);
-
-								progressDialog.setCancelable(false);
-								progressDialog.setTitle("Loading...");
-								progressDialog.show();
-
-								ParseObject object = new ParseObject(
-										"MessageModel");
-								object.put("Model_content", model);
-								object.setACL(new ParseACL(ParseUser
-										.getCurrentUser()));
-								object.saveInBackground(new SaveCallback() {
-
-									@Override
-									public void done(ParseException e) {
-										progressDialog.dismiss();
-										if (e == null) {
-											Toast.makeText(getActivity(),
-													"新增成功",
-													Toast.LENGTH_LONG).show();
-										} else {
-											Toast.makeText(getActivity(),
-													"新增失敗", Toast.LENGTH_SHORT)
-													.show();
-										}
-									}
-								});
-
-							}
-						})
-
-				.setNeutralButton("取消",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-							}
-						}).show();
-
-		progressDialog.setTitle("Loading...");
-		progressDialog.setCancelable(false);
-		progressDialog.show();
-
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-				"MessageModel"); // get
-		query.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) {
-					messageModels = objects;
-					Log.d("debug", "objects.size()=" + objects.size());
-				}
-
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_list_item_1,
-						getMessageModelData());
-				modelSpinner.setAdapter(adapter);
-				modelSpinner
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> parent,
-									View view, int position, long id) {
-
-								String sModel = (getMessageModelData()
-										.get(position));
-								contentEditText.setText(sModel);
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent) {
-
-							}
-						});
-				progressDialog.dismiss();
-			}
-		});
-
-		return dialog;
-	}
-
 	protected void onCreateDialog1() {
 
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -394,9 +224,6 @@ public class Message extends Fragment {
 									receiverPhoneNumbers = mEX
 											.getPhoneNumbers();
 									receiverTextView.setText(mEX.getName());
-
-									Log.d("123", "123");
-
 								}
 							})
 					.setNegativeButton("取消",
@@ -405,7 +232,8 @@ public class Message extends Fragment {
 										int whichButton) {
 									// Canceled.
 								}
-							}).show();
+							})
+					.show();
 		} else {
 			peopleDialog.show();
 		}
