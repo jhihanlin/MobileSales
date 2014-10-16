@@ -3,14 +3,11 @@ package com.abc.drawer_fragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,34 +15,27 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -65,7 +55,6 @@ public class People extends Fragment {
 	public AutoCompleteTextView autoComplete;
 	public ArrayList<HashMap<String, String>> contactsArrayList;
 	public String[] contactsName;
-	private ProgressDialog dialog;
 	private EditText edtname, edtbirthday, edttel, edtemail, edtadd, edttag,
 			edtnote, edtsname;
 	public int size = 0;
@@ -81,12 +70,9 @@ public class People extends Fragment {
 
 		listView = (ListView) v.findViewById(R.id.lvPEOPLE);
 		importPeople = (Button) v.findViewById(R.id.importPeople);
-		addPeople = (Button) v.findViewById(R.id.addPeople);
 		searchPeople = (Button) v.findViewById(R.id.btnsearch);
 		searchPeople.setTypeface(typeface);
 		edtsname = (EditText) v.findViewById(R.id.editTextname);
-		TextView peoplelist_tx = (TextView) v.findViewById(R.id.peoplelist_tx);
-		peoplelist_tx.setTypeface(typeface);
 
 		progressDialog = new ProgressDialog(getActivity());
 		getParseDate("");
@@ -110,18 +96,6 @@ public class People extends Fragment {
 
 				getActivity().getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
-			}
-		});
-
-		addPeople.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				People_add ppadd = new People_add();
-				ppadd.setMode("add");
-				Fragment fg = ppadd;
-				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, fg).commit();
 			}
 		});
 
@@ -237,8 +211,8 @@ public class People extends Fragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	public void setListView() {
@@ -436,8 +410,28 @@ public class People extends Fragment {
 		cursor.close();
 	}
 
-	private void setContentView(int peopleAdd) {
-		// TODO Auto-generated method stub
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_add_people:
+			People_add ppadd = new People_add();
+			ppadd.setMode("add");
+			getFragmentManager().beginTransaction()
+					.add(R.id.content_frame, ppadd)
+					.addToBackStack(null)
+					.commit();
+			break;
+		default:
+			break;
+		}
 
+		return super.onOptionsItemSelected(item);
 	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		inflater.inflate(R.menu.people_fragment_menu, menu);
+	}
+
 }

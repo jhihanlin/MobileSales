@@ -42,32 +42,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="327dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right" >
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.74"
-            android:orientation="vertical" >
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/peoplelist_tx"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
-            android:text="新增聯絡人..... " />
-
-        <Button
-            android:id="@+id/addPeople"
-            android:layout_width="28sp"
-            android:layout_height="32sp"
-            android:background="@drawable/add_icon" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="3" >

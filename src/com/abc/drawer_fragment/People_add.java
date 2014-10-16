@@ -66,7 +66,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class People_add extends Fragment {
-	private Button savePeople, delPeople, imbtnupdata, backPeople, editPeople,
+	private Button savePeople, delPeople, imbtnupdata, editPeople,
 			photoButton;
 	Button DatePicker = null;
 	private EditText edtname, edttel, edtemail, edtadd, edtnote;
@@ -99,7 +99,6 @@ public class People_add extends Fragment {
 		editPeople = (Button) v.findViewById(R.id.editPeople);
 		savePeople = (Button) v.findViewById(R.id.savePeople);
 		delPeople = (Button) v.findViewById(R.id.deletePeople);
-		backPeople = (Button) v.findViewById(R.id.backPeople);
 		edtname = (EditText) v.findViewById(R.id.edtname);
 		edttel = (EditText) v.findViewById(R.id.edttel);
 		edtemail = (EditText) v.findViewById(R.id.edtemail);
@@ -249,15 +248,6 @@ public class People_add extends Fragment {
 			@Override
 			public void onClick(View v) {
 				showDeleteDialog();
-			}
-		});
-
-		backPeople.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People()).commit();
 			}
 		});
 

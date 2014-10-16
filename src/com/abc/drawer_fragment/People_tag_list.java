@@ -266,13 +266,11 @@ public class People_tag_list extends Fragment {
 											People_add ppadd = new People_add();
 											ppadd.setMode("edit");
 											ppadd.setID(Oid);
-
-											Fragment fg = ppadd;
 											getActivity().getFragmentManager()
 													.beginTransaction()
-													.replace(
-															R.id.content_frame,
-															fg).commit();
+													.add(R.id.content_frame, ppadd)
+													.addToBackStack(null)
+													.commit();
 
 											break;
 

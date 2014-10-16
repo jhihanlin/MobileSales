@@ -269,14 +269,13 @@ public class MainActivity extends Activity {
 			break;
 		}
 		default:
-			return;
-
+			break;
 		}
 
 		my_DrawerList.setItemChecked(position, true);
 		setTitle(my_PlanetTitles[position]);
-
 		my_DrawerLayout.closeDrawer(my_LeftDrawer);
+		invalidateOptionsMenu();
 	}
 
 	private void goToLoginActivity() {
