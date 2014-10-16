@@ -62,9 +62,6 @@ public class ClientNoteView extends Fragment {
 		View v = inflater.inflate(R.layout.client_note_view, container, false);
 		// bar
 		progressDialog = new ProgressDialog(getActivity());// loading
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
 
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
