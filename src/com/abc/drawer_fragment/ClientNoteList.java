@@ -322,6 +322,11 @@ public class ClientNoteList extends Fragment {
 			return true;
 		case R.id.group_by_clientTag:
 			Log.d("debug", "group_by_clientTag");
+			fragmentManager.beginTransaction()
+					.add(R.id.content_frame, new ClientNoteGroupsByTag())
+					.addToBackStack(null)
+					.commit();
+
 			return true;
 
 		default:
