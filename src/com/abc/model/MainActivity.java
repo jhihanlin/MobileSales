@@ -3,18 +3,13 @@ package com.abc.model;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -25,44 +20,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
-import android.text.Layout;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.drawer_fragment.CalendarFragment;
 import com.abc.drawer_fragment.ClientNoteList;
-import com.abc.drawer_fragment.Message;
 import com.abc.drawer_fragment.MessageList;
 import com.abc.drawer_fragment.Notify;
 import com.abc.drawer_fragment.People;
-import com.abc.drawer_fragment.ClientNote;
 import com.abc.drawer_fragment.Board;
 import com.abc.drawer_fragment.Search;
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
-import com.google.android.gms.drive.internal.v;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -76,7 +59,6 @@ public class MainActivity extends Activity {
 	private CharSequence my_Title;
 	private String[] my_PlanetTitles;
 	private ProgressDialog progressDialog;
-	private String userId;
 	private static final int PHOTO_SUCCESS = 1;
 	boolean doubleBackToExitPressedOnce = false;
 
@@ -100,7 +82,7 @@ public class MainActivity extends Activity {
 		Button logoutBtn = (Button) findViewById(R.id.logoutBtn);
 		profile = (ImageView) findViewById(R.id.profile);
 		loadFromParse();
-		
+
 		logoutBtn.setTypeface(typeface);
 
 		logoutBtn.setOnClickListener(new OnClickListener() {
@@ -240,46 +222,53 @@ public class MainActivity extends Activity {
 		// update the main content by replacing fragments
 
 		FragmentManager fragmentManager = getFragmentManager();
-		People people = new People();
-		CalendarFragment calendarFragment = new CalendarFragment();
-		Board board = new Board();
-		Search search = new Search();
-
 		switch (position) {
 		case 0: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, people).commit();
-		}
+					.add(R.id.content_frame, new People())
+					.addToBackStack(null)
+					.commit();
 			break;
+		}
 
 		case 1: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, new ClientNoteList()).commit();
-		}
+					.add(R.id.content_frame, new ClientNoteList())
+					.addToBackStack(null)
+					.commit();
 			break;
+		}
 		case 2: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, calendarFragment).commit();
-		}
+					.replace(R.id.content_frame, new CalendarFragment())
+					.addToBackStack(null)
+					.commit();
 			break;
+		}
 		case 3: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, search).commit();
-		}
+					.replace(R.id.content_frame, new Search())
+					.addToBackStack(null)
+					.commit();
 			break;
+		}
 		case 4: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, new MessageList()).commit();
-		}
+					.replace(R.id.content_frame, new MessageList())
+					.addToBackStack(null)
+					.commit();
+
 			break;
+		}
 		case 5: {
 			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, board).commit();
-		}
+					.replace(R.id.content_frame, new Board())
+					.addToBackStack(null)
+					.commit();
+
 			break;
-
+		}
 		default:
-
 			return;
 
 		}
@@ -390,21 +379,28 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		if (doubleBackToExitPressedOnce) {
+		if (getFragmentManager().getBackStackEntryCount() == 1) {
+			if (doubleBackToExitPressedOnce) {
+				super.onBackPressed();
+				return;
+			}
+
+			this.doubleBackToExitPressedOnce = true;
+			Toast.makeText(this, "再按一次退出MobileSailes",
+					Toast.LENGTH_SHORT).show();
+
+			new Handler().postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					doubleBackToExitPressedOnce = false;
+				}
+			}, 2000);
+
+		} else {
 			super.onBackPressed();
-			return;
 		}
 
-		this.doubleBackToExitPressedOnce = true;
-		Toast.makeText(this, "再按一次退出MobileSailes", Toast.LENGTH_SHORT).show();
-
-		new Handler().postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				doubleBackToExitPressedOnce = false;
-			}
-		}, 2000);
 	}
 
 }
