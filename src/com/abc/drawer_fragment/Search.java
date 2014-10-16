@@ -372,7 +372,7 @@ public class Search extends Fragment implements LocationListener {
 				new AlertDialog.Builder(getActivity())
 						.setTitle("請輸入搜尋公里範圍")
 						.setView(v1)
-						.setPositiveButton("Done",
+						.setPositiveButton("確認",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -384,7 +384,7 @@ public class Search extends Fragment implements LocationListener {
 
 										double km = Double
 												.parseDouble(nearET.getText().toString());
-										
+
 										LatLng point = new LatLng(location
 												.getLatitude(), location
 												.getLongitude());
@@ -448,7 +448,7 @@ public class Search extends Fragment implements LocationListener {
 										}
 									}
 								})
-						.setNeutralButton("Cancel",
+						.setNeutralButton("取消",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
