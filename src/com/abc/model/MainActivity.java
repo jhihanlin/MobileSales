@@ -158,7 +158,7 @@ public class MainActivity extends Activity {
 		my_DrawerLayout.setDrawerListener(my_DrawerToggle);
 
 		if (savedInstanceState == null) {
-			selectItem(0);
+			selectItem(1);
 		}
 
 	}
