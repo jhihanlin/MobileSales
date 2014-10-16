@@ -43,21 +43,4 @@
             android:layout_height="wrap_content" >
         </ListView>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="0.5" >
-
-        <Button
-            android:id="@+id/groupByPurpose_back"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="#99CCCC"
-            android:text="返回客戶記事"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
-
 </LinearLayout>

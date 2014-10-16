@@ -166,24 +166,6 @@ public class ClientNoteList extends Fragment {
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		switch (item.getItemId()) {
-		case R.id.group_by_purpose:
-			Log.d("debug", "group_by_purpose");
-			FragmentManager fragmentManager = getFragmentManager();
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, new ClientNoteGroupsByPurpose()).commit();
-		case R.id.group_by_clientTag:
-			Log.d("debug", "group_by_clientTag");
-
-			return true;
-		}
-		return super.onContextItemSelected(item);
-	}
-
-	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		// getActivity().getMenuInflater().inflate(R.menu.client_note_menu,
