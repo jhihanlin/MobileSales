@@ -51,6 +51,7 @@ import android.widget.DatePicker;
 
 import com.abc.model.MainActivity;
 import com.abc.model.R;
+import com.abc.model.utils.SpinnerHelper;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -70,9 +71,7 @@ public class People_add extends Fragment {
 	Button DatePicker = null;
 	private EditText edtname, edttel, edtemail, edtadd, edtnote;
 	private ImageView photoImage;
-	protected List<ParseObject> tag;
-	public ArrayList<String> TagArrayList;
-	Spinner sptag;
+	private Spinner sptag;
 	public String mode = "";
 	public String ID = "";
 	public String textData = "";
@@ -83,11 +82,6 @@ public class People_add extends Fragment {
 	private Uri outputFile;
 	private static final int TAKE_PHOTO_REQUEST_CODE = 0;
 	private static final int OPEN_ALBUM_REQUEST_CODE = 1;
-
-	final Calendar TodayDate = Calendar.getInstance();
-	final int sYear = TodayDate.get(Calendar.YEAR);
-	final int sMon = TodayDate.get(Calendar.MONTH) + 1;
-	final int sDay = TodayDate.get(Calendar.DAY_OF_MONTH);
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -199,12 +193,14 @@ public class People_add extends Fragment {
 			});
 
 			Log.v("", textData);
-			delPeople.setVisibility(8);
-			editPeople.setVisibility(8);
+			savePeople.setVisibility(View.VISIBLE);
+			delPeople.setVisibility(View.GONE);
+			editPeople.setVisibility(View.GONE);
+			SpinnerHelper.buildCustomerData(getActivity(), sptag, "Tag", "標籤", null);
 		}
 
 		if (mode.equals("edit")) {
-			savePeople.setVisibility(8);
+			savePeople.setVisibility(View.GONE);
 			photoButton.setEnabled(false);
 			edtname.setEnabled(false);
 			edttel.setEnabled(false);
@@ -213,276 +209,16 @@ public class People_add extends Fragment {
 			sptag.setEnabled(false);
 			DatePicker.setEnabled(false);
 			edtnote.setEnabled(false);
-			delPeople.setVisibility(8);
+			delPeople.setVisibility(View.VISIBLE);
+			setEditMode();
 		}
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Tag");
-		query.findInBackground(new FindCallback<ParseObject>() {
-
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-
-				if (e == null) {
-					try {
-						progressDialog.dismiss();
-						TagArrayList = new ArrayList<String>();
-						tag = objects;
-						TagArrayList.add("::選擇標籤::");
-						if (tag != null) {
-							for (ParseObject purposeObject : tag) {
-								TagArrayList.add(purposeObject
-										.getString("name"));
-								Log.d("TagArrayList", TagArrayList.toString());
-
-							}
-						}
-
-						TagArrayList.add("《新增標籤》");
-
-						final ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
-								getActivity(),
-								android.R.layout.simple_spinner_item,
-								TagArrayList);
-						purposeAdapter
-								.setDropDownViewResource(android.R.layout.simple_spinner_item);
-						sptag.setAdapter(purposeAdapter);
-
-						sptag.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> parent,
-									View view, int position, long id) {
-							if ((TagArrayList.size() - 1) == position) {
-									final ProgressDialog progressDialog = new ProgressDialog(
-											getActivity());
-
-									AlertDialog.Builder builder = new AlertDialog.Builder(
-											getActivity());
-									builder.setTitle("標籤名稱");
-									final EditText ed = new EditText(
-											getActivity());
-									builder.setView(ed);
-									builder.setPositiveButton(
-											"確認",
-											new DialogInterface.OnClickListener() {
-
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-													progressDialog
-															.setCancelable(false);
-													progressDialog
-															.setTitle("Loading...");
-													progressDialog.show();
-
-													final String s = ed
-															.getText()
-															.toString();
-													ParseObject ps = new ParseObject(
-															"Tag");
-													ps.put("name", s);
-													ps.setACL(new ParseACL(
-															ParseUser
-																	.getCurrentUser()));
-
-													ps.saveInBackground(new SaveCallback() {
-
-														@Override
-														public void done(
-																ParseException e) {
-															progressDialog
-																	.dismiss();
-															purposeAdapter
-																	.remove("input tag's name");
-															purposeAdapter
-																	.add(s);
-															purposeAdapter
-																	.add("input tag's name");
-															purposeAdapter
-																	.notifyDataSetChanged();
-														}
-													});
-												}
-											});
-									builder.setNegativeButton(
-											"取消",
-											new DialogInterface.OnClickListener() {
-
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-
-												}
-											});
-									builder.show();
-
-								}
-
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent) {
-							
-							}
-						});
-
-					} catch (Exception e2) {
-						e2.printStackTrace();
-					}
-
-					if (mode.equals("edit")) {
-						progressDialog.setCancelable(false);
-						progressDialog.setTitle("Loading...");
-						progressDialog.show();
-						ParseQuery<ParseObject> query = ParseQuery
-								.getQuery("Client");
-
-						query.getInBackground(ID,
-								new GetCallback<ParseObject>() {// GUERY
-
-									public void done(ParseObject object,
-											ParseException e) {
-										progressDialog.dismiss();
-										if (e == null) {
-
-											ParseFile file = object
-													.getParseFile("photo");
-
-											if (file != null) {
-												try {
-													byte[] data = file
-															.getData();
-													Bitmap bitmap = BitmapFactory
-															.decodeByteArray(
-																	data, 0,
-																	data.length);
-													photoImage
-															.setImageBitmap(bitmap);
-
-												} catch (ParseException e1) {
-													e1.printStackTrace();
-												}
-											}
-											if (object.get("birthday").equals(
-													"")) {
-												SimpleDateFormat formatter = new SimpleDateFormat(
-														"yyyy/MM/dd");
-												Date curDate = new Date(System
-														.currentTimeMillis());
-												String str = formatter
-														.format(curDate);
-
-												DatePicker.setText(str);
-												DatePicker
-														.setOnClickListener(new View.OnClickListener() {
-															@Override
-															public void onClick(
-																	View v) {
-															
-																onCreateDialog(
-																		DatePicker)
-																		.show();
-															}
-														});
-												textData = DatePicker.getText()
-														.toString();
-											} else {
-												Calendar c = Calendar
-														.getInstance();
-												c.set(Calendar.YEAR,
-														Integer.parseInt(object
-																.get("birthday")
-																.toString()
-																.substring(0, 4))); 
-												c.set(Calendar.MONTH,
-														Integer.parseInt(object
-																.get("birthday")
-																.equals("") ? "123"
-																: object.get(
-																		"birthday")
-																		.toString()
-																		.substring(
-																				5,
-																				7))); // 將月份改成1月
-												c.set(Calendar.DAY_OF_MONTH,
-														Integer.parseInt(object
-																.get("birthday")
-																.toString()
-																.substring(8,
-																		10))); // 將日改成31日
-												SimpleDateFormat formatter = new SimpleDateFormat(
-														"yyyy/MM/dd");
-												Date curDate = new Date(c
-														.getTimeInMillis());
-												String str = formatter
-														.format(curDate);
-
-												DatePicker.setText(str);
-												DatePicker
-														.setOnClickListener(new View.OnClickListener() {
-															@Override
-															public void onClick(
-																	View v) {
-														
-																onCreateDialog(
-																		DatePicker)
-																		.show();
-															}
-														});
-												textData = DatePicker.getText()
-														.toString();
-
-											}
-											edtname.setText(object.get("name") == null ? ""
-													: object.get("name")
-															.toString());
-											edttel.setText(object.get("tel") == null ? ""
-													: object.get("tel")
-															.toString());
-											edtemail.setText(object
-													.get("email") == null ? ""
-													: object.get("email")
-															.toString());
-											edtadd.setText(object.get("add") == null ? ""
-													: object.get("add")
-															.toString());
-
-											for (int i = 0; i < TagArrayList
-													.size(); i++) {
-												if (TagArrayList
-														.get(i)
-														.toString()
-														.equals(object
-																.get("tag") == null ? ""
-																: object.get(
-																		"tag")
-																		.toString())) {
-													sptag.setSelection(i);
-												}
-											}
-
-										}
-									}
-								});
-						query.clearCachedResult();
-					}
-
-				}
-			}
-		});
-		query.clearCachedResult();
 
 		editPeople.setOnClickListener(new OnClickListener() {
 
 			// ADD
 			public void onClick(View v) {
-				editPeople.setVisibility(8);
-				savePeople.setVisibility(0);
+				editPeople.setVisibility(View.GONE);
+				savePeople.setVisibility(View.VISIBLE);
 				photoButton.setEnabled(true);
 				edtname.setEnabled(true);
 				edttel.setEnabled(true);
@@ -491,7 +227,7 @@ public class People_add extends Fragment {
 				sptag.setEnabled(true);
 				DatePicker.setEnabled(true);
 				edtnote.setEnabled(true);
-				delPeople.setVisibility(0);
+				delPeople.setVisibility(View.GONE);
 			}
 		});
 
@@ -601,8 +337,7 @@ public class People_add extends Fragment {
 		object.put("tel", edttel.getText().toString());
 		object.put("email", edtemail.getText().toString());
 		object.put("add", edtadd.getText().toString());
-		String tag = sptag.getSelectedItem().toString().equals("NO TAG") ? ""
-				: sptag.getSelectedItem().toString();
+		String tag = sptag.getSelectedItem().toString();
 		object.put("tag", tag);
 
 		Geocoder gecoder = new Geocoder(getActivity());
@@ -647,6 +382,8 @@ public class People_add extends Fragment {
 					}
 				}
 			});
+		} else {
+			progressDialog.dismiss();
 		}
 
 	}
@@ -978,22 +715,147 @@ public class People_add extends Fragment {
 
 	public boolean checktext() {
 		boolean check = true;
-
+		String errorMessage = "";
 		if (edttel.getText().toString().equals("")) {
-
-			Toast.makeText(getActivity(), "input phone", Toast.LENGTH_LONG)
-					.show();
+			errorMessage += "請輸入電話。";
 			check = false;
 		}
 
 		if (edtadd.getText().toString().equals("")) {
-
-			Toast.makeText(getActivity(), "input address", Toast.LENGTH_LONG)
-					.show();
+			errorMessage += "請輸入地址。";
 			check = false;
+		}
+		if (check == false) {
+			Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
 		}
 
 		return check;
+	}
+
+	private void setEditMode() {
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
+		ParseQuery<ParseObject> query = ParseQuery
+				.getQuery("Client");
+
+		query.getInBackground(ID,
+				new GetCallback<ParseObject>() {
+
+					public void done(ParseObject object,
+							ParseException e) {
+						progressDialog.dismiss();
+
+						SpinnerHelper.buildCustomerData(getActivity(), sptag, "Tag", "標籤", object.getString("tag"));
+
+						if (e == null) {
+
+							ParseFile file = object
+									.getParseFile("photo");
+
+							if (file != null) {
+								try {
+									byte[] data = file
+											.getData();
+									Bitmap bitmap = BitmapFactory
+											.decodeByteArray(
+													data, 0,
+													data.length);
+									photoImage
+											.setImageBitmap(bitmap);
+
+								} catch (ParseException e1) {
+									e1.printStackTrace();
+								}
+							}
+							if (object.get("birthday").equals(
+									"")) {
+								SimpleDateFormat formatter = new SimpleDateFormat(
+										"yyyy/MM/dd");
+								Date curDate = new Date(System
+										.currentTimeMillis());
+								String str = formatter
+										.format(curDate);
+
+								DatePicker.setText(str);
+								DatePicker
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(
+													View v) {
+
+												onCreateDialog(
+														DatePicker)
+														.show();
+											}
+										});
+								textData = DatePicker.getText()
+										.toString();
+							} else {
+								Calendar c = Calendar
+										.getInstance();
+								c.set(Calendar.YEAR,
+										Integer.parseInt(object
+												.get("birthday")
+												.toString()
+												.substring(0, 4)));
+								c.set(Calendar.MONTH,
+										Integer.parseInt(object
+												.get("birthday")
+												.equals("") ? "123"
+												: object.get(
+														"birthday")
+														.toString()
+														.substring(
+																5,
+																7))); // 將月份改成1月
+								c.set(Calendar.DAY_OF_MONTH,
+										Integer.parseInt(object
+												.get("birthday")
+												.toString()
+												.substring(8,
+														10))); // 將日改成31日
+								SimpleDateFormat formatter = new SimpleDateFormat(
+										"yyyy/MM/dd");
+								Date curDate = new Date(c
+										.getTimeInMillis());
+								String str = formatter
+										.format(curDate);
+
+								DatePicker.setText(str);
+								DatePicker
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(
+													View v) {
+
+												onCreateDialog(
+														DatePicker)
+														.show();
+											}
+										});
+								textData = DatePicker.getText()
+										.toString();
+
+							}
+							edtname.setText(object.get("name") == null ? ""
+									: object.get("name")
+											.toString());
+							edttel.setText(object.get("tel") == null ? ""
+									: object.get("tel")
+											.toString());
+							edtemail.setText(object
+									.get("email") == null ? ""
+									: object.get("email")
+											.toString());
+							edtadd.setText(object.get("add") == null ? ""
+									: object.get("add")
+											.toString());
+
+						}
+					}
+				});
+		query.clearCachedResult();
 	}
 
 }

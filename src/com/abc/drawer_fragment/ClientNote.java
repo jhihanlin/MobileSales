@@ -45,8 +45,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import com.abc.drawer_fragment.ClientNoteUtils.ClientNoteOnItemSelectedListener;
 import com.abc.model.R;
+import com.abc.model.utils.SpinnerHelper;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
@@ -69,7 +69,6 @@ public class ClientNote extends Fragment {
 	Button m_timepickerButton = null;
 	Button saveButton;
 	Calendar c = null;
-	protected List<ParseObject> purpose;
 	protected List<ParseObject> clientName;
 
 	private ProgressDialog progressDialog;
@@ -84,11 +83,6 @@ public class ClientNote extends Fragment {
 		View v = inflater
 				.inflate(R.layout.client_note_layout, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
-
-		progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
 
 		m_titleText = (EditText) v.findViewById(R.id.titleText);
 		m_purpose = (Spinner) v.findViewById(R.id.purposeSpinner);
@@ -110,103 +104,7 @@ public class ClientNote extends Fragment {
 		adapterTime
 				.setDropDownViewResource(android.R.layout.simple_spinner_item);
 		m_remind.setAdapter(adapterTime);
-
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Purpose"); // get
-																				// Parse
-																				// table:ClientNote
-		query.findInBackground(new FindCallback<ParseObject>() {
-			ArrayList<String> purposArrayList;
-
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) { // put resule into a variable:clientNotes
-
-					try {
-						progressDialog.dismiss();
-
-						purposArrayList = new ArrayList<String>();
-						purpose = objects;
-						if (purpose != null) {
-							for (ParseObject purposeObject : purpose) {
-								if (purposeObject.getString("name") != null)
-									purposArrayList.add(purposeObject
-											.getString("name"));
-								Log.d("purposeArrayList",
-										purposArrayList.toString());
-
-							}
-						}
-						if (purposArrayList.size() <= 0) {
-							Log.d("debug", "purposArrayList" + purposArrayList.size());
-							purposArrayList.add("::選擇目的::");
-						}
-						purposArrayList.add("《新增目的》");
-						final ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
-								getActivity(),
-								android.R.layout.simple_spinner_item,
-								purposArrayList);
-						purposeAdapter
-								.setDropDownViewResource(android.R.layout.simple_spinner_item);
-						m_purpose.setAdapter(purposeAdapter);
-						m_purpose.setOnItemSelectedListener(new ClientNoteUtils.ClientNoteOnItemSelectedListener(getActivity(), m_purpose));
-						m_purpose.setOnLongClickListener(new OnLongClickListener() {
-
-							@Override
-							public boolean onLongClick(View v) {
-								// if (purposeAdapter.getCount() - 1 ==
-								// position) {
-								// return true;
-								// }
-								// AlertDialog.Builder builder = new
-								// AlertDialog.Builder(getActivity());
-								// builder.setTitle("是否刪除");
-								// builder.setPositiveButton("刪除", new
-								// DialogInterface.OnClickListener() {
-								//
-								// @Override
-								// public void onClick(DialogInterface dialog,
-								// int which) {
-								// final String pp =
-								// purposeAdapter.getItem(position);
-								// ParseQuery<ParseObject> query = new
-								// ParseQuery<ParseObject>("Purpose");
-								// query.whereEqualTo("name", pp);
-								// query.findInBackground(new
-								// FindCallback<ParseObject>() {
-								//
-								// @Override
-								// public void done(List<ParseObject> objects,
-								// ParseException e) {
-								// for (ParseObject object : objects) {
-								// object.deleteEventually();
-								// purposeAdapter.remove(pp);
-								// purposeAdapter.notifyDataSetChanged();
-								// }
-								// }
-								// });
-								// }
-								// });
-								// builder.setNegativeButton("取消", new
-								// DialogInterface.OnClickListener() {
-								//
-								// @Override
-								// public void onClick(DialogInterface dialog,
-								// int which) {
-								//
-								// }
-								// });
-								// builder.show();
-								Log.d("debug", "onLongClick");
-								return true;
-							}
-						});
-					} catch (Exception e2) {
-						e2.printStackTrace();
-					}
-				}
-			}
-		});
+		SpinnerHelper.buildCustomerData(getActivity(), m_purpose, "Purpose", "目的", null);
 
 		ParseQuery<ParseObject> queryClientName = new ParseQuery<ParseObject>(
 				"Client");

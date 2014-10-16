@@ -31,6 +31,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abc.model.R;
+import com.abc.model.utils.SpinnerHelper;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -137,7 +138,7 @@ public class ClientNoteView extends Fragment {
 		getTimeButton.setText(time);
 
 		loadClientNameSpinner(getClient, client);
-		loadPurposeSpinner(getPurpose, purpose, progressDialog);
+		loadPurposeSpinner(getPurpose, purpose);
 
 		ArrayAdapter<String> adapterTime = new ArrayAdapter<String>(
 				this.getActivity(), android.R.layout.simple_spinner_item,
@@ -233,51 +234,8 @@ public class ClientNoteView extends Fragment {
 		return v;
 	}
 
-	private void loadPurposeSpinner(final Spinner getPurpose, final String purpose, final ProgressDialog progressDialog) {
-		ParseQuery<ParseObject> queryPurpose = new ParseQuery<ParseObject>(
-				"Purpose");
-		queryPurpose.findInBackground(new FindCallback<ParseObject>() {
-			ArrayList<String> purposeArrayList;
-
-			@Override
-			public void done(List<ParseObject> objects, ParseException e) {
-				if (e == null) {
-
-					try {
-						purposeArrayList = new ArrayList<String>();
-						purposeName = objects;
-						if (purposeName != null) {
-							for (ParseObject purposeObject : purposeName) {
-								if (purposeObject.getString("name") != null)
-									purposeArrayList.add(purposeObject
-											.getString("name"));
-								Log.d("purposeArrayList",
-										purposeArrayList.toString());
-
-							}
-							p_index = purposeArrayList.indexOf(purpose);
-							Log.d("pIndexOf", "index" + p_index);
-
-						}
-						ArrayAdapter<String> purposeNameAdapter = new ArrayAdapter<String>(
-								getActivity(),
-								android.R.layout.simple_spinner_item,
-								purposeArrayList);
-						purposeNameAdapter
-								.setDropDownViewResource(android.R.layout.simple_spinner_item);
-						purposeNameAdapter.add("《新增目的》");
-						getPurpose.setAdapter(purposeNameAdapter);
-						getPurpose.setSelection(p_index, true);
-						getPurpose.setOnItemSelectedListener(new ClientNoteUtils.ClientNoteOnItemSelectedListener(getActivity(), getPurpose));
-
-						progressDialog.dismiss();
-
-					} catch (Exception e2) {
-						e2.printStackTrace();
-					}
-				}
-			}
-		});
+	private void loadPurposeSpinner(Spinner Purpose, String selectionPurpose) {
+		SpinnerHelper.buildCustomerData(getActivity(), Purpose, "Purpose", "目的", selectionPurpose);
 	}
 
 	private void loadClientNameSpinner(final Spinner getClient, final String client) {

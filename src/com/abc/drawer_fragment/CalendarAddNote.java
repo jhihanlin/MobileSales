@@ -38,6 +38,7 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.abc.model.R;
+import com.abc.model.utils.SpinnerHelper;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
@@ -76,11 +77,6 @@ public class CalendarAddNote extends Fragment {
 				.inflate(R.layout.calendar_note_layout, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
-		progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
-
 		m_titleText = (EditText) v.findViewById(R.id.title);
 		m_purpose = (Spinner) v.findViewById(R.id.purposeSpinner_1);
 		m_client = (Spinner) v.findViewById(R.id.clientSpinner_1);
@@ -101,60 +97,7 @@ public class CalendarAddNote extends Fragment {
 		adapterTime
 				.setDropDownViewResource(android.R.layout.simple_spinner_item);
 		m_remind.setAdapter(adapterTime);
-
-		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Purpose"); // get
-																				// Parse
-																				// table:ClientNote
-		query.findInBackground(new FindCallback<ParseObject>() {
-			ArrayList<String> purposArrayList;
-
-			@Override
-			public void done(List<ParseObject> objects,
-					com.parse.ParseException e) {
-				if (e == null) {
-
-					try {
-						progressDialog.dismiss();
-
-						purposArrayList = new ArrayList<String>();
-						purpose = objects;
-						if (purpose != null) {
-							for (ParseObject purposeObject : purpose) {
-								if (purposeObject.getString("name") != null)
-									purposArrayList.add(purposeObject
-											.getString("name"));
-								Log.d("debug",
-										purposArrayList.toString());
-
-							}
-
-						}
-
-						if (purposArrayList.size() <= 1) {
-							Log.d("debug", "purposArrayList" + purposArrayList.size());
-							purposArrayList.add("  ");
-						}
-						purposArrayList.add("-新增目的-");
-
-						ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
-								getActivity(),
-								android.R.layout.simple_spinner_item,
-								purposArrayList);
-						purposeAdapter
-								.setDropDownViewResource(android.R.layout.simple_spinner_item);
-						m_purpose.setAdapter(purposeAdapter);
-						Log.d("debug", "purposArrayList" + purposArrayList.size());
-
-						m_purpose.setOnItemSelectedListener(new
-								ClientNoteUtils.ClientNoteOnItemSelectedListener(getActivity(),
-										m_purpose));
-
-					} catch (Exception e2) {
-						e2.printStackTrace();
-					}
-				}
-			}
-		});
+		SpinnerHelper.buildCustomerData(getActivity(), m_purpose, "Purpose", "目的", null);
 
 		ParseQuery<ParseObject> queryClientName = new ParseQuery<ParseObject>(
 				"Client"); // get Parse table:ClientNote
