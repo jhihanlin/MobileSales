@@ -45,45 +45,23 @@ public class ClientNoteList extends Fragment {
 	public ClientNoteList() {
 	}
 
-	ListView listView;
-	Button addEvent;
-	Button searchButton;
-	Button groupByBtn;
-	EditText inputClient;
-	String s = "";
+	private ListView listView;
+	private Button searchButton;
+	private EditText inputClient;
+	private String s = "";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_listview, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
-		groupByBtn = (Button) v.findViewById(R.id.groupByBtn);
-		groupByBtn.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				Log.d("groupByBtn", "Onclick");
-				getActivity().openContextMenu(groupByBtn);
-			}
-		});
-
-		registerForContextMenu(groupByBtn);
 		listView = (ListView) v.findViewById(R.id.listView1);
 		inputClient = (EditText) v.findViewById(R.id.editText1);
 		searchButton = (Button) v.findViewById(R.id.button2);
 		searchButton.setTypeface(typeface);
 
-		addEvent = (Button) v.findViewById(R.id.button1);
 		loadDataFromParse();
-		addEvent.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, new ClientNote()).commit();
-			}
-		});
 
 		searchButton.setOnClickListener(new OnClickListener() {
 
