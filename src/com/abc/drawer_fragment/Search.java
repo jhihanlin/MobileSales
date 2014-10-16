@@ -110,18 +110,21 @@ public class Search extends Fragment implements LocationListener {
 				.center(new LatLng(-33.87365, 151.20689)).radius(10000)
 				.strokeColor(Color.RED).fillColor(Color.BLUE));
 
+		Criteria cr = new Criteria();
+		String provider = locMgr.getBestProvider(cr, true);
+		Location location = locMgr.getLastKnownLocation(provider);
+		onLocationChanged(location);
+
 		searchButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				String locationName = autoTV.getText().toString().trim();
 
 				if (locationName.length() > 0) {
 					locationNameToMarker(locationName);
 				} else {
-					Toast.makeText(getActivity().getBaseContext(),
-							"請輸入地址", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(getActivity().getBaseContext(), "請輸入地址",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -137,9 +140,8 @@ public class Search extends Fragment implements LocationListener {
 				if (locationName.length() > 0) {
 					locationNameToMarker(locationName);
 				} else {
-					Toast.makeText(getActivity().getBaseContext(),
-							"請輸入地址", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(getActivity().getBaseContext(), "請輸入地址",
+							Toast.LENGTH_SHORT).show();
 				}
 			};
 		});
@@ -153,44 +155,12 @@ public class Search extends Fragment implements LocationListener {
 				if (locationName.length() > 0) {
 					locationNameToMarker(locationName);
 				} else {
-					Toast.makeText(getActivity().getBaseContext(),
-							"請輸入地址", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(getActivity().getBaseContext(), "請輸入地址",
+							Toast.LENGTH_SHORT).show();
 				}
 
 			};
 
-		});
-
-		nearButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				final List<String> latLongData = getLatlongData();
-
-				for (int i = 0; i < latLongData.size(); i++) {
-					final String ii = latLongData.get(i).toString();
-					double lati = Double.parseDouble(latLongData.get(i).split(
-							",")[1].trim());
-					double lng = Double.parseDouble(latLongData.get(i).split(
-							",")[2].trim());
-					gmap.addMarker(new MarkerOptions()
-							.position(new LatLng(lati, lng))
-							.title(latLongData.get(i).split(",")[0].trim())
-							.snippet(ii));
-
-					gmap.setOnMarkerClickListener(new OnMarkerClickListener() {
-
-						@Override
-						public boolean onMarkerClick(Marker arg0) {
-							Log.d("debug", arg0.toString());
-
-							Dialog onCreateDialog = onCreateDialog(arg0
-									.getSnippet());
-							return false;
-						}
-					});
-				}
-			}
 		});
 
 		return v;
@@ -226,15 +196,13 @@ public class Search extends Fragment implements LocationListener {
 							}
 						})
 
-				.setNeutralButton("取消",
-						new DialogInterface.OnClickListener() {
+				.setNeutralButton("取消", new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
-							}
-						}).show();
+					}
+				}).show();
 		return dialog;
 	}
 
@@ -249,7 +217,7 @@ public class Search extends Fragment implements LocationListener {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				if (e == null) { 
+				if (e == null) {
 					clientNames = objects;
 					Log.d("debug", "objects.size()=" + objects.size());
 				}
@@ -327,30 +295,7 @@ public class Search extends Fragment implements LocationListener {
 
 	}
 
-	protected void showMarkOption(String locationName[]) {
-		// TODO Auto-generated method stub
-		gmap.clear();
-
-		// String locationName1 =
-		// autoTV.getText().toString().split(",")[1].trim();
-		// String locationName = autoTV.getText().toString().trim();
-		// getLatlongData().getText().toString().split(",")[1].trim();
-
-		List<String> latLongData = getLatlongData();
-
-		for (int i = 0; i < latLongData.size(); i++) {
-			double lati = Double.parseDouble(latLongData.get(i).split(",")[1]
-					.trim());
-			double lng = Double.parseDouble(latLongData.get(i).split(",")[2]
-					.trim());
-			gmap.addMarker(new MarkerOptions().position(new LatLng(lati, lng))
-					.title(latLongData.get(i).split(",")[0].trim()));
-		}
-
-	}
-
 	protected void locationNameToMarker(String locationName) {
-		// TODO Auto-generated method stub
 		gmap.clear();
 		Geocoder gecoder = new Geocoder(getActivity());
 		List<Address> addressList = null;
@@ -393,8 +338,8 @@ public class Search extends Fragment implements LocationListener {
 				|| locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 			locMgr.requestLocationUpdates(bestProv, 1000, 1, this);
 		} else {
-			Toast.makeText(getActivity().getBaseContext(),
-					"請開啟GPS功能", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity().getBaseContext(), "請開啟GPS功能",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -410,22 +355,127 @@ public class Search extends Fragment implements LocationListener {
 		return false;
 	}
 
-	public void onLocationChanged(Location location) {
+	public void onLocationChanged(final Location location) {
 		String x = "緯=" + Double.toString(location.getLatitude());
 		String y = "經=" + Double.toString(location.getLongitude());
+
+		nearButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				gmap.clear();
+				Dialog dialog = null;
+				LayoutInflater inflater = LayoutInflater.from(getActivity());
+				final View v1 = inflater.inflate(R.layout.message_model, null);
+
+				new AlertDialog.Builder(getActivity())
+						.setTitle("請輸入搜尋公里範圍")
+						.setView(v1)
+						.setPositiveButton("Done",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+										EditText nearET = (EditText) (v1
+												.findViewById(R.id.modelEditText));
+										String kmString = "2";// nearET.getContext().toString().trim();
+
+										double km = Double
+												.parseDouble(nearET.getText().toString());
+										
+										LatLng point = new LatLng(location
+												.getLatitude(), location
+												.getLongitude());
+										zoom = 15;
+										gmap.animateCamera(CameraUpdateFactory
+												.newLatLngZoom(point, zoom));
+										final List<String> latLongData = getLatlongData();
+										double kmLati = 1 / 96.49;
+										double kmLng = 1 / 110.85;
+										double kmOfLati = km * kmLati;
+										double kmOfLng = km * kmLng;
+
+										double latiMax = location.getLatitude()
+												+ kmOfLati;
+										double latiMin = location.getLatitude()
+												- kmOfLati;
+										double lngMax = location.getLongitude()
+												+ kmOfLng;
+										double lngMin = location.getLongitude()
+												- kmOfLng;
+										Toast.makeText(
+												getActivity().getBaseContext(),
+												"顯示距離您 " + km + " 公里之地標",
+												Toast.LENGTH_LONG).show();
+										for (int i = 0; i < latLongData.size(); i++) {
+											final String ii = latLongData
+													.get(i).toString();
+											double lati = Double
+													.parseDouble(latLongData
+															.get(i).split(",")[1]
+															.trim());
+											double lng = Double
+													.parseDouble(latLongData
+															.get(i).split(",")[2]
+															.trim());
+											if (lati <= latiMax
+													&& lati >= latiMin
+													&& lng >= lngMin
+													&& lng <= lngMax) {
+												gmap.addMarker(new MarkerOptions()
+														.position(
+																new LatLng(
+																		lati,
+																		lng))
+														.title(latLongData.get(
+																i).split(",")[0]
+																.trim())
+														.snippet(ii));
+												gmap.setOnMarkerClickListener(new OnMarkerClickListener() {
+													@Override
+													public boolean onMarkerClick(
+															Marker arg0) {
+														Log.d("debug",
+																arg0.toString());
+														Dialog onCreateDialog = onCreateDialog(arg0
+																.getSnippet());
+														return false;
+													}
+												});
+											}
+										}
+									}
+								})
+						.setNeutralButton("Cancel",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+									}
+								}).show();
+
+			}
+		});
+
+		double lati = 111.1367 - 0.5623 * Math.cos(2 * location.getLatitude())
+				+ 0.0011 * Math.cos(4 * location.getLatitude());
+		double lng = 111.4179 * Math.cos(location.getLongitude()) - 0.0940
+				* Math.cos(3 * location.getLongitude()) + 0.0002
+				* Math.cos(5 * location.getLongitude());
 
 		LatLng point = new LatLng(location.getLatitude(),
 				location.getLongitude());
 		Log.d("debug", point.toString());
-		zoom = 17;
+		zoom = 15;
 
 		if (first == true) {
 			gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, zoom));
 			first = false;
 		}
 		gmap.setMyLocationEnabled(true);
-		// Toast.makeText(getActivity(), x + "\n" + y,
-		// Toast.LENGTH_LONG).show();
+
 	}
 
 	@Override
@@ -451,6 +501,48 @@ public class Search extends Fragment implements LocationListener {
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
+
+	}
+
+	public void nearButtononClick(Location location) {
+
+		double latiKM = 111.1367 - 0.5623
+				* Math.cos(2 * location.getLatitude()) + 0.0011
+				* Math.cos(4 * location.getLatitude());
+		double lngKM = 111.4179 * Math.cos(location.getLongitude()) - 0.0940
+				* Math.cos(3 * location.getLongitude()) + 0.0002
+				* Math.cos(5 * location.getLongitude());
+
+		final List<String> latLongData = getLatlongData();
+
+		for (int i = 0; i < latLongData.size(); i++) {
+			final String ii = latLongData.get(i).toString();
+			double lati = Double.parseDouble(latLongData.get(i).split(",")[1]
+					.trim());
+			double lng = Double.parseDouble(latLongData.get(i).split(",")[2]
+					.trim());
+
+			if (lati <= latiKM || lati >= -latiKM || lng >= -lngKM
+					|| lng <= lngKM) {
+				gmap.addMarker(new MarkerOptions()
+						.position(new LatLng(lati, lng))
+						.title(latLongData.get(i).split(",")[0].trim())
+						.snippet(ii));
+
+				gmap.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+					@Override
+					public boolean onMarkerClick(Marker arg0) {
+						Log.d("debug", arg0.toString());
+
+						Dialog onCreateDialog = onCreateDialog(arg0
+								.getSnippet());
+						return false;
+					}
+				});
+
+			}
+		}
 
 	}
 
