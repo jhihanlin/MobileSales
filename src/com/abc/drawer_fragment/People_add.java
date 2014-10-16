@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -21,7 +22,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.graphics.Bitmap.CompressFormat;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,6 +36,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,7 +51,6 @@ import android.widget.DatePicker;
 
 import com.abc.model.MainActivity;
 import com.abc.model.R;
-import com.abc.model.utils.TypeFaceHelper;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -65,7 +67,8 @@ import com.parse.SaveCallback;
 public class People_add extends Fragment {
 	private Button savePeople, delPeople, imbtnupdata, backPeople, editPeople,
 			photoButton;
-	private EditText edtname, edtbirthday, edttel, edtemail, edtadd;
+	Button DatePicker = null;
+	private EditText edtname, edttel, edtemail, edtadd, edtnote;
 	private ImageView photoImage;
 	protected List<ParseObject> tag;
 	public ArrayList<String> TagArrayList;
@@ -73,7 +76,7 @@ public class People_add extends Fragment {
 	public String mode = "";
 	public String ID = "";
 	public String textData = "";
-	public DatePicker DatePicker;
+	// public DatePicker DatePicker;
 	Calendar c;
 	private ProgressDialog progressDialog;
 
@@ -90,7 +93,6 @@ public class People_add extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.people_add, container, false);
-		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		final Calendar TodayDate = Calendar.getInstance();
 		final int sYear = TodayDate.get(Calendar.YEAR);
@@ -101,18 +103,15 @@ public class People_add extends Fragment {
 		progressDialog = new ProgressDialog(getActivity());
 
 		editPeople = (Button) v.findViewById(R.id.editPeople);
-		editPeople.setTypeface(typeface);
 		savePeople = (Button) v.findViewById(R.id.savePeople);
-		savePeople.setTypeface(typeface);
 		delPeople = (Button) v.findViewById(R.id.deletePeople);
-		delPeople.setTypeface(typeface);
 		backPeople = (Button) v.findViewById(R.id.backPeople);
-		backPeople.setTypeface(typeface);
 		edtname = (EditText) v.findViewById(R.id.edtname);
 		edttel = (EditText) v.findViewById(R.id.edttel);
 		edtemail = (EditText) v.findViewById(R.id.edtemail);
 		edtadd = (EditText) v.findViewById(R.id.edtaddress);
 		sptag = (Spinner) v.findViewById(R.id.sptag);
+		edtnote = (EditText) v.findViewById(R.id.edtNote);
 
 		photoImage = (ImageView) v.findViewById(R.id.photoImage);
 		photoButton = (Button) v.findViewById(R.id.photoButton);
@@ -123,8 +122,8 @@ public class People_add extends Fragment {
 				// TODO Auto-generated method stub
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						getActivity());
-				builder.setTitle("照片");
-				builder.setPositiveButton("從相簿選取",
+				builder.setTitle("設置大頭貼");
+				builder.setPositiveButton("從相簿",
 						new DialogInterface.OnClickListener() {
 
 							@Override
@@ -182,27 +181,28 @@ public class People_add extends Fragment {
 			}
 		});
 
-		DatePicker = (DatePicker) v.findViewById(R.id.datePicker1);
+		DatePicker = (Button) v.findViewById(R.id.datepickerButton11);
 
 		if (mode.equals("add")) {
-			DatePicker.init(TodayDate.get(Calendar.YEAR),
-					TodayDate.get(Calendar.MONTH),
-					TodayDate.get(Calendar.DAY_OF_MONTH),
-					new DatePicker.OnDateChangedListener() {
-						@Override
-						public void onDateChanged(DatePicker view, int year,
-								int monthOfYear, int dayOfMonth) {
-							String Year = DateFix(year);
-							String Mon = DateFix(monthOfYear);
-							String Day = DateFix(dayOfMonth);
-							textData = Year + "/" + Mon + "/" + Day;
-						}
-					});
-			textData = DateFix(sYear) + "/" + DateFix(sMon) + "/"
-					+ DateFix(sDay);
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+			Date curDate = new Date(System.currentTimeMillis());
+			String str = formatter.format(curDate);
+
+			DatePicker.setText(str);
+			DatePicker.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+
+					onCreateDialog(DatePicker).show();
+				}
+			});
+
+			Log.v("", textData);
 			delPeople.setVisibility(8);
 			editPeople.setVisibility(8);
 		}
+
 		if (mode.equals("edit")) {
 			savePeople.setVisibility(8);
 			photoButton.setEnabled(false);
@@ -212,6 +212,8 @@ public class People_add extends Fragment {
 			edtadd.setEnabled(false);
 			sptag.setEnabled(false);
 			DatePicker.setEnabled(false);
+			edtnote.setEnabled(false);
+			delPeople.setVisibility(8);
 		}
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
@@ -222,26 +224,116 @@ public class People_add extends Fragment {
 			@Override
 			public void done(List<ParseObject> objects,
 					com.parse.ParseException e) {
-				progressDialog.dismiss();
-				TagArrayList = new ArrayList<String>();
+
 				if (e == null) {
-					tag = objects;
-					if (tag != null) {
-						for (ParseObject purposeObject : tag) {
-							TagArrayList.add(purposeObject.getString("name"));
-							Log.d("TagArrayList", TagArrayList.toString());
+					try {
+						progressDialog.dismiss();
+						TagArrayList = new ArrayList<String>();
+						tag = objects;
+						TagArrayList.add("::選擇標籤::");
+						if (tag != null) {
+							for (ParseObject purposeObject : tag) {
+								TagArrayList.add(purposeObject
+										.getString("name"));
+								Log.d("TagArrayList", TagArrayList.toString());
 
+							}
 						}
-					} else {
 
-						TagArrayList.add("");
+						TagArrayList.add("《新增標籤》");
+
+						final ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
+								getActivity(),
+								android.R.layout.simple_spinner_item,
+								TagArrayList);
+						purposeAdapter
+								.setDropDownViewResource(android.R.layout.simple_spinner_item);
+						sptag.setAdapter(purposeAdapter);
+
+						sptag.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+							@Override
+							public void onItemSelected(AdapterView<?> parent,
+									View view, int position, long id) {
+							if ((TagArrayList.size() - 1) == position) {
+									final ProgressDialog progressDialog = new ProgressDialog(
+											getActivity());
+
+									AlertDialog.Builder builder = new AlertDialog.Builder(
+											getActivity());
+									builder.setTitle("標籤名稱");
+									final EditText ed = new EditText(
+											getActivity());
+									builder.setView(ed);
+									builder.setPositiveButton(
+											"確認",
+											new DialogInterface.OnClickListener() {
+
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													progressDialog
+															.setCancelable(false);
+													progressDialog
+															.setTitle("Loading...");
+													progressDialog.show();
+
+													final String s = ed
+															.getText()
+															.toString();
+													ParseObject ps = new ParseObject(
+															"Tag");
+													ps.put("name", s);
+													ps.setACL(new ParseACL(
+															ParseUser
+																	.getCurrentUser()));
+
+													ps.saveInBackground(new SaveCallback() {
+
+														@Override
+														public void done(
+																ParseException e) {
+															progressDialog
+																	.dismiss();
+															purposeAdapter
+																	.remove("input tag's name");
+															purposeAdapter
+																	.add(s);
+															purposeAdapter
+																	.add("input tag's name");
+															purposeAdapter
+																	.notifyDataSetChanged();
+														}
+													});
+												}
+											});
+									builder.setNegativeButton(
+											"取消",
+											new DialogInterface.OnClickListener() {
+
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+
+												}
+											});
+									builder.show();
+
+								}
+
+							}
+
+							@Override
+							public void onNothingSelected(AdapterView<?> parent) {
+							
+							}
+						});
+
+					} catch (Exception e2) {
+						e2.printStackTrace();
 					}
-					ArrayAdapter<String> purposeAdapter = new ArrayAdapter<String>(
-							getActivity(),
-							android.R.layout.simple_spinner_item, TagArrayList);
-					purposeAdapter
-							.setDropDownViewResource(android.R.layout.simple_spinner_item);
-					sptag.setAdapter(purposeAdapter);
 
 					if (mode.equals("edit")) {
 						progressDialog.setCancelable(false);
@@ -273,47 +365,41 @@ public class People_add extends Fragment {
 															.setImageBitmap(bitmap);
 
 												} catch (ParseException e1) {
-													// TODO Auto-generated catch
-													// block
 													e1.printStackTrace();
 												}
 											}
 											if (object.get("birthday").equals(
 													"")) {
-												DatePicker.init(
-														TodayDate
-																.get(Calendar.YEAR),
-														TodayDate
-																.get(Calendar.MONTH),
-														TodayDate
-																.get(Calendar.DAY_OF_MONTH),
-														new DatePicker.OnDateChangedListener() {
+												SimpleDateFormat formatter = new SimpleDateFormat(
+														"yyyy/MM/dd");
+												Date curDate = new Date(System
+														.currentTimeMillis());
+												String str = formatter
+														.format(curDate);
+
+												DatePicker.setText(str);
+												DatePicker
+														.setOnClickListener(new View.OnClickListener() {
 															@Override
-															public void onDateChanged(
-																	DatePicker view,
-																	int year,
-																	int monthOfYear,
-																	int dayOfMonth) {
-																String Year = DateFix(year);
-																String Mon = DateFix(monthOfYear);
-																String Day = DateFix(dayOfMonth);
-																textData = Year
-																		+ "/"
-																		+ Mon
-																		+ "/"
-																		+ Day;
+															public void onClick(
+																	View v) {
+															
+																onCreateDialog(
+																		DatePicker)
+																		.show();
 															}
 														});
-												textData = DateFix(sYear) + "/"
-														+ DateFix(sMon) + "/"
-														+ DateFix(sDay);
+												textData = DatePicker.getText()
+														.toString();
 											} else {
-
-												DatePicker.init(
+												Calendar c = Calendar
+														.getInstance();
+												c.set(Calendar.YEAR,
 														Integer.parseInt(object
 																.get("birthday")
 																.toString()
-																.substring(0, 4)),
+																.substring(0, 4))); 
+												c.set(Calendar.MONTH,
 														Integer.parseInt(object
 																.get("birthday")
 																.equals("") ? "123"
@@ -322,31 +408,34 @@ public class People_add extends Fragment {
 																		.toString()
 																		.substring(
 																				5,
-																				7)),
+																				7))); // 將月份改成1月
+												c.set(Calendar.DAY_OF_MONTH,
 														Integer.parseInt(object
 																.get("birthday")
 																.toString()
 																.substring(8,
-																		10)),
-														new DatePicker.OnDateChangedListener() {
+																		10))); // 將日改成31日
+												SimpleDateFormat formatter = new SimpleDateFormat(
+														"yyyy/MM/dd");
+												Date curDate = new Date(c
+														.getTimeInMillis());
+												String str = formatter
+														.format(curDate);
+
+												DatePicker.setText(str);
+												DatePicker
+														.setOnClickListener(new View.OnClickListener() {
 															@Override
-															public void onDateChanged(
-																	DatePicker view,
-																	int year,
-																	int monthOfYear,
-																	int dayOfMonth) {
-																String Year = DateFix(year);
-																String Mon = DateFix(monthOfYear);
-																String Day = DateFix(dayOfMonth);
-																textData = Year
-																		+ "/"
-																		+ Mon
-																		+ "/"
-																		+ Day;
+															public void onClick(
+																	View v) {
+														
+																onCreateDialog(
+																		DatePicker)
+																		.show();
 															}
 														});
-												textData = object.get(
-														"birthday").toString();
+												textData = DatePicker.getText()
+														.toString();
 
 											}
 											edtname.setText(object.get("name") == null ? ""
@@ -401,6 +490,8 @@ public class People_add extends Fragment {
 				edtadd.setEnabled(true);
 				sptag.setEnabled(true);
 				DatePicker.setEnabled(true);
+				edtnote.setEnabled(true);
+				delPeople.setVisibility(0);
 			}
 		});
 
@@ -499,7 +590,7 @@ public class People_add extends Fragment {
 	}
 
 	public void btnadd() {
-
+		textData = DatePicker.getText().toString();
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
@@ -545,13 +636,13 @@ public class People_add extends Fragment {
 				public void done(ParseException e) {
 					progressDialog.dismiss();
 					if (e == null) {
-						Toast.makeText(getActivity(), "儲存成功",
+						Toast.makeText(getActivity(), "Successful",
 								Toast.LENGTH_SHORT).show();
 						getActivity().getFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, new People())
 								.commit();
 					} else {
-						Toast.makeText(getActivity(), "儲存失敗",
+						Toast.makeText(getActivity(), "Error",
 								Toast.LENGTH_SHORT).show();
 					}
 				}
@@ -561,14 +652,14 @@ public class People_add extends Fragment {
 	}
 
 	public void btnadd(Bitmap bitmap) {
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
-
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bitmap.compress(CompressFormat.PNG, 90, baos);
 		byte[] bytes = baos.toByteArray();
 		final ParseFile file = new ParseFile("photo.png", bytes);
+
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading...");
+		progressDialog.show();
 
 		ParseObject object = new ParseObject("Client");
 		object.put("photo", file);
@@ -613,13 +704,13 @@ public class People_add extends Fragment {
 				public void done(ParseException e) {
 					progressDialog.dismiss();
 					if (e == null) {
-						Toast.makeText(getActivity(), "儲存成功",
+						Toast.makeText(getActivity(), "Successful",
 								Toast.LENGTH_SHORT).show();
 						getActivity().getFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, new People())
 								.commit();
 					} else {
-						Toast.makeText(getActivity(), "儲存失敗",
+						Toast.makeText(getActivity(), "Error",
 								Toast.LENGTH_SHORT).show();
 					}
 				}
@@ -629,6 +720,7 @@ public class People_add extends Fragment {
 	}
 
 	public void btnedit() {
+		textData = DatePicker.getText().toString();
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
@@ -686,7 +778,7 @@ public class People_add extends Fragment {
 										progressDialog.dismiss();
 										if (e == null) {
 											Toast.makeText(getActivity(),
-													"成功",
+													"Successful",
 													Toast.LENGTH_SHORT).show();
 											getActivity()
 													.getFragmentManager()
@@ -697,7 +789,7 @@ public class People_add extends Fragment {
 													.commit();
 										} else {
 											Toast.makeText(getActivity(),
-													"失敗", Toast.LENGTH_SHORT)
+													"Error", Toast.LENGTH_SHORT)
 													.show();
 										}
 									}
@@ -775,7 +867,7 @@ public class People_add extends Fragment {
 										progressDialog.dismiss();
 										if (e == null) {
 											Toast.makeText(getActivity(),
-													"編輯成功",
+													"Successful",
 													Toast.LENGTH_SHORT).show();
 											getActivity()
 													.getFragmentManager()
@@ -786,7 +878,7 @@ public class People_add extends Fragment {
 													.commit();
 										} else {
 											Toast.makeText(getActivity(),
-													"編輯失敗", Toast.LENGTH_SHORT)
+													"Error", Toast.LENGTH_SHORT)
 													.show();
 										}
 									}
@@ -833,8 +925,8 @@ public class People_add extends Fragment {
 
 	public void showDeleteDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("是否刪除");
-		builder.setPositiveButton("刪除",
+		builder.setTitle("delete");
+		builder.setPositiveButton("done",
 				new DialogInterface.OnClickListener() {
 
 					@Override
@@ -842,7 +934,7 @@ public class People_add extends Fragment {
 						btndel();
 					}
 				});
-		builder.setNegativeButton("取消",
+		builder.setNegativeButton("canenl",
 				new DialogInterface.OnClickListener() {
 
 					@Override
@@ -851,6 +943,22 @@ public class People_add extends Fragment {
 					}
 				});
 		builder.show();
+	}
+
+	protected Dialog onCreateDialog(final Button btn) {
+		Dialog dialog = null;
+		c = Calendar.getInstance();
+		dialog = new DatePickerDialog(getActivity(),
+				new DatePickerDialog.OnDateSetListener() {
+					public void onDateSet(DatePicker dp, int year, int month,
+							int dayOfMonth) {
+						String text = String.format("%d/%02d/%02d", year,
+								(month + 1), dayOfMonth);
+						btn.setText(text);
+					}
+				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
+				c.get(Calendar.DAY_OF_MONTH));
+		return dialog;
 	}
 
 	public String DateFix(int c) {
@@ -873,15 +981,15 @@ public class People_add extends Fragment {
 
 		if (edttel.getText().toString().equals("")) {
 
-			Toast.makeText(getActivity(), "請輸入電話號碼",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), "input phone", Toast.LENGTH_LONG)
+					.show();
 			check = false;
 		}
 
 		if (edtadd.getText().toString().equals("")) {
 
-			Toast.makeText(getActivity(), "請輸入地址",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), "input address", Toast.LENGTH_LONG)
+					.show();
 			check = false;
 		}
 
