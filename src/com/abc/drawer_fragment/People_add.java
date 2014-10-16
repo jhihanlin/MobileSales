@@ -925,8 +925,8 @@ public class People_add extends Fragment {
 
 	public void showDeleteDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("delete");
-		builder.setPositiveButton("done",
+		builder.setTitle("是否刪除此聯絡人");
+		builder.setPositiveButton("確認",
 				new DialogInterface.OnClickListener() {
 
 					@Override
@@ -934,7 +934,7 @@ public class People_add extends Fragment {
 						btndel();
 					}
 				});
-		builder.setNegativeButton("canenl",
+		builder.setNegativeButton("取消",
 				new DialogInterface.OnClickListener() {
 
 					@Override
