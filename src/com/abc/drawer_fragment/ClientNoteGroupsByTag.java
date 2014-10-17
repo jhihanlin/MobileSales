@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.R.integer;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -70,7 +71,7 @@ public class ClientNoteGroupsByTag extends Fragment {
 					public void done(List<ParseObject> objects, ParseException e) {
 						clientNotes = objects;
 						progressDialog.dismiss();
-						setListViewData(clients, v);
+						setListViewData(clients, clientNotes, v);
 					}
 				});
 
@@ -90,10 +91,11 @@ public class ClientNoteGroupsByTag extends Fragment {
 		return null;
 	}
 
-	private void setListViewData(final List<ParseObject> clients, View v) {
+	private void setListViewData(final List<ParseObject> clients, final List<ParseObject> clientNotes, View v) {
 		final List<String> arrayList = new ArrayList<String>();
 		final List<String> arrayListId = new ArrayList<String>();
 		Set<String> tagHash = new HashSet<String>();
+		int count = 0;
 
 		LinearLayout layout1 = (LinearLayout) v.findViewById(R.id.purpose_layout);
 		if (clients.size() <= 0) {
@@ -106,16 +108,18 @@ public class ClientNoteGroupsByTag extends Fragment {
 			String tagName = client.getString("tag");
 			if (tagHash.contains(tagName) == false) {
 				tagHash.add(tagName);
-				int count = 0;
+				Log.d("debug", tagHash.toString());
 				for (ParseObject note : clientNotes) {
-					if (note.getString("client").equals(client.getString("name")))
+					if (tagName.equals(findClientTag(note.getString("client"), clients)))
 						count++;
 				}
+				Log.d("debug", tagName + ":" + count);
 				arrayListId.add(client.getObjectId());
 				arrayList.add(tagName + "(" + count + ")");
 			}
-
+			count = 0;
 		}
+
 		try {
 			final ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(getActivity(),
 					android.R.layout.simple_list_item_1, arrayList);
