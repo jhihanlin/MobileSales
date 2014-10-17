@@ -53,7 +53,6 @@ public class MessageView extends Fragment {
 		message_view.setClickable(false);
 		message_view.setEnabled(false);
 		message_name = (TextView) v.findViewById(R.id.message_name);
-		doneButton = (Button) v.findViewById(R.id.doneButton);
 		doneButton.setTypeface(typeface);
 		message_view.setClickable(false);
 		Bundle arguments = getArguments();

@@ -114,20 +114,4 @@
         <requestFocus />
     </EditText>
 
-    <LinearLayout
-        android:id="@+id/LinearLayout1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right" >
-
-        <Button
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="#99CCCC"
-            android:text="返回通知列表"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
-
 </LinearLayout>

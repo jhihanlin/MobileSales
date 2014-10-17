@@ -123,9 +123,9 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#99CCCC"
+            android:background="#FFFFFF"
             android:text="取消"
-            android:textColor="#FFFFFF" />
+            android:textColor="#99CCCC" />
 
         <Button
             android:id="@+id/save_1"
@@ -133,9 +133,9 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#FFFFFF"
+            android:background="#99CCCC"
             android:text="儲存"
-            android:textColor="#99CCCC" />
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

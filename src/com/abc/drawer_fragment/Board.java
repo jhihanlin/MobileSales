@@ -42,20 +42,8 @@ public class Board extends Fragment {
 		TextView push_title = (TextView) v.findViewById(R.id.push_title);
 		push_title.setTypeface(typeface);
 		Button push_btn = (Button) v.findViewById(R.id.push_btn);
-		Button board_list = (Button) v.findViewById(R.id.look_all);
-		board_list.setTypeface(typeface);
 		push_btn.setTypeface(typeface);
-		board_list.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				getActivity()
-						.getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new BoardList())
-						.commit();
-			}
-		});
 		push_btn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -63,7 +51,7 @@ public class Board extends Fragment {
 				progressDialog.setCancelable(false);
 				progressDialog.setTitle("Loading...");
 				progressDialog.show();
-				
+
 				// get user
 				ParseUser user = ParseUser.getCurrentUser();
 
@@ -78,7 +66,7 @@ public class Board extends Fragment {
 				object.put("content", content);
 				object.put("username", user.getUsername());
 				object.saveInBackground(new SaveCallback() {
-					
+
 					@Override
 					public void done(ParseException e) {
 						progressDialog.dismiss();

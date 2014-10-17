@@ -187,9 +187,9 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#FFFFFF"
+            android:background="#99CCCC"
             android:text="編輯"
-            android:textColor="#99CCCC" />
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/savePeople"
@@ -197,9 +197,9 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#FFFFFF"
+            android:background="#99CCCC"
             android:text="儲存"
-            android:textColor="#99CCCC" />
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

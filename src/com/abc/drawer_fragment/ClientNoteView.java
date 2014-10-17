@@ -95,8 +95,6 @@ public class ClientNoteView extends Fragment {
 		edit.setTypeface(typeface);
 		final Button save = (Button) v.findViewById(R.id.save);
 		save.setTypeface(typeface);
-		final Button back = (Button) v.findViewById(R.id.back);
-		back.setTypeface(typeface);
 		final String id = list.get(0).get("id");
 		save.setVisibility(View.GONE);
 
@@ -215,19 +213,6 @@ public class ClientNoteView extends Fragment {
 			}
 
 		});
-		back.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// go back to list
-				getActivity()
-						.getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new ClientNoteList())
-						.commit();
-			}
-		});
-
 		return v;
 	}
 

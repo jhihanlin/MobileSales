@@ -37,13 +37,4 @@
         android:focusableInTouchMode="false" >
     </ListView>
 
-    <Button
-        android:id="@+id/doneButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="#99CCCC"
-        android:text="返回簡訊列表"
-        android:textColor="#FFFFFF" />
-
 </LinearLayout>

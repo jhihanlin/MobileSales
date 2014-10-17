@@ -263,7 +263,9 @@ public class ClientNoteList extends Fragment {
 				.getFragmentManager()
 				.beginTransaction()
 				.replace(R.id.content_frame, clientNoteView)
+				.addToBackStack(null)
 				.commit();
+		
 	}
 
 	public void showDeleteDialog(final List<Map<String, String>> data,

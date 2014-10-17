@@ -62,15 +62,6 @@
             android:background="#99CCCC"
             android:text="發送"
             android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/look_all"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="#FFFFFF"
-            android:text="返回公告欄列表"
-            android:textColor="#99CCCC" />
     </LinearLayout>
 
 </LinearLayout>

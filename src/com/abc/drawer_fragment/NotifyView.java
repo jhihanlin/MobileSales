@@ -92,8 +92,6 @@ public class NotifyView extends Fragment {
 		final EditText getLocation = (EditText) v.findViewById(R.id.view_location);
 		final Spinner getRemind = (Spinner) v.findViewById(R.id.view_remind);
 		final EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
-		Button back = (Button) v.findViewById(R.id.back);
-		back.setTypeface(typeface);
 		final String id = list.get(0).get("id");
 
 		getTitle.setText(list.get(0).get("title"));
@@ -147,18 +145,7 @@ public class NotifyView extends Fragment {
 		adapterTime
 				.setDropDownViewResource(android.R.layout.simple_spinner_item);
 		getRemind.setAdapter(adapterTime);
-		
-		back.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				getActivity()
-				.getFragmentManager()
-				.beginTransaction()
-				.replace(R.id.content_frame, new Notify())
-				.commit();
-			}
-		});
+
 		return v;
 	}
 
