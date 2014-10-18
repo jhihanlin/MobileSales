@@ -10,12 +10,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -33,6 +33,8 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +55,10 @@ public class ClientNoteList extends Fragment {
 	private Button searchButton;
 	private EditText inputClient;
 	private String s = "";
+	private SearchView mSearchView;
+	private TextView mStatusView;
+	private Menu menu;
+	private List<ParseObject> clientObject;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -82,81 +88,70 @@ public class ClientNoteList extends Fragment {
 					final ArrayList<Map<String, String>> searchClientData = new ArrayList<Map<String, String>>();
 					final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
-					ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
-							"ClientNote");
-					query.orderByDescending("date");
-					query.findInBackground(new FindCallback<ParseObject>() {
+					for (ParseObject ob : clientObject) {
+						if (ob.getString("client").equals(s) || (ob.getString("client").indexOf(s) != -1)) {
+							Map<String, String> item = new HashMap<String, String>();
+							item.put("title", ob.getString("title"));
+							item.put("client", ob.getString("client"));
+							item.put("id", ob.getObjectId());
+							searchClientData.add(item);
 
-						@Override
-						public void done(List<ParseObject> objects, ParseException e) {
-							progressDialog.dismiss();
+							Map<String, String> item2 = new HashMap<String, String>();
+							item2.put("title", ob.getString("title"));
+							item2.put("client", ob.getString("client"));
+							item2.put("purpose", ob.getString("purpose"));
+							item2.put("date", ob.getString("date"));
+							item2.put("time", ob.getString("time"));
+							item2.put("content", ob.getString("content"));
+							item2.put("location", ob.getString("location"));
+							item2.put("remind", ob.getString("remind"));
+							item2.put("remarks", ob.getString("remarks"));
+							item2.put("id", ob.getObjectId());
+							list.add(item2);
 
-							for (ParseObject ob : objects) {
-								if (ob.getString("client").equals(s) || (ob.getString("client").indexOf(s) != -1)) {
-									Map<String, String> item = new HashMap<String, String>();
-									item.put("title", ob.getString("title"));
-									item.put("client", ob.getString("client"));
-									item.put("id", ob.getObjectId());
-									searchClientData.add(item);
-
-									Map<String, String> item2 = new HashMap<String, String>();
-									item2.put("title", ob.getString("title"));
-									item2.put("client", ob.getString("client"));
-									item2.put("purpose", ob.getString("purpose"));
-									item2.put("date", ob.getString("date"));
-									item2.put("time", ob.getString("time"));
-									item2.put("content", ob.getString("content"));
-									item2.put("location", ob.getString("location"));
-									item2.put("remind", ob.getString("remind"));
-									item2.put("remarks", ob.getString("remarks"));
-									item2.put("id", ob.getObjectId());
-									list.add(item2);
-
-								}
-
-								try {
-
-									final SimpleAdapter adapter = new SimpleAdapter(getActivity(),
-											searchClientData, R.layout.client_note_listview,
-											new String[] { "title", "client" }, new int[] {
-													R.id.clientNote_tx1, R.id.clientNote_tx2 });
-									listView.setAdapter(adapter);
-									listView.setOnItemClickListener(new OnItemClickListener() {
-
-										@Override
-										public void onItemClick(AdapterView<?> parent,
-												View view, int position, long id) {
-
-											sendValueToClientNoteView(list, position);
-										}
-									});
-									listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-										@Override
-										public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-											showDeleteDialog(searchClientData, position,
-													adapter);
-
-											return true;
-										}
-									});
-									listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-										@Override
-										public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-											showDeleteDialog(list, position, adapter);
-
-											return true;
-										}
-									});
-								} catch (Exception e3) {
-									e3.printStackTrace();
-								}
-							}
 						}
-					});
+
+						try {
+
+							final SimpleAdapter adapter = new SimpleAdapter(getActivity(),
+									searchClientData, R.layout.client_note_listview,
+									new String[] { "title", "client" }, new int[] {
+											R.id.clientNote_tx1, R.id.clientNote_tx2 });
+							listView.setAdapter(adapter);
+							listView.setOnItemClickListener(new OnItemClickListener() {
+
+								@Override
+								public void onItemClick(AdapterView<?> parent,
+										View view, int position, long id) {
+
+									sendValueToClientNoteView(list, position);
+								}
+							});
+							listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+								@Override
+								public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+									showDeleteDialog(searchClientData, position,
+											adapter);
+
+									return true;
+								}
+							});
+							listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+								@Override
+								public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+									showDeleteDialog(list, position, adapter);
+
+									return true;
+								}
+							});
+						} catch (Exception e3) {
+							e3.printStackTrace();
+						}
+					}
 				} else {
 					progressDialog.dismiss();
 					Toast.makeText(getActivity().getBaseContext(),
@@ -192,7 +187,7 @@ public class ClientNoteList extends Fragment {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
 				progressDialog.dismiss();
-
+				clientObject = objects;
 				final ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
@@ -312,7 +307,11 @@ public class ClientNoteList extends Fragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		FragmentManager fragmentManager = getFragmentManager();
+
 		switch (item.getItemId()) {
+		case R.id.search_clientnote:
+			// setupSearchView();
+			return true;
 		case R.id.action_add_client_note:
 			fragmentManager.beginTransaction()
 					.add(R.id.content_frame, new ClientNote())
@@ -346,6 +345,120 @@ public class ClientNoteList extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
 		inflater.inflate(R.menu.clientnote_fragment_menu, menu);
-		// Associate searchable configuration with the SearchView
+		setupSearchView(menu);
+	}
+
+	private void setupSearchView(Menu menu) {
+		Log.d("debug", "setupSearchView");
+		MenuItem searchItem = menu.findItem(R.id.search_clientnote);
+		mSearchView = (SearchView) searchItem.getActionView();
+		mSearchView.setQueryHint("請輸入客戶名稱");
+		if (isAlwaysExpanded()) {
+			mSearchView.setIconifiedByDefault(false);
+		} else {
+			searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
+					| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		}
+
+		SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+		if (searchManager != null) {
+			List<SearchableInfo> searchables = searchManager
+					.getSearchablesInGlobalSearch();
+
+			SearchableInfo info = searchManager
+					.getSearchableInfo(getActivity().getComponentName());
+			for (SearchableInfo inf : searchables) {
+				if (inf.getSuggestAuthority() != null
+						&& inf.getSuggestAuthority().startsWith("applications")) {
+					info = inf;
+				}
+			}
+			mSearchView.setSearchableInfo(info);
+		}
+		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
+
+			@Override
+			public boolean onQueryTextSubmit(String text) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String text) {
+				if (text.length() > 0) {
+					final ArrayList<Map<String, String>> searchClientData = new ArrayList<Map<String, String>>();
+					final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+					for (ParseObject ob : clientObject) {
+						if (ob.getString("client").equals(text) || (ob.getString("client").indexOf(text) != -1)) {
+							Map<String, String> item = new HashMap<String, String>();
+							item.put("title", ob.getString("title"));
+							item.put("client", ob.getString("client"));
+							item.put("id", ob.getObjectId());
+							searchClientData.add(item);
+
+							Map<String, String> item2 = new HashMap<String, String>();
+							item2.put("title", ob.getString("title"));
+							item2.put("client", ob.getString("client"));
+							item2.put("purpose", ob.getString("purpose"));
+							item2.put("date", ob.getString("date"));
+							item2.put("time", ob.getString("time"));
+							item2.put("content", ob.getString("content"));
+							item2.put("location", ob.getString("location"));
+							item2.put("remind", ob.getString("remind"));
+							item2.put("remarks", ob.getString("remarks"));
+							item2.put("id", ob.getObjectId());
+							list.add(item2);
+
+						}
+
+						try {
+
+							final SimpleAdapter adapter = new SimpleAdapter(getActivity(),
+									searchClientData, R.layout.client_note_listview,
+									new String[] { "title", "client" }, new int[] {
+											R.id.clientNote_tx1, R.id.clientNote_tx2 });
+							listView.setAdapter(adapter);
+							listView.setOnItemClickListener(new OnItemClickListener() {
+
+								@Override
+								public void onItemClick(AdapterView<?> parent,
+										View view, int position, long id) {
+
+									sendValueToClientNoteView(list, position);
+								}
+							});
+							listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+								@Override
+								public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+									showDeleteDialog(searchClientData, position,
+											adapter);
+
+									return true;
+								}
+							});
+							listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+								@Override
+								public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+									showDeleteDialog(list, position, adapter);
+
+									return true;
+								}
+							});
+						} catch (Exception e3) {
+							e3.printStackTrace();
+						}
+					}
+				}
+				return false;
+			}
+		});
+	}
+
+	protected boolean isAlwaysExpanded() {
+		return false;
 	}
 }
