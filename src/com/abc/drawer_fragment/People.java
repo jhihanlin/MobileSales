@@ -55,8 +55,7 @@ public class People extends Fragment {
 	public AutoCompleteTextView autoComplete;
 	public ArrayList<HashMap<String, String>> contactsArrayList;
 	public String[] contactsName;
-	private EditText edtname, edtbirthday, edttel, edtemail, edtadd, edttag,
-			edtnote, edtsname;
+	private EditText edtsname;
 	public int size = 0;
 	public boolean start = true;
 	private ProgressDialog progressDialog;
@@ -153,38 +152,38 @@ public class People extends Fragment {
 
 				query.findInBackground(new FindCallback<ParseObject>() {
 					@Override
-					public void done(List<ParseObject> arg0, ParseException arg1) {
+					public void done(List<ParseObject> searchName, ParseException arg1) {
 						progressDialog.dismiss();
 						// TODO Auto-generated method stub
 						if (arg1 == null) {
-							Log.v("", "SIZE:" + arg0.size() + " scores");
-							if (arg0.size() == 0) {
+							Log.v("", "SIZE:" + searchName.size() + " scores");
+							if (searchName.size() == 0) {
 
 							} else {
 								contactsArrayList.clear();
-								for (int i = 0; i < arg0.size(); i++) {
+								for (int i = 0; i < searchName.size(); i++) {
 									if (edtsname.getText().equals("")) {
 										HashMap<String, String> hm = new HashMap<String, String>();
-										hm.put("ID", arg0.get(i).getObjectId()
+										hm.put("ID", searchName.get(i).getObjectId()
 												.toString());
-										hm.put("NAME", arg0.get(i).get("name")
+										hm.put("NAME", searchName.get(i).get("name")
 												.toString());
-										hm.put("NUMBER", arg0.get(i).get("tel")
+										hm.put("NUMBER", searchName.get(i).get("tel")
 												.toString());
 										contactsArrayList.add(hm);
 									} else {
-										if (arg0.get(i).getString("name")
+										if (searchName.get(i).getString("name")
 												.toString()
 												.contains(edtsname.getText())) {
 
 											HashMap<String, String> hm = new HashMap<String, String>();
-											hm.put("ID", arg0.get(i)
+											hm.put("ID", searchName.get(i)
 													.getObjectId().toString());
 											hm.put("NAME",
-													arg0.get(i).get("name")
+													searchName.get(i).get("name")
 															.toString());
 											hm.put("NUMBER",
-													arg0.get(i).get("tel")
+													searchName.get(i).get("tel")
 															.toString());
 											contactsArrayList.add(hm);
 										}

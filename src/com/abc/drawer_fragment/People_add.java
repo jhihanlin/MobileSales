@@ -365,6 +365,7 @@ public class People_add extends Fragment {
 								Toast.LENGTH_SHORT).show();
 						getActivity().getFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, new People())
+								.addToBackStack(null)
 								.commit();
 					} else {
 						Toast.makeText(getActivity(), "Error",
@@ -435,6 +436,7 @@ public class People_add extends Fragment {
 								Toast.LENGTH_SHORT).show();
 						getActivity().getFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, new People())
+								.addToBackStack(null)
 								.commit();
 					} else {
 						Toast.makeText(getActivity(), "Error",
@@ -513,6 +515,7 @@ public class People_add extends Fragment {
 													.replace(
 															R.id.content_frame,
 															new People())
+													.addToBackStack(null)
 													.commit();
 										} else {
 											Toast.makeText(getActivity(),
@@ -594,7 +597,7 @@ public class People_add extends Fragment {
 										progressDialog.dismiss();
 										if (e == null) {
 											Toast.makeText(getActivity(),
-													"Successful",
+													"編輯成功",
 													Toast.LENGTH_SHORT).show();
 											getActivity()
 													.getFragmentManager()
@@ -602,10 +605,11 @@ public class People_add extends Fragment {
 													.replace(
 															R.id.content_frame,
 															new People())
+													.addToBackStack(null)
 													.commit();
 										} else {
 											Toast.makeText(getActivity(),
-													"Error", Toast.LENGTH_SHORT)
+													"錯誤", Toast.LENGTH_SHORT)
 													.show();
 										}
 									}
@@ -639,7 +643,9 @@ public class People_add extends Fragment {
 										.getFragmentManager()
 										.beginTransaction()
 										.replace(R.id.content_frame,
-												new People()).commit();
+												new People())
+										.addToBackStack(null)
+										.commit();
 							} else {
 
 							}

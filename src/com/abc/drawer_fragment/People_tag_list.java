@@ -55,7 +55,6 @@ import com.parse.SaveCallback;
 public class People_tag_list extends Fragment {
 
 	public Button peopleButton, tagButton, btntagadd;
-	private EditText editname;
 	public ListView listView;
 	public View v;
 
@@ -75,7 +74,6 @@ public class People_tag_list extends Fragment {
 		tagButton = (Button) v.findViewById(R.id.tagButton);
 		listView = (ListView) v.findViewById(R.id.lvTAGPEOPLE);
 		btntagadd = (Button) v.findViewById(R.id.button1);
-		editname = (EditText) v.findViewById(R.id.editText1);
 		progressDialog = new ProgressDialog(getActivity());
 		getParseDate(tag);
 
@@ -101,7 +99,9 @@ public class People_tag_list extends Fragment {
 			public void onClick(View v) {
 				getActivity().getFragmentManager()
 						.beginTransaction()
-						.replace(R.id.content_frame, new People()).commit();
+						.replace(R.id.content_frame, new People())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 
@@ -111,7 +111,9 @@ public class People_tag_list extends Fragment {
 			public void onClick(View v) {
 				getActivity().getFragmentManager()
 						.beginTransaction()
-						.replace(R.id.content_frame, new People_tag()).commit();
+						.replace(R.id.content_frame, new People_tag())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 
@@ -132,7 +134,9 @@ public class People_tag_list extends Fragment {
 							Fragment fg = ppadd;
 							getActivity().getFragmentManager()
 									.beginTransaction()
-									.replace(R.id.content_frame, fg).commit();
+									.replace(R.id.content_frame, fg)
+									.addToBackStack(null)
+									.commit();
 						} catch (Exception e) {
 							e.printStackTrace();
 						} finally {
@@ -217,6 +221,7 @@ public class People_tag_list extends Fragment {
 																									.replace(
 																											R.id.content_frame,
 																											fg)
+																									.addToBackStack(null)
 																									.commit();
 																						} catch (Exception e) {
 																							e.printStackTrace();

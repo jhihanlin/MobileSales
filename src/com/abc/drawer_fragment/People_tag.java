@@ -38,7 +38,6 @@ import com.parse.SaveCallback;
 public class People_tag extends Fragment {
 
 	public Button peopleButton, tagButton, btntagadd;
-	private EditText editname;
 	public ListView listView;
 	public View v;
 	public ArrayList<HashMap<String, Object>> contactsArrayList;
@@ -50,14 +49,13 @@ public class People_tag extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 		v = inflater.inflate(R.layout.people_tag, container, false);
-		
+
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		peopleButton = (Button) v.findViewById(R.id.peopleButton);
 		tagButton = (Button) v.findViewById(R.id.tagButton);
 		listView = (ListView) v.findViewById(R.id.lvTAGPEOPLE);
 		btntagadd = (Button) v.findViewById(R.id.button1);
-		editname = (EditText) v.findViewById(R.id.editText1);
 		progressDialog = new ProgressDialog(getActivity());
 		getParseTagDate();
 
@@ -80,7 +78,9 @@ public class People_tag extends Fragment {
 			public void onClick(View v) {
 				getActivity().getFragmentManager()
 						.beginTransaction()
-						.replace(R.id.content_frame, new People()).commit();
+						.replace(R.id.content_frame, new People())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 
@@ -90,7 +90,9 @@ public class People_tag extends Fragment {
 			public void onClick(View v) {
 				getActivity().getFragmentManager()
 						.beginTransaction()
-						.replace(R.id.content_frame, new People_tag()).commit();
+						.replace(R.id.content_frame, new People_tag())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 
@@ -105,7 +107,9 @@ public class People_tag extends Fragment {
 				Fragment fg = (Fragment) ppadd;
 				getActivity().getFragmentManager()
 						.beginTransaction()
-						.replace(R.id.content_frame, fg).commit();
+						.replace(R.id.content_frame, fg)
+						.addToBackStack(null)
+						.commit();
 
 			}
 		});
@@ -220,7 +224,9 @@ public class People_tag extends Fragment {
 													Message msg = new Message();
 													getActivity().getFragmentManager()
 															.beginTransaction()
-															.replace(R.id.content_frame, new People_tag()).commit();
+															.replace(R.id.content_frame, new People_tag())
+															.addToBackStack(null)
+															.commit();
 												} catch (Exception e) {
 													e.printStackTrace();
 												} finally {
@@ -254,7 +260,9 @@ public class People_tag extends Fragment {
 				Fragment fg = (Fragment) ppadd;
 				getActivity().getFragmentManager()
 						.beginTransaction()
-						.replace(R.id.content_frame, fg).commit();
+						.replace(R.id.content_frame, fg)
+						.addToBackStack(null)
+						.commit();
 
 			}
 

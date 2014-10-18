@@ -127,6 +127,7 @@ public class BoardList extends Fragment {
 						.getFragmentManager()
 						.beginTransaction()
 						.replace(R.id.content_frame, new Board())
+						.addToBackStack(null)
 						.commit();
 			}
 		});

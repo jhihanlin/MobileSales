@@ -167,6 +167,7 @@ public class CalendarAddNote extends Fragment {
 		});
 
 		saveButton.setOnClickListener(new OnClickListener() {
+			ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
 			@Override
 			public void onClick(View v) {

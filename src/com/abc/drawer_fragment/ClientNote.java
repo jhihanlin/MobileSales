@@ -171,9 +171,9 @@ public class ClientNote extends Fragment {
 		});
 
 		saveButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
+				final ProgressDialog progressDialog = new ProgressDialog(getActivity());
 				String title = m_titleText.getText().toString();
 				String client = m_client.getSelectedItem().toString();
 				String purpose = m_purpose.getSelectedItem().toString();
@@ -210,7 +210,9 @@ public class ClientNote extends Fragment {
 									Toast.LENGTH_SHORT).show();
 							FragmentManager fragmentManager = getFragmentManager();
 							fragmentManager.beginTransaction()
-									.replace(R.id.content_frame, new ClientNoteList()).commit();
+									.replace(R.id.content_frame, new ClientNoteList())
+									.addToBackStack(null)
+									.commit();
 						} else {
 							Toast.makeText(getActivity(), "儲存失敗",
 									Toast.LENGTH_SHORT).show();
@@ -226,6 +228,7 @@ public class ClientNote extends Fragment {
 				FragmentManager fragmentManager = getFragmentManager();
 				fragmentManager.beginTransaction()
 						.replace(R.id.content_frame, new ClientNoteList())
+						.addToBackStack(null)
 						.commit();
 			}
 		});
