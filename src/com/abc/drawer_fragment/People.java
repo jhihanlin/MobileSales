@@ -7,7 +7,10 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -29,12 +32,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
+import com.google.android.gms.drive.internal.i;
 import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -50,15 +56,17 @@ public class People extends Fragment {
 
 	public ListView listView;
 	public View v;
-	public Button addPeople, imbtndel, imbtnupdata, importPeople, searchPeople;
+	public Button addPeople, imbtndel, imbtnupdata;
 	public Button peopleButton, tagButton;
 	public AutoCompleteTextView autoComplete;
 	public ArrayList<HashMap<String, String>> contactsArrayList;
 	public String[] contactsName;
-	private EditText edtsname;
 	public int size = 0;
 	public boolean start = true;
 	private ProgressDialog progressDialog;
+	private SearchView mSearchView;
+	private Menu menu;
+	private List<ParseObject> peopleObjects;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -68,10 +76,6 @@ public class People extends Fragment {
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		listView = (ListView) v.findViewById(R.id.lvPEOPLE);
-		importPeople = (Button) v.findViewById(R.id.importPeople);
-		searchPeople = (Button) v.findViewById(R.id.btnsearch);
-		searchPeople.setTypeface(typeface);
-		edtsname = (EditText) v.findViewById(R.id.editTextname);
 
 		progressDialog = new ProgressDialog(getActivity());
 		getParseDate("");
@@ -102,115 +106,6 @@ public class People extends Fragment {
 			}
 		});
 
-		importPeople.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new AlertDialog.Builder(getActivity())
-						.setTitle("確定要匯入手機聯絡人")
-						.setPositiveButton("確認",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										progressDialog.setCancelable(false);
-										progressDialog.setTitle("Loading...");
-										progressDialog.show();
-
-										Thread thread = new Thread() {
-											@Override
-											public void run() {
-												try {
-													setParseData();
-
-												} catch (Exception e) {
-													e.printStackTrace();
-												} finally {
-												}
-											}
-										};
-
-										thread.start();
-										Toast.makeText(getActivity(), "匯入成功",
-												Toast.LENGTH_LONG).show();
-										getActivity().getFragmentManager().beginTransaction()
-												.replace(R.id.content_frame, new People())
-												.addToBackStack(null)
-												.commit();
-										progressDialog.dismiss();
-									}
-								}).setNegativeButton("取消", null).show();
-			}
-		});
-		searchPeople.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
-				ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
-
-				query.findInBackground(new FindCallback<ParseObject>() {
-					@Override
-					public void done(List<ParseObject> searchName, ParseException arg1) {
-						progressDialog.dismiss();
-						// TODO Auto-generated method stub
-						if (arg1 == null) {
-							Log.v("", "SIZE:" + searchName.size() + " scores");
-							if (searchName.size() == 0) {
-
-							} else {
-								contactsArrayList.clear();
-								for (int i = 0; i < searchName.size(); i++) {
-									if (edtsname.getText().equals("")) {
-										HashMap<String, String> hm = new HashMap<String, String>();
-										hm.put("ID", searchName.get(i).getObjectId()
-												.toString());
-										hm.put("NAME", searchName.get(i).get("name")
-												.toString());
-										hm.put("NUMBER", searchName.get(i).get("tel")
-												.toString());
-										contactsArrayList.add(hm);
-									} else {
-										if (searchName.get(i).getString("name")
-												.toString()
-												.contains(edtsname.getText())) {
-
-											HashMap<String, String> hm = new HashMap<String, String>();
-											hm.put("ID", searchName.get(i)
-													.getObjectId().toString());
-											hm.put("NAME",
-													searchName.get(i).get("name")
-															.toString());
-											hm.put("NUMBER",
-													searchName.get(i).get("tel")
-															.toString());
-											contactsArrayList.add(hm);
-										}
-									}
-
-								}
-
-								if (contactsArrayList.size() == 0) {
-
-								}
-
-								SimpleAdapter adapter = new SimpleAdapter(
-										getActivity(), contactsArrayList,
-										R.layout.people_tag_entry,
-										new String[] { "NAME", "NUMBER" },
-										new int[] { R.id.txtNAMEPHONE,
-												R.id.txtDATAPHONE });
-								listView.setAdapter(null);
-								listView.setAdapter(adapter);
-							}
-						} else {
-							Log.v("score", "Error: " + arg1.getMessage());
-						}
-					}
-				});
-			}
-		});
 		return v;
 	}
 
@@ -302,6 +197,7 @@ public class People extends Fragment {
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
+				peopleObjects = objects;
 				progressDialog.dismiss();
 				if (e == null) {
 					contactsName = new String[objects.size()];
@@ -428,10 +324,41 @@ public class People extends Fragment {
 					.addToBackStack(null)
 					.commit();
 			break;
-		case R.id.action_notice_people:
-			getFragmentManager().beginTransaction()
-					.addToBackStack(null)
-					.replace(R.id.content_frame, new Notify()).commit();
+		case R.id.action_import_contact:
+			new AlertDialog.Builder(getActivity())
+					.setTitle("確定要匯入手機聯絡人")
+					.setPositiveButton("確認",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									progressDialog.setCancelable(false);
+									progressDialog.setTitle("Loading...");
+									progressDialog.show();
+
+									Thread thread = new Thread() {
+										@Override
+										public void run() {
+											try {
+												setParseData();
+
+											} catch (Exception e) {
+												e.printStackTrace();
+											} finally {
+											}
+										}
+									};
+
+									thread.start();
+									Toast.makeText(getActivity(), "匯入成功",
+											Toast.LENGTH_LONG).show();
+									getActivity().getFragmentManager().beginTransaction()
+											.replace(R.id.content_frame, new People())
+											.addToBackStack(null)
+											.commit();
+									progressDialog.dismiss();
+								}
+							}).setNegativeButton("取消", null).show();
+
 			break;
 		default:
 			break;
@@ -444,6 +371,82 @@ public class People extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
 		inflater.inflate(R.menu.people_fragment_menu, menu);
+		setupSearchView(menu);
+
+	}
+
+	private void setupSearchView(Menu menu) {
+		Log.d("debug", "setupSearchView");
+		MenuItem searchItem = menu.findItem(R.id.search_people);
+		mSearchView = (SearchView) searchItem.getActionView();
+		mSearchView.setQueryHint("搜尋聯絡人");
+		if (isAlwaysExpanded()) {
+			mSearchView.setIconifiedByDefault(false);
+		} else {
+			searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
+					| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		}
+
+		SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+		if (searchManager != null) {
+			List<SearchableInfo> searchables = searchManager
+					.getSearchablesInGlobalSearch();
+
+			SearchableInfo info = searchManager
+					.getSearchableInfo(getActivity().getComponentName());
+			for (SearchableInfo inf : searchables) {
+				if (inf.getSuggestAuthority() != null
+						&& inf.getSuggestAuthority().startsWith("applications")) {
+					info = inf;
+				}
+			}
+			mSearchView.setSearchableInfo(info);
+		}
+		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+
+				if (peopleObjects == null)
+					return false;
+
+				List<ParseObject> objects = peopleObjects;
+				Log.v("", "SIZE:" + objects.size() + " scores");
+
+				contactsArrayList.clear();
+				for (int i = 0; i < objects.size(); i++) {
+					if (newText.equals("") || objects.get(i).getString("name").contains(newText)) {
+						HashMap<String, String> hm = new HashMap<String, String>();
+						hm.put("ID", objects.get(i).getObjectId()
+								.toString());
+						hm.put("NAME", objects.get(i).get("name")
+								.toString());
+						hm.put("NUMBER", objects.get(i).get("tel")
+								.toString());
+						contactsArrayList.add(hm);
+					}
+				}
+
+				SimpleAdapter adapter = new SimpleAdapter(
+						getActivity(), contactsArrayList,
+						R.layout.people_tag_entry,
+						new String[] { "NAME", "NUMBER" },
+						new int[] { R.id.txtNAMEPHONE,
+								R.id.txtDATAPHONE });
+				listView.setAdapter(null);
+				listView.setAdapter(adapter);
+				return false;
+			}
+		});
+	}
+
+	protected boolean isAlwaysExpanded() {
+		return false;
 	}
 
 }

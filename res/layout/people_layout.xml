@@ -11,41 +11,6 @@
     android:paddingTop="@dimen/activity_vertical_margin" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:background="@color/lightgray"
-        android:focusable="true"
-        android:focusableInTouchMode="true" >
-
-        <Button
-            android:id="@+id/importPeople"
-            android:layout_width="30sp"
-            android:layout_height="28sp"
-            android:layout_gravity="top"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="0dp"
-            android:background="@drawable/calendar_import"
-            android:ems="20" />
-
-        <EditText
-            android:id="@+id/editTextname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:ems="10"
-            android:hint="請輸入聯絡人名稱" >
-        </EditText>
-
-        <Button
-            android:id="@+id/btnsearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/lightgray"
-            android:text="搜尋" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="3" >
