@@ -2,7 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/search_clientnote"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="collapseActionView|ifRoom"
+        android:title="search_title"/>
+    <item
         android:id="@+id/action_add_client_note"
+        android:icon="@android:drawable/ic_menu_add"
         android:orderInCategory="99"
         android:showAsAction="always"
         android:title="新增客戶記事"/>

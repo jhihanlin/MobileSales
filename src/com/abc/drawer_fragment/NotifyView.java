@@ -2,15 +2,11 @@ package com.abc.drawer_fragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,21 +15,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TimePicker;
-import android.widget.Toast;
-
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;

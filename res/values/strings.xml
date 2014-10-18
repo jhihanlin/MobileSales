@@ -15,7 +15,7 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
-    <string name="action_notice">本日通知</string>
+    <string name="action_notice">今日通知</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
     <string name="api_key_liu">AIzaSyBlyv0_vz3pAD4-a4G_V82jdqCizAfnX68</string>
     <string name="api_key_lin">AIzaSyAs3GoO2hgZpwWLU5zcbxfby5vGgCKUSYg</string>

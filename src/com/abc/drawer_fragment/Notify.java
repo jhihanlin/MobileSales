@@ -1,6 +1,5 @@
 package com.abc.drawer_fragment;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,31 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.R.string;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
-
 import com.abc.model.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -75,7 +64,7 @@ public class Notify extends Fragment {
 
 						Map<String, String> item = new HashMap<String, String>();
 						item.put("title", ob.getString("title"));
-						item.put("date", ob.getString("date")+" " + ob.getString("time"));
+						item.put("date", ob.getString("date") + " " + ob.getString("time"));
 						item.put("id", ob.getObjectId());
 						list.add(item);
 
@@ -142,6 +131,7 @@ public class Notify extends Fragment {
 				.getFragmentManager()
 				.beginTransaction()
 				.replace(R.id.content_frame, notifyView)
+				.addToBackStack(null)
 				.commit();
 	}
 

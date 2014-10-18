@@ -41,7 +41,6 @@ public class MessageView extends Fragment {
 
 	ListView message_view;
 	TextView message_name;
-	Button doneButton;
 	protected List<ParseObject> messageContent;
 
 	@Override
@@ -53,7 +52,6 @@ public class MessageView extends Fragment {
 		message_view.setClickable(false);
 		message_view.setEnabled(false);
 		message_name = (TextView) v.findViewById(R.id.message_name);
-		doneButton.setTypeface(typeface);
 		message_view.setClickable(false);
 		Bundle arguments = getArguments();
 		Log.d("bundle2", arguments.getBundle("bundle2").toString());
@@ -71,16 +69,6 @@ public class MessageView extends Fragment {
 
 		loadingFromParse(name);
 
-		doneButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, new MessageList())
-						.commit();
-
-			}
-		});
 		return v;
 	}
 

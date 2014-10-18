@@ -10,7 +10,7 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,6 +26,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,7 +54,6 @@ public class CalendarFragment extends Fragment {
 	private static final String tag = "MyCalendarActivity";
 	private TextView currentMonth;
 	private Button selectedDayMonthYearButton;
-	private Button addEvent;
 	private Button importCalendar;
 	private ImageView prevMonth;
 	private ImageView nextMonth;
@@ -74,7 +74,35 @@ public class CalendarFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		FragmentManager fragmentManager = getFragmentManager();
+		switch (item.getItemId()) {
+
+		case R.id.action_add_calendar_client_note:
+			fragmentManager.beginTransaction()
+					.add(R.id.content_frame, new CalendarAddNote())
+					.addToBackStack(null)
+					.commit();
+			return true;
+		case R.id.action_notice_calendar:
+			getFragmentManager().beginTransaction()
+					.addToBackStack(null)
+					.replace(R.id.content_frame, new Notify()).commit();
+		default:
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		inflater.inflate(R.menu.calendar_fragment_menu, menu);
 	}
 
 	@Override
@@ -92,7 +120,6 @@ public class CalendarFragment extends Fragment {
 
 		selectedDayMonthYearButton = (Button) v
 				.findViewById(R.id.selectedDayMonthYear);
-		addEvent = (Button) v.findViewById(R.id.addEvent);
 		importCalendar = (Button) v.findViewById(R.id.importCalendar);
 
 		selectedDayMonthYearButton.setText("Selected: ");
@@ -151,31 +178,6 @@ public class CalendarFragment extends Fragment {
 		calendarView.setAdapter(adapter);
 
 		loadClientNoteFromParse();
-
-		addEvent.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				// Create new fragment and transaction
-				FragmentTransaction transaction = getFragmentManager()
-						.beginTransaction();
-
-				// Replace whatever is in the fragment_container view with this
-				// fragment,
-				// and add the transaction to the back stack
-
-				CalendarAddNote calendarAddNote = new CalendarAddNote();// press
-																		// addEvent
-				// Button will
-
-				transaction.replace(R.id.content_frame, calendarAddNote);
-				transaction.addToBackStack(null);
-
-				// Commit the transaction
-				transaction.commit();
-			}
-		});
 		importCalendar.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -547,7 +549,7 @@ public class CalendarFragment extends Fragment {
 								R.color.blue));
 					}
 				}
-				if(calendarEvents !=null){
+				if (calendarEvents != null) {
 					for (Map<String, String> event : calendarEvents) {
 						if (event.get("date").equals(formatDate)) {
 							gridcell.setTextColor(getResources().getColor(
@@ -556,7 +558,7 @@ public class CalendarFragment extends Fragment {
 					}
 				}
 			}
-			
+
 			if (day_color[1].equals("BLUE")) {
 				gridcell.setTextColor(getResources().getColor(R.color.orrange));
 			}

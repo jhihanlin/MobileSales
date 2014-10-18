@@ -193,6 +193,7 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.action_notice:
 			getFragmentManager().beginTransaction()
+					.addToBackStack(null)
 					.replace(R.id.content_frame, new Notify()).commit();
 			break;
 		// case R.id.action_websearch:

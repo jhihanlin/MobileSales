@@ -206,7 +206,9 @@ public class CalendarAddNote extends Fragment {
 									Toast.LENGTH_SHORT).show();
 							FragmentManager fragmentManager = getFragmentManager();
 							fragmentManager.beginTransaction()
-									.replace(R.id.content_frame, new CalendarFragment()).commit();
+									.replace(R.id.content_frame, new CalendarFragment())
+									.addToBackStack(null)
+									.commit();
 						} else {
 							Toast.makeText(getActivity(), "Error",
 									Toast.LENGTH_SHORT).show();
@@ -222,6 +224,7 @@ public class CalendarAddNote extends Fragment {
 				FragmentManager fragmentManager = getFragmentManager();
 				fragmentManager.beginTransaction()
 						.replace(R.id.content_frame, new CalendarFragment())
+						.addToBackStack(null)
 						.commit();
 			}
 		});

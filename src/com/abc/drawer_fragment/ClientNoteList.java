@@ -9,10 +9,13 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -31,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abc.model.R;
@@ -265,7 +269,7 @@ public class ClientNoteList extends Fragment {
 				.replace(R.id.content_frame, clientNoteView)
 				.addToBackStack(null)
 				.commit();
-		
+
 	}
 
 	public void showDeleteDialog(final List<Map<String, String>> data,
@@ -342,5 +346,6 @@ public class ClientNoteList extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
 		inflater.inflate(R.menu.clientnote_fragment_menu, menu);
+		// Associate searchable configuration with the SearchView
 	}
 }

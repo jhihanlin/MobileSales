@@ -85,7 +85,9 @@ public class People extends Fragment {
 			@Override
 			public void onClick(View v) {
 				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People()).commit();
+						.replace(R.id.content_frame, new People())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 
@@ -95,7 +97,9 @@ public class People extends Fragment {
 			public void onClick(View v) {
 
 				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People_tag()).commit();
+						.replace(R.id.content_frame, new People_tag())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 
@@ -129,7 +133,9 @@ public class People extends Fragment {
 										Toast.makeText(getActivity(), "匯入成功",
 												Toast.LENGTH_LONG).show();
 										getActivity().getFragmentManager().beginTransaction()
-												.replace(R.id.content_frame, new People()).commit();
+												.replace(R.id.content_frame, new People())
+												.addToBackStack(null)
+												.commit();
 										progressDialog.dismiss();
 									}
 								}).setNegativeButton("取消", null).show();
@@ -251,7 +257,9 @@ public class People extends Fragment {
 													.beginTransaction()
 													.replace(
 															R.id.content_frame,
-															fg).commit();
+															fg)
+													.addToBackStack(null)
+													.commit();
 
 											break;
 
@@ -420,6 +428,11 @@ public class People extends Fragment {
 					.add(R.id.content_frame, ppadd)
 					.addToBackStack(null)
 					.commit();
+			break;
+		case R.id.action_notice_people:
+			getFragmentManager().beginTransaction()
+					.addToBackStack(null)
+					.replace(R.id.content_frame, new Notify()).commit();
 			break;
 		default:
 			break;
