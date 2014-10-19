@@ -50,11 +50,8 @@ public class LoginActivity extends Activity {
 
 		progressDialog = new ProgressDialog(this);// loading bar
 
-		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);// use
-																	// SharedPreferences
-																	// to store
-																	// data
-		editor = sp.edit();// editor is SharedPReferences one of class
+		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);
+		editor = sp.edit();
 
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(this);
 

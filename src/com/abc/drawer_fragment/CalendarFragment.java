@@ -14,6 +14,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -48,13 +49,14 @@ import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 public class CalendarFragment extends Fragment {
 
 	private static final String tag = "MyCalendarActivity";
 	private TextView currentMonth;
 	private Button selectedDayMonthYearButton;
-	private Button importCalendar;
+	// private Button importCalendar;
 	private ImageView prevMonth;
 	private ImageView nextMonth;
 	private GridView calendarView;
@@ -66,6 +68,9 @@ public class CalendarFragment extends Fragment {
 	private static final String dateTemplate = "MMMM yyyy";
 	private ProgressDialog progressDialog;
 	private List<Map<String, String>> calendarEvents;
+	private SharedPreferences sp;
+	private SharedPreferences.Editor editor;
+	private boolean chooseGoogleCalendar = false;
 
 	public CalendarFragment() {
 	}
@@ -88,10 +93,23 @@ public class CalendarFragment extends Fragment {
 					.addToBackStack(null)
 					.commit();
 			return true;
-		case R.id.action_notice_calendar:
-			getFragmentManager().beginTransaction()
-					.addToBackStack(null)
-					.replace(R.id.content_frame, new Notify()).commit();
+		case R.id.action_import_google_calendar:
+			chooseGoogleCalendar = true;
+			editor.putBoolean("chooseGoogleCalendar", chooseGoogleCalendar);
+			Log.d("debug", "chooseGoogleCalendar" + sp.getBoolean("chooseGoogleCalendar", chooseGoogleCalendar));
+			editor.commit();
+			if (sp.getBoolean("chooseGoogleCalendar", false)) {
+				readCalendarEvent();
+			}
+			return true;
+		case R.id.action_cancel_import_google_calendar:
+			chooseGoogleCalendar = false;
+			editor.putBoolean("chooseGoogleCalendar", chooseGoogleCalendar);
+			Log.d("debug", "cancel_chooseGoogleCalendar" + sp.getBoolean("chooseGoogleCalendar", chooseGoogleCalendar));
+			editor.commit();
+			adapter.notifyDataSetChanged();
+			calendarView.setAdapter(adapter);
+			return true;
 		default:
 			break;
 		}
@@ -112,6 +130,9 @@ public class CalendarFragment extends Fragment {
 
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
+		sp = getActivity().getSharedPreferences("settings", Context.MODE_PRIVATE);
+		editor = sp.edit();
+
 		_calendar = Calendar.getInstance(Locale.getDefault());
 		month = _calendar.get(Calendar.MONTH) + 1;
 		year = _calendar.get(Calendar.YEAR);
@@ -120,7 +141,7 @@ public class CalendarFragment extends Fragment {
 
 		selectedDayMonthYearButton = (Button) v
 				.findViewById(R.id.selectedDayMonthYear);
-		importCalendar = (Button) v.findViewById(R.id.importCalendar);
+		// importCalendar = (Button) v.findViewById(R.id.importCalendar);
 
 		selectedDayMonthYearButton.setText("Selected: ");
 		selectedDayMonthYearButton.setTypeface(typeface);
@@ -178,44 +199,46 @@ public class CalendarFragment extends Fragment {
 		calendarView.setAdapter(adapter);
 
 		loadClientNoteFromParse();
-		importCalendar.setOnClickListener(new OnClickListener() {
+		if (sp.getBoolean("chooseGoogleCalendar", false)) {
+			readCalendarEvent();
+		}
+		// importCalendar.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// Log.d("importCalendar", "Onclick");
+		// getActivity().openContextMenu(importCalendar);
+		// }
+		// });
 
-			@Override
-			public void onClick(View v) {
-				Log.d("importCalendar", "Onclick");
-				getActivity().openContextMenu(importCalendar);
-			}
-		});
+		// registerForContextMenu(importCalendar);
 
-		registerForContextMenu(importCalendar);
 		return v;
 	}
 
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		switch (item.getItemId()) {
-		case R.id.import_calendar:
-			Log.d("contextItem", "contexItem");
-			readCalendarEvent();
-			return true;
-		}
-		return super.onContextItemSelected(item);
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		getActivity().getMenuInflater().inflate(R.menu.calendar_menu, menu);
-		Log.d("menu", "run menu");
-	}
+	// @Override
+	// public boolean onContextItemSelected(MenuItem item) {
+	// AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+	// .getMenuInfo();
+	// switch (item.getItemId()) {
+	// case R.id.import_calendar:
+	// Log.d("contextItem", "contexItem");
+	// }
+	// return super.onContextItemSelected(item);
+	// }
+	//
+	// @Override
+	// public void onCreateContextMenu(ContextMenu menu, View v,
+	// ContextMenuInfo menuInfo) {
+	// getActivity().getMenuInflater().inflate(R.menu.calendar_menu, menu);
+	// Log.d("menu", "run menu");
+	//
+	// }
 
 	/**
 	 * read google user
 	 */
 	private void readCalendarEvent() {
-
 		Cursor cur_event = null;
 
 		// read google event
@@ -245,6 +268,7 @@ public class CalendarFragment extends Fragment {
 	}
 
 	private void loadClientNoteFromParse() {
+
 		progressDialog.setTitle("Loading...");
 		progressDialog.setCancelable(false);
 		progressDialog.show();
@@ -541,6 +565,7 @@ public class CalendarFragment extends Fragment {
 				gridcell.setTextColor(getResources().getColor(
 						R.color.lightgray02));
 			}
+
 			if (clientNotes != null) { // if Parse has data it will change the
 										// color:blue
 				for (ParseObject clientNote : clientNotes) {
@@ -549,7 +574,7 @@ public class CalendarFragment extends Fragment {
 								R.color.blue));
 					}
 				}
-				if (calendarEvents != null) {
+				if (calendarEvents != null && sp.getBoolean("chooseGoogleCalendar", false) != false) {
 					for (Map<String, String> event : calendarEvents) {
 						if (event.get("date").equals(formatDate)) {
 							gridcell.setTextColor(getResources().getColor(
@@ -578,7 +603,7 @@ public class CalendarFragment extends Fragment {
 			final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 			final List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 
-			if (calendarEvents != null) {
+			if (calendarEvents != null && sp.getBoolean("chooseGoogleCalendar", false) != false) {
 				for (Map<String, String> event : calendarEvents) {
 					if (event.get("date").equals(selectedDate)) {
 						data.add(event);

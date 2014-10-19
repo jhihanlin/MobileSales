@@ -10,6 +10,7 @@
         <item>搜尋</item>
         <item>行銷簡訊</item>
         <item>公告欄</item>
+        <item>通知</item>
     </string-array>
 
     <string name="drawer_open">Open navigation drawer</string>

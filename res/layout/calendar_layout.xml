@@ -15,15 +15,6 @@
         android:height="60sp"
         android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/importCalendar"
-            android:layout_width="30sp"
-            android:layout_height="28sp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/calendar_import"
-            android:ems="20" />
-
         <ImageView
             android:id="@+id/prevMonth"
             android:layout_width="40sp"

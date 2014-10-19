@@ -271,6 +271,14 @@ public class MainActivity extends Activity {
 
 			break;
 		}
+		case 6: {
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, new Notify())
+					.addToBackStack(null)
+					.commit();
+
+			break;
+		}
 		default:
 			break;
 		}
