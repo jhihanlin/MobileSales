@@ -20,7 +20,7 @@ public class MenuAdapter extends BaseAdapter {
 	public MenuAdapter(Context context) {
 		this.context = context;
 		titles = context.getResources().getStringArray(R.array.planets_array);
-		images = new int[] { R.drawable.people_icon, R.drawable.client_note_icon, R.drawable.calendar_icon, R.drawable.searchs_icon, R.drawable.messages_icon, R.drawable.broadcast_icon, R.drawable.logout_icon };
+		images = new int[] { R.drawable.people_icon, R.drawable.client_note_icon, R.drawable.calendar_icon, R.drawable.searchs_icon, R.drawable.messages_icon, R.drawable.broadcast_icon, R.drawable.no };
 	}
 
 	@Override
