@@ -1,12 +1,16 @@
 package com.abc.drawer_fragment;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
+import com.google.android.gms.maps.MapsInitializer;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -83,6 +88,34 @@ public class Board extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		MapsInitializer.initialize(getActivity());
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+
+		case R.id.action_board_list:
+			getActivity()
+					.getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, new BoardList())
+					.addToBackStack(null)
+					.commit();
+			return true;
+		default:
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		inflater.inflate(R.menu.board_fragment_menu, menu);
 	}
 
 }

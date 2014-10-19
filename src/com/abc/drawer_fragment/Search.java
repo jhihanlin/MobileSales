@@ -9,8 +9,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,12 +36,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SearchView;
-import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
-
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -58,12 +52,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.ParseACL;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 public class Search extends Fragment implements LocationListener {
 
@@ -78,7 +68,7 @@ public class Search extends Fragment implements LocationListener {
 	private String bestProv;
 	private Context context;
 	private boolean first = true;
-	private Button nearButton, searchButton;
+	private Button searchButton;
 	private Menu menu;
 	private Location location;
 
@@ -395,8 +385,6 @@ public class Search extends Fragment implements LocationListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		FragmentManager fragmentManager = getFragmentManager();
-
 		switch (item.getItemId()) {
 
 		case R.id.action_near_client:

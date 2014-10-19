@@ -44,7 +44,6 @@ public class BoardList extends Fragment {
 	}
 
 	ListView board_list;
-	Button board_back;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -52,8 +51,6 @@ public class BoardList extends Fragment {
 		View v = inflater.inflate(R.layout.board_listview, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 		board_list = (ListView) v.findViewById(R.id.board_list);
-		board_back = (Button) v.findViewById(R.id.board_back);
-		board_back.setTypeface(typeface);
 		loadDataFromParse();
 
 		return v;
@@ -117,18 +114,6 @@ public class BoardList extends Fragment {
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
-			}
-		});
-		board_back.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getActivity()
-						.getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new Board())
-						.addToBackStack(null)
-						.commit();
 			}
 		});
 	}
