@@ -44,7 +44,7 @@
     <TextView
         android:id="@+id/c_purpose"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:background="#99CCCC"
         android:gravity="center"
         android:text="預設簡訊"
@@ -74,7 +74,7 @@
         <TextView
             android:id="@+id/text11"
             android:layout_width="fill_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:background="#99cccc"
             android:gravity="center"
             android:text="內容"
@@ -94,27 +94,29 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right" >
+        android:layout_margin="20sp"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/cancelButton"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:text="取消"
-            android:textColor="#99CCCC" />
+            android:text=" 取消"
+            android:textColor="#99CCCC"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/sendButton"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:text="送出"
-            android:textColor="#FFFFFF" />
+            android:text="送出 "
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </LinearLayout>

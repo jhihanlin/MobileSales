@@ -34,7 +34,6 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="#99CCCC"
-            android:gravity="center"
             android:text="聯絡人"
             android:textColor="#FFFFFF" />
 
@@ -45,7 +44,6 @@
             android:layout_gravity="right"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:gravity="center"
             android:text="標籤"
             android:textColor="#99CCCC" />
     </LinearLayout>

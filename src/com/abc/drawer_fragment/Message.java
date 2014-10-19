@@ -52,7 +52,7 @@ import com.parse.SaveCallback;
 
 public class Message extends Fragment {
 
-	private Button sendButton, cancelButton, peopleButton;
+	private Button  sendButton, cancelButton, peopleButton;
 	private EditText contentEditText;
 	private TextView receiverTextView;
 	private Spinner modelSpinner;
@@ -69,10 +69,7 @@ public class Message extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.message_layout, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
-		TextView c_purpose = (TextView) v.findViewById(R.id.c_purpose);
-		c_purpose.setTypeface(typeface);
-		TextView text11 = (TextView) v.findViewById(R.id.text11);
-		text11.setTypeface(typeface);
+
 		sendButton = (Button) v.findViewById(R.id.sendButton);
 		sendButton.setTypeface(typeface);
 		cancelButton = (Button) v.findViewById(R.id.cancelButton);
