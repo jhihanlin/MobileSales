@@ -1,50 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightgray"
     android:onClick="nullClick"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
 
-    <AutoCompleteTextView
-        android:id="@+id/AutoCompleteTextView1"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="請輸入客戶名稱或地址" >
-    </AutoCompleteTextView>
+        android:layout_weight="1" >
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/nearButton" />
+        <AutoCompleteTextView
+            android:id="@+id/AutoCompleteTextView1"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:hint="請輸入客戶名稱或地址" >
+        </AutoCompleteTextView>
 
-    <Button
-        android:id="@+id/nearButton"
-        android:layout_width="181dp"
+        <Button
+            android:id="@+id/btSubmit"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:onClick="onLoactionNameClick"
+            android:text="搜尋"
+            android:textColor="#99cccc" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/AutoCompleteTextView1"
-        android:background="#99cccc"
-        android:text="附近客戶"
-        android:textColor="#ffffff" />
+        android:layout_weight="4" >
 
-    <Button
-        android:id="@+id/btSubmit"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/nearButton"
-        android:layout_alignBottom="@+id/nearButton"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/nearButton"
-        android:background="#ffffff"
-        android:onClick="onLoactionNameClick"
-        android:text="搜尋"
-        android:textColor="#99cccc" />
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/AutoCompleteTextView1" />
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

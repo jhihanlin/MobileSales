@@ -7,7 +7,10 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +27,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -32,6 +38,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -71,7 +79,8 @@ public class Search extends Fragment implements LocationListener {
 	private Context context;
 	private boolean first = true;
 	private Button nearButton, searchButton;
-	private MarkerOptions markOption;
+	private Menu menu;
+	private Location location;
 
 	public Search() {
 	}
@@ -89,8 +98,6 @@ public class Search extends Fragment implements LocationListener {
 				context.LOCATION_SERVICE);
 		autoTV = (AutoCompleteTextView) v
 				.findViewById(R.id.AutoCompleteTextView1);
-		nearButton = (Button) v.findViewById(R.id.nearButton);
-		nearButton.setTypeface(typeface);
 		searchButton = (Button) v.findViewById(R.id.btSubmit);
 		searchButton.setTypeface(typeface);
 		progressDialog = new ProgressDialog(getActivity());
@@ -112,7 +119,7 @@ public class Search extends Fragment implements LocationListener {
 
 		Criteria cr = new Criteria();
 		String provider = locMgr.getBestProvider(cr, true);
-		Location location = locMgr.getLastKnownLocation(provider);
+		location = locMgr.getLastKnownLocation(provider);
 		onLocationChanged(location);
 
 		searchButton.setOnClickListener(new OnClickListener() {
@@ -356,108 +363,8 @@ public class Search extends Fragment implements LocationListener {
 	}
 
 	public void onLocationChanged(final Location location) {
-		String x = "緯=" + Double.toString(location.getLatitude());
-		String y = "經=" + Double.toString(location.getLongitude());
-
-		nearButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				gmap.clear();
-				Dialog dialog = null;
-				LayoutInflater inflater = LayoutInflater.from(getActivity());
-				final View v1 = inflater.inflate(R.layout.message_model, null);
-
-				new AlertDialog.Builder(getActivity())
-						.setTitle("請輸入搜尋公里範圍")
-						.setView(v1)
-						.setPositiveButton("確認",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-
-										EditText nearET = (EditText) (v1
-												.findViewById(R.id.modelEditText));
-										String kmString = "2";// nearET.getContext().toString().trim();
-
-										double km = Double
-												.parseDouble(nearET.getText().toString());
-
-										LatLng point = new LatLng(location
-												.getLatitude(), location
-												.getLongitude());
-										zoom = 15;
-										gmap.animateCamera(CameraUpdateFactory
-												.newLatLngZoom(point, zoom));
-										final List<String> latLongData = getLatlongData();
-										double kmLati = 1 / 96.49;
-										double kmLng = 1 / 110.85;
-										double kmOfLati = km * kmLati;
-										double kmOfLng = km * kmLng;
-
-										double latiMax = location.getLatitude()
-												+ kmOfLati;
-										double latiMin = location.getLatitude()
-												- kmOfLati;
-										double lngMax = location.getLongitude()
-												+ kmOfLng;
-										double lngMin = location.getLongitude()
-												- kmOfLng;
-										Toast.makeText(
-												getActivity().getBaseContext(),
-												"顯示距離您 " + km + " 公里之地標",
-												Toast.LENGTH_LONG).show();
-										for (int i = 0; i < latLongData.size(); i++) {
-											final String ii = latLongData
-													.get(i).toString();
-											double lati = Double
-													.parseDouble(latLongData
-															.get(i).split(",")[1]
-															.trim());
-											double lng = Double
-													.parseDouble(latLongData
-															.get(i).split(",")[2]
-															.trim());
-											if (lati <= latiMax
-													&& lati >= latiMin
-													&& lng >= lngMin
-													&& lng <= lngMax) {
-												gmap.addMarker(new MarkerOptions()
-														.position(
-																new LatLng(
-																		lati,
-																		lng))
-														.title(latLongData.get(
-																i).split(",")[0]
-																.trim())
-														.snippet(ii));
-												gmap.setOnMarkerClickListener(new OnMarkerClickListener() {
-													@Override
-													public boolean onMarkerClick(
-															Marker arg0) {
-														Log.d("debug",
-																arg0.toString());
-														Dialog onCreateDialog = onCreateDialog(arg0
-																.getSnippet());
-														return false;
-													}
-												});
-											}
-										}
-									}
-								})
-						.setNeutralButton("取消",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-									}
-								}).show();
-
-			}
-		});
+		// String x = "緯=" + Double.toString(location.getLatitude());
+		// String y = "經=" + Double.toString(location.getLongitude());
 
 		double lati = 111.1367 - 0.5623 * Math.cos(2 * location.getLatitude())
 				+ 0.0011 * Math.cos(4 * location.getLatitude());
@@ -483,7 +390,29 @@ public class Search extends Fragment implements LocationListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		MapsInitializer.initialize(getActivity());
+		setHasOptionsMenu(true);
+	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		FragmentManager fragmentManager = getFragmentManager();
+
+		switch (item.getItemId()) {
+
+		case R.id.action_near_client:
+			searchByNearClient(location);
+			return true;
+		default:
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		inflater.inflate(R.menu.search_fragment_menu, menu);
 	}
 
 	@Override
@@ -543,7 +472,100 @@ public class Search extends Fragment implements LocationListener {
 
 			}
 		}
+	}
 
+	private void searchByNearClient(final Location location) {
+		gmap.clear();
+		Dialog dialog = null;
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		final View v1 = inflater.inflate(R.layout.message_model, null);
+
+		new AlertDialog.Builder(getActivity())
+				.setTitle("請輸入搜尋公里範圍")
+				.setView(v1)
+				.setPositiveButton("確認",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								EditText nearET = (EditText) (v1
+										.findViewById(R.id.modelEditText));
+								String kmString = "2";// nearET.getContext().toString().trim();
+
+								double km = Double
+										.parseDouble(nearET.getText().toString());
+
+								LatLng point = new LatLng(location
+										.getLatitude(), location
+										.getLongitude());
+								zoom = 15;
+								gmap.animateCamera(CameraUpdateFactory
+										.newLatLngZoom(point, zoom));
+								final List<String> latLongData = getLatlongData();
+								double kmLati = 1 / 96.49;
+								double kmLng = 1 / 110.85;
+								double kmOfLati = km * kmLati;
+								double kmOfLng = km * kmLng;
+
+								double latiMax = location.getLatitude()
+										+ kmOfLati;
+								double latiMin = location.getLatitude()
+										- kmOfLati;
+								double lngMax = location.getLongitude()
+										+ kmOfLng;
+								double lngMin = location.getLongitude()
+										- kmOfLng;
+								Toast.makeText(
+										getActivity().getBaseContext(),
+										"顯示距離您 " + km + " 公里之地標",
+										Toast.LENGTH_LONG).show();
+								for (int i = 0; i < latLongData.size(); i++) {
+									final String ii = latLongData
+											.get(i).toString();
+									double lati = Double
+											.parseDouble(latLongData
+													.get(i).split(",")[1]
+													.trim());
+									double lng = Double
+											.parseDouble(latLongData
+													.get(i).split(",")[2]
+													.trim());
+									if (lati <= latiMax
+											&& lati >= latiMin
+											&& lng >= lngMin
+											&& lng <= lngMax) {
+										gmap.addMarker(new MarkerOptions()
+												.position(
+														new LatLng(
+																lati,
+																lng))
+												.title(latLongData.get(
+														i).split(",")[0]
+														.trim())
+												.snippet(ii));
+										gmap.setOnMarkerClickListener(new OnMarkerClickListener() {
+											@Override
+											public boolean onMarkerClick(
+													Marker arg0) {
+												Log.d("debug",
+														arg0.toString());
+												Dialog onCreateDialog = onCreateDialog(arg0
+														.getSnippet());
+												return false;
+											}
+										});
+									}
+								}
+							}
+						})
+				.setNeutralButton("取消",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						}).show();
 	}
 
 }
