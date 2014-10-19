@@ -18,17 +18,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
-
 import com.abc.model.R;
 import com.abc.model.utils.TypeFaceHelper;
 import com.parse.FindCallback;
@@ -43,7 +39,6 @@ public class MessageList extends Fragment {
 	}
 
 	private ListView listView;
-	private Button addEvent;
 	private ProgressBar progressBar;
 	protected List<ParseObject> messageObjects;
 
@@ -127,6 +122,7 @@ public class MessageList extends Fragment {
 							getActivity().getFragmentManager()
 									.beginTransaction()
 									.replace(R.id.content_frame, messageView)
+									.addToBackStack(null)
 									.commit();
 						}
 					});

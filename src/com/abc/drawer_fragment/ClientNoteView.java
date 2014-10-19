@@ -293,6 +293,7 @@ public class ClientNoteView extends Fragment {
 									.getFragmentManager()
 									.beginTransaction()
 									.replace(R.id.content_frame, new ClientNoteList())
+									.addToBackStack(null)
 									.commit();
 						}
 					});
