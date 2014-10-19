@@ -14,13 +14,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,19 +28,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class People_tag_add extends Fragment {
 
 	public View v;
 	public TextView tv;
-	public Button buttonOK, buttonNO;
+	public Button sendBtn, cancelBtn;
 	private EditText editTexttags;
 	public LinearLayout ll, lltag;
 	public ListView listView;
@@ -54,6 +48,8 @@ public class People_tag_add extends Fragment {
 	public boolean checksave;
 	public boolean[] ischeck;
 	private ProgressDialog progressDialog;
+	private ParseObject testObject;
+	private List<ParseObject> tagQuery;
 
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,12 +60,12 @@ public class People_tag_add extends Fragment {
 		tv = (TextView) v.findViewById(R.id.textViewtagname);
 		ll = (LinearLayout) v.findViewById(R.id.ll);
 		lltag = (LinearLayout) v.findViewById(R.id.lltag);
-		buttonOK = (Button) v.findViewById(R.id.buttonOK);
-		buttonNO = (Button) v.findViewById(R.id.buttonNO);
+		sendBtn = (Button) v.findViewById(R.id.buttonOK);
+		cancelBtn = (Button) v.findViewById(R.id.buttonNO);
 		listView = (ListView) v.findViewById(R.id.lvtaggadd);
 		editTexttags = (EditText) v.findViewById(R.id.editTexttags);
-		TextView textViewtagname=(TextView) v.findViewById(R.id.textViewtagname);
-		textViewtagname.setTypeface(typeface);
+		TextView tagNameTextView = (TextView) v.findViewById(R.id.textViewtagname);
+		tagNameTextView.setTypeface(typeface);
 		progressDialog = new ProgressDialog(getActivity());
 		if (mode.equals("gadd")) {
 			ll.setVisibility(8);
@@ -82,107 +78,132 @@ public class People_tag_add extends Fragment {
 
 		getParseDate();
 
-		buttonOK.setOnClickListener(new OnClickListener() {
+		sendBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				checksave = true;
-				if (mode.equals("add")) {
-					tag = editTexttags.getText().toString();
-					ParseObject testObject = new ParseObject("Tag");// DATABASE_TABLE_NAME
-					testObject.put("name", editTexttags.getText().toString());
-					testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
+				testObject = new ParseObject("Tag");// DATABASE_TABLE_NAME
+				tag = editTexttags.getText().toString();
+				ParseQuery<ParseObject> Query = new ParseQuery<ParseObject>("Tag");
+				Query.orderByDescending("createAt");
+				Query.findInBackground(new FindCallback<ParseObject>() {
 
-					testObject.saveInBackground(new SaveCallback() {
-
-						@Override
-						public void done(ParseException e) {
-							if (e == null) {
-
-							} else {
-
-								checksave = false;
-							}
-						}
-					});
-
-				}
-
-				for (int i = 0; i < ischeck.length; i++) {
-					if (ischeck[i]) {
-						progressDialog.setCancelable(false);
-						progressDialog.setTitle("Loading...");
-						progressDialog.show();
-						ParseQuery<ParseObject> query = ParseQuery
-								.getQuery("Client");
-						query.getInBackground(contactsArrayList.get(i)
-								.get("ID").toString(),
-								new GetCallback<ParseObject>() {
-
-									public void done(ParseObject gameScore,
-											ParseException e) {
-										progressDialog.dismiss();
-										if (e == null) {
-
-											gameScore.put("tag", tag);
-
-											gameScore
-													.saveInBackground(new SaveCallback() {
-
-														@Override
-														public void done(
-																ParseException ex) {
-															if (ex == null) {
-
-															} else {
-																checksave = false;
-															}
-														}
-													});
-										}
-									}
-								});
-
+					@Override
+					public void done(List<ParseObject> objects, ParseException e) {
+						tagQuery = objects;
 					}
 
-				}
-				if (checksave) {
-					if (mode.equals("add")) {
-						getActivity().getFragmentManager().beginTransaction()
-								.replace(R.id.content_frame, new People_tag())
-								.commit();
-					} else if (mode.equals("gadd")) {
+				});
+				if (tagQuery != null) {
+					checksave = true;
+					for (ParseObject ob : tagQuery) {
+						if (ob.getString("name").equals(tag)) {
+							Log.d("debug", "tag重複" + tag);
+							Toast.makeText(getActivity().getBaseContext(), "此標籤已存在",
+									Toast.LENGTH_SHORT).show();
+						}
+					}
+					if (tag.equals("")) {
+						Toast.makeText(getActivity().getBaseContext(), "請輸入標籤",
+								Toast.LENGTH_SHORT).show();
 
-						Thread thread = new Thread() {
-							@Override
-							public void run() {
-								try {
-									Thread.sleep(2000);
-									People_tag_list ppadd = new People_tag_list();
-									ppadd.setTag(tag);
-									Fragment fg = (Fragment) ppadd;
-									getActivity().getFragmentManager()
-											.beginTransaction()
-											.replace(R.id.content_frame, fg)
-											.commit();
-								} catch (Exception e) {
-									e.printStackTrace();
-								} finally {
+					} else {
+						Log.d("debug", "tag:" + tag);
+						if (mode.equals("add")) {
+							testObject.put("name", tag);
+							testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
+
+							testObject.saveInBackground(new SaveCallback() {
+
+								@Override
+								public void done(ParseException e) {
+									if (e == null) {
+
+									} else {
+										checksave = false;
+									}
 								}
+							});
+						}
+						for (int i = 0; i < ischeck.length; i++) {
+							if (ischeck[i]) {
+								progressDialog.setCancelable(false);
+								progressDialog.setTitle("Loading...");
+								progressDialog.show();
+								ParseQuery<ParseObject> query = ParseQuery
+										.getQuery("Client");
+								query.getInBackground(contactsArrayList.get(i)
+										.get("ID").toString(),
+										new GetCallback<ParseObject>() {
+
+											public void done(ParseObject gameScore,
+													ParseException e) {
+												progressDialog.dismiss();
+												if (e == null) {
+
+													gameScore.put("tag", tag);
+													gameScore
+															.saveInBackground(new SaveCallback() {
+
+																@Override
+																public void done(
+																		ParseException ex) {
+																	if (ex == null) {
+
+																	} else {
+																		checksave = false;
+																	}
+																}
+															});
+												}
+											}
+										});
 							}
-						};
-						thread.start();
+
+						}
+						if (checksave) {
+							if (mode.equals("add")) {
+								getActivity().getFragmentManager().beginTransaction()
+										.replace(R.id.content_frame, new People_tag())
+										.addToBackStack(null)
+										.commit();
+							} else if (mode.equals("gadd")) {
+
+								Thread thread = new Thread() {
+									@Override
+									public void run() {
+										try {
+											Thread.sleep(2000);
+											People_tag_list ppadd = new People_tag_list();
+											ppadd.setTag(tag);
+											Fragment fg = (Fragment) ppadd;
+											getActivity().getFragmentManager()
+													.beginTransaction()
+													.replace(R.id.content_frame, fg)
+													.addToBackStack(null)
+													.commit();
+										} catch (Exception e) {
+											e.printStackTrace();
+										} finally {
+										}
+									}
+								};
+								thread.start();
+							}
+						}
 					}
 				}
 			}
 		});
 
-		buttonNO.setOnClickListener(new OnClickListener() {
+		cancelBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People_tag()).commit();
+						.replace(R.id.content_frame, new People_tag())
+						.addToBackStack(null)
+						.commit();
 			}
 		});
 
@@ -203,7 +224,7 @@ public class People_tag_add extends Fragment {
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
-
+		query.orderByDescending("createAt");
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
@@ -318,16 +339,10 @@ public class People_tag_add extends Fragment {
 
 				itemView.cb = (CheckBox) convertView
 						.findViewById(valueViewID[0]);
-				;
-				// for (int i = 0; i < ischeck.length; i++) {
-				// ischeck[i] = false;
-				// }
-
 				convertView.setTag(itemView);
 			}
 
 			if (mAppList != null) {
-
 				if (!tag.equals("")) {
 					if (mAppList.get(position).get(keyString[1]).toString()
 							.equals(tag)) {
@@ -350,36 +365,11 @@ public class People_tag_add extends Fragment {
 						ischeck[pos] = cb.isChecked();
 					}
 				});
-
-				/*
-				 * itemView.cb .setOnCheckedChangeListener(new
-				 * OnCheckedChangeListener() {
-				 * 
-				 * @Override public void onCheckedChanged( CompoundButton
-				 * buttonView, boolean isChecked) { // TODO Auto-generated
-				 * method stub ischeck[position] = isChecked; Log.v("", "id:" +
-				 * position + " ck:" + isChecked); } });
-				 * 
-				 * final int pos = position; // ç™Ÿï¿½â…©è»¼hecked
-				 * boxç™¡çž½ç«„çŸ
-				 * ‡ç½ˆé±‰ç–†ï¿½î°Šî¹¼ç´”æ•·î—¦æ°ï™´å‚¢æ€î¼˜èœ†æ°æ•‰
-				 * ï¿£æŠŠï¿½
-				 * ï¿½çè‰²ï¿½ï¿½å˜”æŠŠïƒç¿¹ç™Ÿï¿½î²§èœ†è‰²ï¿½ç¹’ç™¡ç°
-				 * §ï¿½ç–†ï¿
-				 * ½ï¼´ï¿½ç°¿ç¿¹ï¿½ç–†ï¿½ç”„æ£ºè‰²ï¿½ç°žç™Ÿï¿½å«–î¾Ÿç–†ï
-				 * ¿½è‰²ï¿½List itemView.cb.setOnClickListener( new
-				 * CheckBox.OnClickListener() {
-				 * 
-				 * @Override public void onClick(View v) { CheckBox cb =
-				 * (CheckBox) v; mAppList.set(pos, cb.isChecked()); } });
-				 */
-
 			}
 			itemView.cb.setChecked(ischeck[position]);
 
 			return convertView;
 		}
-
 	}
 
 	@Override

@@ -118,7 +118,7 @@ public class People_tag extends Fragment {
 	}
 
 	public void setListView() {
-		People_lv_BtnAdapter Btnadapter = new People_lv_BtnAdapter(
+		final People_lv_BtnAdapter Btnadapter = new People_lv_BtnAdapter(
 				getActivity(), contactsArrayList,
 				R.layout.people_contact_entry,
 				new String[] { "NAME" }, new int[] {
@@ -128,23 +128,23 @@ public class People_tag extends Fragment {
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				// TODO Auto-generated method stub
-				final String Oid = contactsArrayList.get(arg2).get("ID")
+					int position, long id) {
+
+				final String Oid = contactsArrayList.get(position).get("ID")
 						.toString();
-				final String name = contactsArrayList.get(arg2).get("NAME")
+				final String name = contactsArrayList.get(position).get("NAME")
 						.toString();
-				final String number = contactsArrayList.get(arg2).get("NUMBER")
+				final String number = contactsArrayList.get(position).get("NUMBER")
 						.toString();
 				new AlertDialog.Builder(getActivity())
-						.setTitle("Delete")
-						.setPositiveButton("Done",
+						.setTitle("刪除")
+						.setPositiveButton("確定",
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
-										// User clicked OK button
 										ParseQuery<ParseObject> querytag = ParseQuery
 												.getQuery("Tag");
+										querytag.orderByDescending("createAt");
 										querytag.whereEqualTo("name", name);
 										querytag.findInBackground(new FindCallback<ParseObject>() {
 											@Override
@@ -156,16 +156,11 @@ public class People_tag extends Fragment {
 													objects.get(0)
 															.deleteInBackground(
 																	new DeleteCallback() {
-
 																		@Override
 																		public void done(
 																				ParseException ex) {
-																			// TODO
-																			// Auto-generated
-																			// method
-																			// stub
 																			if (ex == null) {
-
+																				Btnadapter.notifyDataSetChanged();
 																			} else {
 
 																			}
@@ -196,13 +191,8 @@ public class People_tag extends Fragment {
 																		new SaveCallback() {
 
 																			@Override
-																			// åš™ç·šåš™è¸è•­åš™è¸è•­
 																			public void done(
 																					ParseException ex) {
-																				// TODO
-																				// Auto-generated
-																				// method
-																				// stub
 																				if (ex == null) {
 
 																				} else {
@@ -233,11 +223,10 @@ public class People_tag extends Fragment {
 												}
 											}
 										};
-										// é–‹å§‹åŸ·è¡ŒåŸ·è¡Œç·’
 										thread.start();
 
 									}
-								}).setNegativeButton("Cancel", null).show();
+								}).setNegativeButton("取消", null).show();
 				return true;
 			}
 		});
@@ -276,6 +265,7 @@ public class People_tag extends Fragment {
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
 		ParseQuery<ParseObject> querytag = ParseQuery.getQuery("Tag");
+		querytag.orderByDescending("createAt");
 		querytag.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
@@ -303,8 +293,6 @@ public class People_tag extends Fragment {
 
 			}
 		});
-		// Log.v("", ""+tag.length);
-
 	}
 
 	private void setContentView(int peopleAdd) {
@@ -384,7 +372,6 @@ public class People_tag extends Fragment {
 				convertView.setTag(itemView);
 			}
 
-			// HashMap<String, Object> appInfo = mAppList.get(position);
 			if (mAppList != null) {
 
 				itemView.tvtag.setText(mAppList.get(position).get(keyString[0]).toString());
