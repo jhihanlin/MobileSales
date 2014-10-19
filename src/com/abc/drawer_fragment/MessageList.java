@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.TextureView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -22,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -44,6 +45,7 @@ public class MessageList extends Fragment {
 	private ListView listView;
 	private Button addEvent;
 	private ProgressBar progressBar;
+	protected List<ParseObject> messageObjects;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -53,19 +55,7 @@ public class MessageList extends Fragment {
 
 		progressBar = (ProgressBar) v.findViewById(R.id.progressBar1);
 		listView = (ListView) v.findViewById(R.id.listView);
-		TextView message_tx1 = (TextView) v.findViewById(R.id.message_tx1);
-		message_tx1.setTypeface(typeface);
-		addEvent = (Button) v.findViewById(R.id.addButton);
 		loadDataFromParse();
-		addEvent.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				FragmentManager fragmentManager = getFragmentManager();
-				fragmentManager.beginTransaction()
-						.replace(R.id.content_frame, new Message()).commit();
-			}
-		});
 		return v;
 	}
 
@@ -76,7 +66,7 @@ public class MessageList extends Fragment {
 
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
-
+				messageObjects = objects;
 				progressBar.setVisibility(View.GONE);
 
 				final ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
@@ -196,6 +186,31 @@ public class MessageList extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		FragmentManager fragmentManager = getFragmentManager();
+
+		switch (item.getItemId()) {
+		case R.id.action_add_message:
+			fragmentManager.beginTransaction()
+					.add(R.id.content_frame, new Message())
+					.addToBackStack(null)
+					.commit();
+			return true;
+
+		default:
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		inflater.inflate(R.menu.message_fragment_menu, menu);
+	}
 }

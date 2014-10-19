@@ -52,11 +52,10 @@ import com.parse.SaveCallback;
 
 public class Message extends Fragment {
 
-	private Button modelButton, sendButton, cancelButton, peopleButton,
-			tagButton;
+	private Button  sendButton, cancelButton, peopleButton;
 	private EditText contentEditText;
 	private TextView receiverTextView;
-	private Spinner modelSpinner, peopleSpinner;
+	private Spinner modelSpinner;
 	private ProgressDialog progressDialog;
 	private AlertDialog peopleDialog;
 	protected List<ParseObject> messageModels, peoples;
