@@ -83,6 +83,17 @@
     </LinearLayout>
 
     <EditText
+        android:id="@+id/subjectET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        
+        android:gravity="top|left"
+        android:hint="請輸入主旨" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
         android:id="@+id/contentEditText"
         android:layout_width="match_parent"
         android:layout_height="108dp"

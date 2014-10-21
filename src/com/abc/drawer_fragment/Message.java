@@ -52,14 +52,14 @@ import com.parse.SaveCallback;
 
 public class Message extends Fragment {
 
-	private Button  sendButton, cancelButton, peopleButton;
-	private EditText contentEditText;
+	private Button sendButton, cancelButton, peopleButton;
+	private EditText contentEditText, subjectEditText;
 	private TextView receiverTextView;
 	private Spinner modelSpinner;
 	private ProgressDialog progressDialog;
 	private AlertDialog peopleDialog;
 	protected List<ParseObject> messageModels, peoples;
-	protected String receiverPhoneNumbers;
+	protected String receiverPhoneNumbers , receiverEmail;
 
 	public Message() {
 	}
@@ -70,6 +70,7 @@ public class Message extends Fragment {
 		View v = inflater.inflate(R.layout.message_layout, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
+		subjectEditText = (EditText) v.findViewById(R.id.subjectET);
 		sendButton = (Button) v.findViewById(R.id.sendButton);
 		sendButton.setTypeface(typeface);
 		cancelButton = (Button) v.findViewById(R.id.cancelButton);
@@ -82,11 +83,12 @@ public class Message extends Fragment {
 		progressDialog = new ProgressDialog(getActivity());
 		loadMessageModelFromParse();
 
-		final OnItemSelectedListener oldListener = modelSpinner.getOnItemSelectedListener();
+		final OnItemSelectedListener oldListener = modelSpinner
+				.getOnItemSelectedListener();
 		modelSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parent,
-					View view, int position, long id) {
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
 				if (oldListener != null) {
 					oldListener.onItemSelected(parent, view, position, id);
 				}
@@ -105,54 +107,7 @@ public class Message extends Fragment {
 		sendButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String content = contentEditText.getText().toString();
-
-				String receiver = receiverPhoneNumbers;
-				if (receiver != null) {
-					Log.d("receiver", receiver);
-					progressDialog.setCancelable(false);
-					progressDialog.setTitle("Loading...");
-					progressDialog.show();
-
-					ParseObject object = new ParseObject("Message");
-					object.put("Message_content", content);
-					object.put("Message_receiver", receiverTextView.getText()
-							.toString());
-					object.setACL(new ParseACL(ParseUser.getCurrentUser()));
-					object.saveInBackground(new SaveCallback() {
-
-						public void done(ParseException e) {
-							progressDialog.dismiss();
-							if (e == null) {
-								try {
-									Toast.makeText(getActivity().getBaseContext(), "成功送出訊息",
-											Toast.LENGTH_SHORT).show();
-									SmsManager smsManager = SmsManager.getDefault();
-									String[] temp = null;
-									if (receiverPhoneNumbers.contains(",")) {
-
-										temp = receiverPhoneNumbers.split(",");
-
-									}
-									for (int i = 0; i < temp.length; i++) {
-
-										smsManager.sendTextMessage(temp[i].toString(), null,
-												contentEditText.getText().toString(),
-												PendingIntent.getBroadcast(getActivity(), 0,
-														new Intent(), 0), null);
-
-									}
-								} catch (Exception exception) {
-									exception.printStackTrace();
-								}
-							}
-						}
-
-					});
-				} else {
-					Toast.makeText(getActivity().getBaseContext(), "請選擇聯絡人",
-							Toast.LENGTH_SHORT).show();
-				}
+				onCreateDialog();
 			}
 		});
 
@@ -177,7 +132,8 @@ public class Message extends Fragment {
 	}
 
 	private void loadMessageModelFromParse() {
-		SpinnerHelper.buildCustomerData(getActivity(), modelSpinner, "MessageModel", "範本", null);
+		SpinnerHelper.buildCustomerData(getActivity(), modelSpinner,
+				"MessageModel", "範本", null);
 	}
 
 	protected List<String> getPeopleData() {
@@ -203,6 +159,122 @@ public class Message extends Fragment {
 		return data;
 	}
 
+	protected Dialog onCreateDialog() {
+		Dialog dialog = null;
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		final View v = inflater.inflate(R.layout.message_send_method, null);
+
+		new AlertDialog.Builder(getActivity()).setTitle("選擇寄送方式").setView(v)
+				.setPositiveButton("確認", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						CheckBox mailCB = (CheckBox) v
+								.findViewById(R.id.mailCheckBox);
+						CheckBox msmCB = (CheckBox) v
+								.findViewById(R.id.msmCheckBox);
+
+						if (mailCB.isChecked()) {
+							Intent it2 = new Intent(Intent.ACTION_SEND);
+							String[] receiver = null;
+							if (receiverEmail.contains(",")) {
+
+								receiver = receiverEmail.split(",");
+
+							}
+
+							it2.putExtra(Intent.EXTRA_EMAIL, receiver);
+							it2.putExtra(Intent.EXTRA_TEXT, contentEditText
+									.getText().toString());
+							it2.putExtra(Intent.EXTRA_SUBJECT, subjectEditText
+									.getText().toString());
+							it2.setType("message/rfc822");
+							startActivity(Intent.createChooser(it2, "寄送工具"));
+
+						}
+						if (msmCB.isChecked()) {
+							String content = contentEditText.getText()
+									.toString();
+
+							String receiver = receiverPhoneNumbers;
+							if (receiver != null) {
+								Log.d("receiver", receiver);
+								progressDialog.setCancelable(false);
+								progressDialog.setTitle("Loading...");
+								progressDialog.show();
+
+								ParseObject object = new ParseObject("Message");
+								object.put("Message_content", content);
+								object.put("Message_receiver", receiverTextView
+										.getText().toString());
+								object.setACL(new ParseACL(ParseUser
+										.getCurrentUser()));
+								object.saveInBackground(new SaveCallback() {
+
+									public void done(ParseException e) {
+										progressDialog.dismiss();
+										if (e == null) {
+											try {
+												Toast.makeText(
+														getActivity()
+																.getBaseContext(),
+														"成功送出訊息",
+														Toast.LENGTH_SHORT)
+														.show();
+												SmsManager smsManager = SmsManager
+														.getDefault();
+												String[] temp = null;
+												if (receiverPhoneNumbers
+														.contains(",")) {
+
+													temp = receiverPhoneNumbers
+															.split(",");
+
+												}
+												for (int i = 0; i < temp.length; i++) {
+
+													smsManager.sendTextMessage(
+															temp[i].toString(),
+															null,
+															contentEditText
+																	.getText()
+																	.toString(),
+															PendingIntent
+																	.getBroadcast(
+																			getActivity(),
+																			0,
+																			new Intent(),
+																			0),
+															null);
+
+												}
+											} catch (Exception exception) {
+												exception.printStackTrace();
+											}
+										}
+									}
+
+								});
+							} else {
+								Toast.makeText(getActivity().getBaseContext(),
+										"請選擇聯絡人", Toast.LENGTH_SHORT).show();
+							}
+
+						}
+
+					}
+				})
+
+				.setNeutralButton("取消", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				}).show();
+
+		return dialog;
+	}
+
 	protected void onCreateDialog1() {
 
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -222,7 +294,11 @@ public class Message extends Fragment {
 
 									receiverPhoneNumbers = mEX
 											.getPhoneNumbers();
+									receiverEmail = mEX.getEmail();
 									receiverTextView.setText(mEX.getName());
+
+									Log.d("123", "123");
+
 								}
 							})
 					.setNegativeButton("取消",
@@ -231,8 +307,7 @@ public class Message extends Fragment {
 										int whichButton) {
 									// Canceled.
 								}
-							})
-					.show();
+							}).show();
 		} else {
 			peopleDialog.show();
 		}

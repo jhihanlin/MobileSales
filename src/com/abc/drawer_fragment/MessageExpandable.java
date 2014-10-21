@@ -123,6 +123,30 @@ public class MessageExpandable extends Fragment {
 
 	}
 
+	
+
+	public String getEmail() {
+
+		String phoneNum = "";
+		int groups = adapter.groups.length;
+		if (groups != 0) {
+			for (int i = 0; i < groups; i++) {
+				for (int j = 0; j < adapter.tagPeople.get(adapter.groups[i]).size(); j++) {
+					Log.d("debug", "phone numbes:" + i + "," + j + ":"
+							+ childChecked[i][j]);
+					if (childChecked[i][j] == true || groupChecked[i]) {
+						phoneNum += adapter.tagPeople.get(adapter.groups[i]).get(j)
+								.getString("email") + ",";
+					}
+				}
+			}
+		}
+		return phoneNum;
+
+	}
+	
+	
+	
 	protected Map<String, List<ParseObject>> getPeopleData() {
 		Map<String, List<ParseObject>> tagPeople = new HashMap<String, List<ParseObject>>();
 		if (peoples != null) {
@@ -142,6 +166,11 @@ public class MessageExpandable extends Fragment {
 		return tagPeople;
 	}
 
+	
+	
+	
+	
+	
 	public class SavedTabsListAdapter extends BaseExpandableListAdapter {
 
 		private Map<String, List<ParseObject>> tagPeople;
