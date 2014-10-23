@@ -14,9 +14,13 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,17 +32,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class People_tag_add extends Fragment {
 
 	public View v;
 	public TextView tv;
-	public Button sendBtn, cancelBtn;
+	public Button buttonOK, buttonNO;
 	private EditText editTexttags;
 	public LinearLayout ll, lltag;
 	public ListView listView;
@@ -48,8 +54,6 @@ public class People_tag_add extends Fragment {
 	public boolean checksave;
 	public boolean[] ischeck;
 	private ProgressDialog progressDialog;
-	private ParseObject testObject;
-	private List<ParseObject> tagQuery;
 
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,12 +64,13 @@ public class People_tag_add extends Fragment {
 		tv = (TextView) v.findViewById(R.id.textViewtagname);
 		ll = (LinearLayout) v.findViewById(R.id.ll);
 		lltag = (LinearLayout) v.findViewById(R.id.lltag);
-		sendBtn = (Button) v.findViewById(R.id.buttonOK);
-		cancelBtn = (Button) v.findViewById(R.id.buttonNO);
+		buttonOK = (Button) v.findViewById(R.id.buttonOK);
+		buttonNO = (Button) v.findViewById(R.id.buttonNO);
 		listView = (ListView) v.findViewById(R.id.lvtaggadd);
 		editTexttags = (EditText) v.findViewById(R.id.editTexttags);
-		TextView tagNameTextView = (TextView) v.findViewById(R.id.textViewtagname);
-		tagNameTextView.setTypeface(typeface);
+		TextView textViewtagname = (TextView) v
+				.findViewById(R.id.textViewtagname);
+		textViewtagname.setTypeface(typeface);
 		progressDialog = new ProgressDialog(getActivity());
 		if (mode.equals("gadd")) {
 			ll.setVisibility(8);
@@ -78,132 +83,107 @@ public class People_tag_add extends Fragment {
 
 		getParseDate();
 
-		sendBtn.setOnClickListener(new OnClickListener() {
+		buttonOK.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				testObject = new ParseObject("Tag");// DATABASE_TABLE_NAME
-				tag = editTexttags.getText().toString();
-				ParseQuery<ParseObject> Query = new ParseQuery<ParseObject>("Tag");
-				Query.orderByDescending("createAt");
-				Query.findInBackground(new FindCallback<ParseObject>() {
+				checksave = true;
+				if (mode.equals("add")) {
+					tag = editTexttags.getText().toString();
+					ParseObject testObject = new ParseObject("Tag");// DATABASE_TABLE_NAME
+					testObject.put("name", editTexttags.getText().toString());
+					testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
 
-					@Override
-					public void done(List<ParseObject> objects, ParseException e) {
-						tagQuery = objects;
-					}
+					testObject.saveInBackground(new SaveCallback() {
 
-				});
-				if (tagQuery != null) {
-					checksave = true;
-					for (ParseObject ob : tagQuery) {
-						if (ob.getString("name").equals(tag)) {
-							Log.d("debug", "tag重複" + tag);
-							Toast.makeText(getActivity().getBaseContext(), "此標籤已存在",
-									Toast.LENGTH_SHORT).show();
-						}
-					}
-					if (tag.equals("")) {
-						Toast.makeText(getActivity().getBaseContext(), "請輸入標籤",
-								Toast.LENGTH_SHORT).show();
+						@Override
+						public void done(ParseException e) {
+							if (e == null) {
 
-					} else {
-						Log.d("debug", "tag:" + tag);
-						if (mode.equals("add")) {
-							testObject.put("name", tag);
-							testObject.setACL(new ParseACL(ParseUser.getCurrentUser()));
+							} else {
 
-							testObject.saveInBackground(new SaveCallback() {
-
-								@Override
-								public void done(ParseException e) {
-									if (e == null) {
-
-									} else {
-										checksave = false;
-									}
-								}
-							});
-						}
-						for (int i = 0; i < ischeck.length; i++) {
-							if (ischeck[i]) {
-								progressDialog.setCancelable(false);
-								progressDialog.setTitle("Loading...");
-								progressDialog.show();
-								ParseQuery<ParseObject> query = ParseQuery
-										.getQuery("Client");
-								query.getInBackground(contactsArrayList.get(i)
-										.get("ID").toString(),
-										new GetCallback<ParseObject>() {
-
-											public void done(ParseObject gameScore,
-													ParseException e) {
-												progressDialog.dismiss();
-												if (e == null) {
-
-													gameScore.put("tag", tag);
-													gameScore
-															.saveInBackground(new SaveCallback() {
-
-																@Override
-																public void done(
-																		ParseException ex) {
-																	if (ex == null) {
-
-																	} else {
-																		checksave = false;
-																	}
-																}
-															});
-												}
-											}
-										});
+								checksave = false;
 							}
-
 						}
-						if (checksave) {
-							if (mode.equals("add")) {
-								getActivity().getFragmentManager().beginTransaction()
-										.replace(R.id.content_frame, new People_tag())
-										.addToBackStack(null)
-										.commit();
-							} else if (mode.equals("gadd")) {
+					});
 
-								Thread thread = new Thread() {
-									@Override
-									public void run() {
-										try {
-											Thread.sleep(2000);
-											People_tag_list ppadd = new People_tag_list();
-											ppadd.setTag(tag);
-											Fragment fg = (Fragment) ppadd;
-											getActivity().getFragmentManager()
-													.beginTransaction()
-													.replace(R.id.content_frame, fg)
-													.addToBackStack(null)
-													.commit();
-										} catch (Exception e) {
-											e.printStackTrace();
-										} finally {
+				}
+
+				for (int i = 0; i < ischeck.length; i++) {
+					if (ischeck[i]) {
+						progressDialog.setCancelable(false);
+						progressDialog.setTitle("Loading...");
+						progressDialog.show();
+						ParseQuery<ParseObject> query = ParseQuery
+								.getQuery("Client");
+						query.getInBackground(contactsArrayList.get(i)
+								.get("ID").toString(),
+								new GetCallback<ParseObject>() {
+
+									public void done(ParseObject gameScore,
+											ParseException e) {
+										progressDialog.dismiss();
+										if (e == null) {
+
+											gameScore.put("tag", tag);
+
+											gameScore
+													.saveInBackground(new SaveCallback() {
+
+														@Override
+														public void done(
+																ParseException ex) {
+															if (ex == null) {
+
+															} else {
+																checksave = false;
+															}
+														}
+													});
 										}
 									}
-								};
-								thread.start();
+								});
+
+					}
+
+				}
+				if (checksave) {
+					if (mode.equals("add")) {
+						getActivity().getFragmentManager().beginTransaction()
+								.replace(R.id.content_frame, new People_tag())
+								.commit();
+					} else if (mode.equals("gadd")) {
+
+						Thread thread = new Thread() {
+							@Override
+							public void run() {
+								try {
+									Thread.sleep(2000);
+									People_tag_list ppadd = new People_tag_list();
+									ppadd.setTag(tag);
+									Fragment fg = (Fragment) ppadd;
+									getActivity().getFragmentManager()
+											.beginTransaction()
+											.replace(R.id.content_frame, fg)
+											.commit();
+								} catch (Exception e) {
+									e.printStackTrace();
+								} finally {
+								}
 							}
-						}
+						};
+						thread.start();
 					}
 				}
 			}
 		});
 
-		cancelBtn.setOnClickListener(new OnClickListener() {
+		buttonNO.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People_tag())
-						.addToBackStack(null)
-						.commit();
+						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});
 
@@ -224,7 +204,7 @@ public class People_tag_add extends Fragment {
 		progressDialog.setTitle("Loading...");
 		progressDialog.show();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
-		query.orderByDescending("createAt");
+
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
@@ -289,29 +269,21 @@ public class People_tag_add extends Fragment {
 		}
 
 		public boolean[] getIsCheck() {
-			// TODO Auto-generated method stub
-			// return 0;
 			return ischeck;
 		}
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
-			// return 0;
 			return mAppList.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			// return null;
 			return mAppList.get(position);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			// return 0;
 			return position;
 		}
 
@@ -327,8 +299,6 @@ public class People_tag_add extends Fragment {
 		@Override
 		public View getView(final int position, View convertView,
 				ViewGroup parent) {
-			// TODO Auto-generated method stub
-			// return null;
 
 			if (convertView != null) {
 				itemView = (ItemView) convertView.getTag();
@@ -339,10 +309,13 @@ public class People_tag_add extends Fragment {
 
 				itemView.cb = (CheckBox) convertView
 						.findViewById(valueViewID[0]);
+				;
+
 				convertView.setTag(itemView);
 			}
 
 			if (mAppList != null) {
+
 				if (!tag.equals("")) {
 					if (mAppList.get(position).get(keyString[1]).toString()
 							.equals(tag)) {
@@ -360,16 +333,17 @@ public class People_tag_add extends Fragment {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
 						CheckBox cb = (CheckBox) v;
 						ischeck[pos] = cb.isChecked();
 					}
 				});
+
 			}
 			itemView.cb.setChecked(ischeck[position]);
 
 			return convertView;
 		}
+
 	}
 
 	@Override
