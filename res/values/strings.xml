@@ -4,7 +4,7 @@
     <string name="app_name">MobileSales</string>
 
     <string-array name="planets_array">
-        <item>通訊錄</item>
+        <item>聯絡人管理</item>
         <item>客戶記事</item>
         <item>行事曆</item>
         <item>搜尋</item>
