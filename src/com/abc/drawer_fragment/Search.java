@@ -126,6 +126,8 @@ public class Search extends Fragment implements LocationListener {
 			}
 		});
 
+	
+		
 		autoTV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			public void onItemClick(android.widget.AdapterView<?> parent,
@@ -136,6 +138,7 @@ public class Search extends Fragment implements LocationListener {
 
 				if (locationName.length() > 0) {
 					locationNameToMarker(locationName);
+					autoTV.setText("");
 				} else {
 					Toast.makeText(getActivity().getBaseContext(), "請輸入地址",
 							Toast.LENGTH_SHORT).show();
