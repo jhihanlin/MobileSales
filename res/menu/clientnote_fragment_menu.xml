@@ -21,7 +21,7 @@
     <item
         android:id="@+id/group_by_clientTag"
         android:showAsAction="never"
-        android:title="依客戶標籤分類">
+        android:title="依客戶群組分類">
     </item>
 
 </menu>
