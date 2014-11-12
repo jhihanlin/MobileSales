@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 // singleton pattern
 public class TypeFaceHelper {
 
-	private static String FONT_PATH = "fonts/NotoSansCJKtc-Thin.otf";
+	private static String FONT_PATH = "fonts/Arial.ttf";
 	private static Typeface typeface;
 
 	public static Typeface getCurrentTypeface(Context context) {

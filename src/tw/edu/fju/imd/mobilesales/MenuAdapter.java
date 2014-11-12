@@ -43,6 +43,7 @@ public class MenuAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		
 		LayoutInflater li = LayoutInflater.from(context);
 		View view = li.inflate(R.layout.drawer_list_item2, null);
 		ImageView drawerImage = (ImageView) view.findViewById(R.id.drawerImage);
