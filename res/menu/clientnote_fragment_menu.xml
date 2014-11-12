@@ -16,7 +16,7 @@
     <item
         android:id="@+id/group_by_purpose"
         android:showAsAction="never"
-        android:title="依目的分類">
+        android:title="依拜訪目的分類">
     </item>
     <item
         android:id="@+id/group_by_clientTag"
