@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.abc.model"
+    package="tw.edu.fju.imd.mobilesales"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -50,7 +50,7 @@
     <uses-permission android:name="com.abc.model.permission.C2D_MESSAGE" />
 
     <application
-        android:name="com.abc.model.MobileSalesApplication"
+        android:name="tw.edu.fju.imd.mobilesales.MobileSalesApplication"
         android:allowBackup="true"
         android:icon="@drawable/mm_logo"
         android:label="@string/app_name"
@@ -64,7 +64,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="tw.edu.fju.imd.mobilesales.MainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity android:name="LoginActivity" >
