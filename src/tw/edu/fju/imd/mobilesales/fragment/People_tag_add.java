@@ -17,7 +17,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,6 +24,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,8 +65,6 @@ public class People_tag_add extends Fragment {
 		tv = (TextView) v.findViewById(R.id.textViewtagname);
 		ll = (LinearLayout) v.findViewById(R.id.ll);
 		lltag = (LinearLayout) v.findViewById(R.id.lltag);
-		buttonOK = (Button) v.findViewById(R.id.buttonOK);
-		buttonNO = (Button) v.findViewById(R.id.buttonNO);
 		listView = (ListView) v.findViewById(R.id.lvtaggadd);
 		editTexttags = (EditText) v.findViewById(R.id.editTexttags);
 		TextView textViewtagname = (TextView) v
@@ -150,7 +148,7 @@ public class People_tag_add extends Fragment {
 				}
 				if (checksave) {
 					if (mode.equals("add")) {
-						getActivity().getFragmentManager().beginTransaction()
+						getActivity().getSupportFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, new People_tag())
 								.commit();
 					} else if (mode.equals("gadd")) {
@@ -163,7 +161,7 @@ public class People_tag_add extends Fragment {
 									People_tag_list ppadd = new People_tag_list();
 									ppadd.setTag(tag);
 									Fragment fg = (Fragment) ppadd;
-									getActivity().getFragmentManager()
+									getActivity().getSupportFragmentManager()
 											.beginTransaction()
 											.replace(R.id.content_frame, fg)
 											.commit();
@@ -183,7 +181,7 @@ public class People_tag_add extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				getActivity().getFragmentManager().beginTransaction()
+				getActivity().getSupportFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, new People_tag()).commit();
 			}
 		});

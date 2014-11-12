@@ -19,8 +19,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,6 +32,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -364,7 +363,7 @@ public class People_add extends Fragment {
 					if (e == null) {
 						Toast.makeText(getActivity(), "Successful",
 								Toast.LENGTH_SHORT).show();
-						getActivity().getFragmentManager().beginTransaction()
+						getActivity().getSupportFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, new People())
 								.addToBackStack(null)
 								.commit();
@@ -435,7 +434,7 @@ public class People_add extends Fragment {
 					if (e == null) {
 						Toast.makeText(getActivity(), "Successful",
 								Toast.LENGTH_SHORT).show();
-						getActivity().getFragmentManager().beginTransaction()
+						getActivity().getSupportFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, new People())
 								.addToBackStack(null)
 								.commit();
@@ -511,7 +510,7 @@ public class People_add extends Fragment {
 													"Successful",
 													Toast.LENGTH_SHORT).show();
 											getActivity()
-													.getFragmentManager()
+													.getSupportFragmentManager()
 													.beginTransaction()
 													.replace(
 															R.id.content_frame,
@@ -601,7 +600,7 @@ public class People_add extends Fragment {
 													"編輯成功",
 													Toast.LENGTH_SHORT).show();
 											getActivity()
-													.getFragmentManager()
+													.getSupportFragmentManager()
 													.beginTransaction()
 													.replace(
 															R.id.content_frame,
@@ -641,7 +640,7 @@ public class People_add extends Fragment {
 							if (ex == null) {
 
 								getActivity()
-										.getFragmentManager()
+										.getSupportFragmentManager()
 										.beginTransaction()
 										.replace(R.id.content_frame,
 												new People())

@@ -40,14 +40,14 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <!--
-  IMPORTANT: Change "com.abc.model.permission.C2D_MESSAGE" in the lines below
+  IMPORTANT: Change "tw.edu.fju.imd.mobilesales.permission.C2D_MESSAGE" in the lines below
   to match your app's package name + ".permission.C2D_MESSAGE".
     -->
     <permission
-        android:name="com.abc.model.permission.C2D_MESSAGE"
+        android:name="tw.edu.fju.imd.mobilesales.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.abc.model.permission.C2D_MESSAGE" />
+    <uses-permission android:name="tw.edu.fju.imd.mobilesales.permission.C2D_MESSAGE" />
 
     <application
         android:name="tw.edu.fju.imd.mobilesales.MobileSalesApplication"
@@ -90,8 +90,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <!-- IMPORTANT: Change "com.abc.model" to match your app's package name. -->
-                <category android:name="com.abc.model" />
+                <category android:name="tw.edu.fju.imd.mobilesales" />
             </intent-filter>
         </receiver>
     </application>

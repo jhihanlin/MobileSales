@@ -10,9 +10,11 @@ import tw.edu.fju.imd.mobilesales.fragment.ClientNoteList;
 import tw.edu.fju.imd.mobilesales.fragment.MessageList;
 import tw.edu.fju.imd.mobilesales.fragment.Notify;
 import tw.edu.fju.imd.mobilesales.fragment.People;
+import tw.edu.fju.imd.mobilesales.fragment.PeopleFragment;
 import tw.edu.fju.imd.mobilesales.fragment.Search;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -29,6 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -49,7 +52,7 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	private DrawerLayout my_DrawerLayout;
 	private ListView my_DrawerList;
 	private RelativeLayout my_LeftDrawer;
@@ -151,6 +154,7 @@ public class MainActivity extends Activity {
 
 					public void onDrawerOpened(View drawerView) {
 						getActionBar().setTitle(my_DrawerTitle);
+
 						invalidateOptionsMenu(); // creates call to
 													// onPrepareOptionsMenu()
 					}
@@ -225,10 +229,11 @@ public class MainActivity extends Activity {
 		// update the main content by replacing fragments
 
 		FragmentManager fragmentManager = getFragmentManager();
+		android.support.v4.app.FragmentManager fragmentManager2 = getSupportFragmentManager();
 		switch (position) {
 		case 0: {
-			fragmentManager.beginTransaction()
-					.add(R.id.content_frame, new People())
+			fragmentManager2.beginTransaction()
+					.add(R.id.content_frame, new PeopleFragment())
 					.addToBackStack(null)
 					.commit();
 			break;
@@ -264,7 +269,7 @@ public class MainActivity extends Activity {
 			break;
 		}
 		case 5: {
-			fragmentManager.beginTransaction()
+			fragmentManager2.beginTransaction()
 					.replace(R.id.content_frame, new Board())
 					.addToBackStack(null)
 					.commit();

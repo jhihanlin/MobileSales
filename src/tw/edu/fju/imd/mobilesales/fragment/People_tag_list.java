@@ -7,8 +7,6 @@ import java.util.List;
 import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -19,6 +17,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +42,7 @@ import com.parse.SaveCallback;
 
 public class People_tag_list extends Fragment {
 
-	public Button peopleButton, tagButton, btntagadd;
+	public Button btntagadd;
 	public ListView listView;
 	public View v;
 
@@ -58,8 +58,6 @@ public class People_tag_list extends Fragment {
 		v = inflater.inflate(R.layout.people_tag, container, false);
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
-		peopleButton = (Button) v.findViewById(R.id.peopleButton);
-		tagButton = (Button) v.findViewById(R.id.tagButton);
 		listView = (ListView) v.findViewById(R.id.lvTAGPEOPLE);
 		btntagadd = (Button) v.findViewById(R.id.button1);
 		progressDialog = new ProgressDialog(getActivity());
@@ -78,33 +76,6 @@ public class People_tag_list extends Fragment {
 		}
 
 		tagName.setText(tag);
-		peopleButton.setTypeface(typeface);
-		tagButton.setTypeface(typeface);
-
-		peopleButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getActivity().getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new People())
-						.addToBackStack(null)
-						.commit();
-			}
-		});
-
-		tagButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getActivity().getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new People_tag())
-						.addToBackStack(null)
-						.commit();
-			}
-		});
-
 		btntagadd.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -120,7 +91,7 @@ public class People_tag_list extends Fragment {
 							ppadd.setMode("gadd");
 
 							Fragment fg = ppadd;
-							getActivity().getFragmentManager()
+							getActivity().getSupportFragmentManager()
 									.beginTransaction()
 									.replace(R.id.content_frame, fg)
 									.addToBackStack(null)
@@ -147,7 +118,7 @@ public class People_tag_list extends Fragment {
 				getActivity(), contactsArrayList,
 				R.layout.people_contact_entry,
 				new String[] { "NAME", "NUMBER" }, new int[] {
-						R.id.txtNAMEPHONE, R.id.txtDATAPHONE }, getFragmentManager());
+						R.id.txtNAMEPHONE, R.id.txtDATAPHONE }, getActivity().getSupportFragmentManager());
 		listView.setAdapter(Btnadapter);
 
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -204,7 +175,7 @@ public class People_tag_list extends Fragment {
 																							People_tag_list ppadd = new People_tag_list();
 																							ppadd.setTag(tag);
 																							Fragment fg = ppadd;
-																							getActivity().getFragmentManager()
+																							getActivity().getSupportFragmentManager()
 																									.beginTransaction()
 																									.replace(
 																											R.id.content_frame,
@@ -259,7 +230,7 @@ public class People_tag_list extends Fragment {
 											People_add ppadd = new People_add();
 											ppadd.setMode("edit");
 											ppadd.setID(Oid);
-											getActivity().getFragmentManager()
+											getActivity().getSupportFragmentManager()
 													.beginTransaction()
 													.add(R.id.content_frame, ppadd)
 													.addToBackStack(null)

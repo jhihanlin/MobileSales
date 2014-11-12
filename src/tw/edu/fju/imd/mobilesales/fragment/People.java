@@ -8,7 +8,6 @@ import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -21,6 +20,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,7 +58,6 @@ public class People extends Fragment {
 	public ListView listView;
 	public View v;
 	public Button addPeople, imbtndel, imbtnupdata;
-	public Button peopleButton, tagButton;
 	public AutoCompleteTextView autoComplete;
 	public ArrayList<HashMap<String, String>> contactsArrayList;
 	public String[] contactsName;
@@ -80,32 +79,6 @@ public class People extends Fragment {
 
 		progressDialog = new ProgressDialog(getActivity());
 		getParseDate("");
-
-		peopleButton = (Button) v.findViewById(R.id.peopleButton);
-		peopleButton.setTypeface(typeface);
-		tagButton = (Button) v.findViewById(R.id.tagButton);
-		tagButton.setTypeface(typeface);
-		peopleButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People())
-						.addToBackStack(null)
-						.commit();
-			}
-		});
-
-		tagButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				getActivity().getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new People_tag())
-						.addToBackStack(null)
-						.commit();
-			}
-		});
 
 		return v;
 	}
@@ -146,13 +119,12 @@ public class People extends Fragment {
 											ppadd.setMode("edit");
 											ppadd.setID(Oid);
 
-											Fragment fg = ppadd;
 											getActivity()
-													.getFragmentManager()
+													.getSupportFragmentManager()
 													.beginTransaction()
 													.replace(
 															R.id.content_frame,
-															fg)
+															ppadd)
 													.addToBackStack(null)
 													.commit();
 
@@ -320,7 +292,7 @@ public class People extends Fragment {
 		case R.id.action_add_people:
 			People_add ppadd = new People_add();
 			ppadd.setMode("add");
-			getFragmentManager().beginTransaction()
+			getActivity().getSupportFragmentManager().beginTransaction()
 					.add(R.id.content_frame, ppadd)
 					.addToBackStack(null)
 					.commit();
@@ -352,7 +324,7 @@ public class People extends Fragment {
 									thread.start();
 									Toast.makeText(getActivity(), "匯入成功",
 											Toast.LENGTH_LONG).show();
-									getActivity().getFragmentManager().beginTransaction()
+									getActivity().getSupportFragmentManager().beginTransaction()
 											.replace(R.id.content_frame, new People())
 											.addToBackStack(null)
 											.commit();

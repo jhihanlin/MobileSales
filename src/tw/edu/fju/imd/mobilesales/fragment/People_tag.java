@@ -8,14 +8,14 @@ import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +38,7 @@ import com.parse.SaveCallback;
 
 public class People_tag extends Fragment {
 
-	public Button peopleButton, tagButton, btntagadd;
+	public Button btntagadd;
 	public ListView listView;
 	public View v;
 	public ArrayList<HashMap<String, Object>> contactsArrayList;
@@ -53,8 +53,6 @@ public class People_tag extends Fragment {
 
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
-		peopleButton = (Button) v.findViewById(R.id.peopleButton);
-		tagButton = (Button) v.findViewById(R.id.tagButton);
 		listView = (ListView) v.findViewById(R.id.lvTAGPEOPLE);
 		btntagadd = (Button) v.findViewById(R.id.button1);
 		progressDialog = new ProgressDialog(getActivity());
@@ -70,33 +68,6 @@ public class People_tag extends Fragment {
 		m2.setVisibility(8);
 		tagName.setVisibility(8);
 
-		peopleButton.setTypeface(typeface);
-		tagButton.setTypeface(typeface);
-
-		peopleButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getActivity().getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new People())
-						.addToBackStack(null)
-						.commit();
-			}
-		});
-
-		tagButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getActivity().getFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, new People_tag())
-						.addToBackStack(null)
-						.commit();
-			}
-		});
-
 		btntagadd.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -106,7 +77,7 @@ public class People_tag extends Fragment {
 				ppadd.setTag("");
 				ppadd.setMode("add");
 				Fragment fg = (Fragment) ppadd;
-				getActivity().getFragmentManager()
+				getActivity().getSupportFragmentManager()
 						.beginTransaction()
 						.replace(R.id.content_frame, fg)
 						.addToBackStack(null)
@@ -123,7 +94,7 @@ public class People_tag extends Fragment {
 				getActivity(), contactsArrayList,
 				R.layout.people_contact_entry,
 				new String[] { "NAME" }, new int[] {
-						R.id.tagname }, getFragmentManager());
+						R.id.tagname }, getActivity().getSupportFragmentManager());
 		listView.setAdapter(Btnadapter);
 
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -213,7 +184,7 @@ public class People_tag extends Fragment {
 												try {
 													Thread.sleep(1000);
 													Message msg = new Message();
-													getActivity().getFragmentManager()
+													getActivity().getSupportFragmentManager()
 															.beginTransaction()
 															.replace(R.id.content_frame, new People_tag())
 															.addToBackStack(null)
@@ -248,7 +219,7 @@ public class People_tag extends Fragment {
 				People_tag_list ppadd = new People_tag_list();
 				ppadd.setTag(name);
 				Fragment fg = (Fragment) ppadd;
-				getActivity().getFragmentManager()
+				getActivity().getSupportFragmentManager()
 						.beginTransaction()
 						.replace(R.id.content_frame, fg)
 						.addToBackStack(null)
