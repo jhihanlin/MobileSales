@@ -1,6 +1,6 @@
 package tw.edu.fju.imd.mobilesales.fragment;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import android.location.GpsStatus.Listener;
 import android.os.Bundle;
@@ -38,7 +38,7 @@ import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;

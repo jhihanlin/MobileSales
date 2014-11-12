@@ -9,7 +9,7 @@ import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -201,7 +201,7 @@ public class ClientNoteGroupsByPurpose extends Fragment {
 		ClientNoteView clientNoteView = new ClientNoteView();
 		clientNoteView.setArguments(bundle2);
 		getActivity()
-				.getFragmentManager()
+				.getSupportFragmentManager()
 				.beginTransaction()
 				.add(R.id.content_frame, clientNoteView)
 				.addToBackStack(null)

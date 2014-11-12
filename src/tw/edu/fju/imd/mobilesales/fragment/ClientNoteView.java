@@ -12,7 +12,7 @@ import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Typeface;
@@ -291,7 +291,7 @@ public class ClientNoteView extends Fragment {
 							Toast.makeText(getActivity(), "編輯成功", Toast.LENGTH_LONG).show();
 							// go back to list
 							getActivity()
-									.getFragmentManager()
+									.getSupportFragmentManager()
 									.beginTransaction()
 									.replace(R.id.content_frame, new ClientNoteList())
 									.addToBackStack(null)

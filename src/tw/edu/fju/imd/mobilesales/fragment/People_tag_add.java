@@ -17,7 +17,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;

@@ -9,8 +9,8 @@ import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -120,7 +120,7 @@ public class MessageList extends Fragment {
 							bundle2.putBundle("bundle2", bundle);
 							MessageView messageView = new MessageView();
 							messageView.setArguments(bundle2);
-							getActivity().getFragmentManager()
+							getActivity().getSupportFragmentManager()
 									.beginTransaction()
 									.replace(R.id.content_frame, messageView)
 									.addToBackStack(null)
@@ -188,7 +188,7 @@ public class MessageList extends Fragment {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		FragmentManager fragmentManager = getFragmentManager();
+		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
 		switch (item.getItemId()) {
 		case R.id.action_add_message:

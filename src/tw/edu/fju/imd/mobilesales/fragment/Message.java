@@ -10,9 +10,9 @@ import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -116,7 +116,7 @@ public class Message extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				FragmentManager fragmentManager = getFragmentManager();
+				FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 				fragmentManager.beginTransaction()
 						.replace(R.id.content_frame, new MessageList())
 						.commit();
@@ -290,7 +290,7 @@ public class Message extends Fragment {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									MessageExpandable mEX = (MessageExpandable) getFragmentManager()
+									MessageExpandable mEX = (MessageExpandable) getActivity().getSupportFragmentManager()
 											.findFragmentById(R.id.fragment1);
 
 									receiverPhoneNumbers = mEX

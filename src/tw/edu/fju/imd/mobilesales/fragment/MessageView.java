@@ -8,7 +8,7 @@ import java.util.Map;
 import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;

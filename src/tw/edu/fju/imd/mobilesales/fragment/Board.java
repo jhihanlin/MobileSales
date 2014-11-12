@@ -97,7 +97,7 @@ public class Board extends Fragment {
 
 		case R.id.action_board_list:
 			getActivity()
-					.getFragmentManager()
+					.getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.content_frame, new BoardList())
 					.addToBackStack(null)

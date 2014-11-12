@@ -10,7 +10,7 @@ import java.util.Map;
 import tw.edu.fju.imd.mobilesales.R;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -129,7 +129,7 @@ public class Notify extends Fragment {
 		NotifyView notifyView = new NotifyView();
 		notifyView.setArguments(bundle2);
 		getActivity()
-				.getFragmentManager()
+				.getSupportFragmentManager()
 				.beginTransaction()
 				.replace(R.id.content_frame, notifyView)
 				.addToBackStack(null)

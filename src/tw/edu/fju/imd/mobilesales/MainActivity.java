@@ -17,7 +17,7 @@ import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -196,7 +196,7 @@ public class MainActivity extends FragmentActivity {
 		// Handle action buttons
 		switch (item.getItemId()) {
 		case R.id.action_notice:
-			getFragmentManager().beginTransaction()
+			getSupportFragmentManager().beginTransaction()
 					.addToBackStack(null)
 					.replace(R.id.content_frame, new Notify()).commit();
 			break;
@@ -228,11 +228,10 @@ public class MainActivity extends FragmentActivity {
 	private void selectItem(int position) {
 		// update the main content by replacing fragments
 
-		FragmentManager fragmentManager = getFragmentManager();
-		android.support.v4.app.FragmentManager fragmentManager2 = getSupportFragmentManager();
+		FragmentManager fragmentManager = getSupportFragmentManager();
 		switch (position) {
 		case 0: {
-			fragmentManager2.beginTransaction()
+			fragmentManager.beginTransaction()
 					.add(R.id.content_frame, new PeopleFragment())
 					.addToBackStack(null)
 					.commit();
@@ -269,7 +268,7 @@ public class MainActivity extends FragmentActivity {
 			break;
 		}
 		case 5: {
-			fragmentManager2.beginTransaction()
+			fragmentManager.beginTransaction()
 					.replace(R.id.content_frame, new Board())
 					.addToBackStack(null)
 					.commit();
@@ -394,7 +393,7 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		if (getFragmentManager().getBackStackEntryCount() == 1) {
+		if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
 			if (doubleBackToExitPressedOnce) {
 				finish();
 				return;

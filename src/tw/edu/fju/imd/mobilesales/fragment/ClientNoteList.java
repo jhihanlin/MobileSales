@@ -9,8 +9,8 @@ import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -162,7 +162,7 @@ public class ClientNoteList extends Fragment {
 		ClientNoteView clientNoteView = new ClientNoteView();
 		clientNoteView.setArguments(bundle2);
 		getActivity()
-				.getFragmentManager()
+				.getSupportFragmentManager()
 				.beginTransaction()
 				.replace(R.id.content_frame, clientNoteView)
 				.addToBackStack(null)
@@ -209,7 +209,7 @@ public class ClientNoteList extends Fragment {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		FragmentManager fragmentManager = getFragmentManager();
+		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
 		switch (item.getItemId()) {
 		case R.id.action_add_client_note:
