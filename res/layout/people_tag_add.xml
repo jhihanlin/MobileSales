@@ -67,7 +67,7 @@
             android:background="#FFFFFF"
             android:gravity="center"
             android:text="取消"
-            android:textColor="#99CCCC" />
+            android:textColor="@color/aquamarine" />
 
         <Button
             android:id="@+id/buttonOK"
@@ -75,7 +75,7 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#99CCCC"
+            android:background="@color/aquamarine"
             android:gravity="center"
             android:text="確定"
             android:textColor="#FFFFFF" />

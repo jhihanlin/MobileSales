@@ -45,7 +45,7 @@
         android:id="@+id/c_purpose"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:background="#99CCCC"
+        android:background="@color/aquamarine"
         android:gravity="center"
         android:text="預設簡訊"
         android:textColor="#FFFFFF"
@@ -75,7 +75,7 @@
             android:id="@+id/text11"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:background="#99cccc"
+            android:background="@color/aquamarine"
             android:gravity="center"
             android:text="內容"
             android:textColor="#FFFFFF"
@@ -115,7 +115,7 @@
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:text="取消"
-            android:textColor="#99CCCC" />
+            android:textColor="@color/aquamarine" />
 
         <Button
             android:id="@+id/sendButton"
@@ -123,7 +123,7 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#99CCCC"
+            android:background="@color/aquamarine"
             android:text="送出"
             android:textColor="#FFFFFF" />
     </LinearLayout>

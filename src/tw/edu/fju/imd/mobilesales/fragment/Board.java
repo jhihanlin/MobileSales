@@ -99,6 +99,7 @@ public class Board extends Fragment {
 			getActivity()
 					.getSupportFragmentManager()
 					.beginTransaction()
+					.hide(Board.this)
 					.replace(R.id.content_frame, new BoardList())
 					.addToBackStack(null)
 					.commit();

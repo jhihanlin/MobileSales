@@ -65,7 +65,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#99CCCC"
+            android:background="@color/aquamarine"
             android:text="date"
             android:textColor="#FFFFFF"
             tools:ignore="ButtonStyle" />
@@ -77,7 +77,7 @@
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:text="time"
-            android:textColor="#99CCCC"
+            android:textColor="@color/aquamarine"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
 
@@ -127,7 +127,7 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#99CCCC"
+            android:background="@color/aquamarine"
             android:text="編輯"
             android:textColor="#FFFFFF" />
 
@@ -137,7 +137,7 @@
             android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_weight="1"
-            android:background="#99CCCC"
+            android:background="@color/aquamarine"
             android:text="儲存"
             android:textColor="#FFFFFF" />
     </LinearLayout>

@@ -65,7 +65,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#99CCCC"
+            android:background="@color/aquamarine"
             android:text="date"
             android:textColor="#FFFFFF"
             tools:ignore="ButtonStyle" />
@@ -77,7 +77,7 @@
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:text="time"
-            android:textColor="#99CCCC"
+            android:textColor="@color/aquamarine"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
 

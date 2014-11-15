@@ -29,7 +29,7 @@
             android:background="#ffffff"
             android:onClick="onLoactionNameClick"
             android:text="搜尋"
-            android:textColor="#99cccc" />
+            android:textColor="@color/aquamarine" />
     </LinearLayout>
 
     <LinearLayout
