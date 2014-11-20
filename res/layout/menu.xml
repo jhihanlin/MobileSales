@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/left_drawer"
+    android:layout_width="240dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@color/aquamarine" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical" >
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="1" >
+
+                <ImageView
+                    android:id="@+id/profile"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:layout_column="0"
+                    android:layout_marginTop="10dp"
+                    android:layout_row="0"
+                    android:src="@drawable/user_icon" />
+
+                <Button
+                    android:id="@+id/select_photo"
+                    android:layout_width="112dp"
+                    android:layout_height="152dp"
+                    android:layout_column="0"
+                    android:layout_row="0"
+                    android:background="#00000000" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginLeft="125dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_row="0"
+                    android:text="TextView" />
+
+            </GridLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="240dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/gray" />
+
+        <ListView
+            android:id="@+id/left_drawer_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="3.5"
+            android:background="@color/aquamarine"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp" >
+
+        </ListView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <View
+                android:layout_width="240dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/logoutBtn"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/aquamarine"
+                    android:text="登出"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

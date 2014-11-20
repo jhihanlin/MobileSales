@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_add_calendar_client_note"
+        android:icon="@android:drawable/ic_menu_add"
+        android:orderInCategory="1"
+        android:showAsAction="always|withText"
+        android:title="新增客戶記事"/>
+    <item
+        android:id="@+id/action_import_google_calendar"
+        android:orderInCategory="99"
+        android:showAsAction="never"
+        android:title="匯入google行事曆"/>
+    <item
+        android:id="@+id/action_cancel_import_google_calendar"
+        android:orderInCategory="99"
+        android:showAsAction="never"
+        android:title="取消匯入google行事曆"/>
+</menu>

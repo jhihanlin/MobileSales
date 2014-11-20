@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/action_near_client"
+        android:showAsAction="never"
+        android:title="搜尋附近客戶">
+    </item>
+
+</menu>
