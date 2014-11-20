@@ -48,9 +48,7 @@
                     android:layout_marginTop="3dp"
                     android:layout_row="0"
                     android:text="TextView" />
-
             </GridLayout>
-
         </LinearLayout>
 
         <View
@@ -61,7 +59,7 @@
 
         <ListView
             android:id="@+id/left_drawer_list"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
@@ -70,7 +68,6 @@
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp" >
-
         </ListView>
 
         <LinearLayout
