@@ -26,10 +26,10 @@ public class PeopleFragment extends Fragment {
 
 		mViewPager = (ViewPager) v.findViewById(R.id.people_viewpager);
 		mViewPager.setAdapter(mAppSectionsPagerAdapter);
-		
+
 		mPagerTab = (PagerTabStrip) v.findViewById(R.id.pagerTab);
 		mPagerTab.setTabIndicatorColorResource(R.color.aquamarine);
-		
+
 		return v;
 	}
 
@@ -47,7 +47,7 @@ public class PeopleFragment extends Fragment {
 			Log.d("debug", "getItem" + i);
 			switch (i) {
 			case 0:
-				return new People();
+				return new PeopleListFragment();
 
 			case 1:
 				return new People_tag();
