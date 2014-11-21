@@ -86,7 +86,7 @@ public class CalendarFragment extends Fragment {
 
 		case R.id.action_add_calendar_client_note:
 			fragmentManager.beginTransaction()
-					.add(R.id.content_frame, new CalendarAddNote())
+					.add(R.id.content_frame, new CalendarAddNoteFragment())
 					.addToBackStack(null)
 					.commit();
 			return true;

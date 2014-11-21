@@ -11,8 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import tw.edu.fju.imd.mobilesales.MainActivity;
 import tw.edu.fju.imd.mobilesales.R;
+import tw.edu.fju.imd.mobilesales.activity.MainActivity;
 import tw.edu.fju.imd.mobilesales.utils.SpinnerHelper;
 
 import android.app.Activity;

@@ -1,5 +1,7 @@
 package tw.edu.fju.imd.mobilesales;
 
+import tw.edu.fju.imd.mobilesales.activity.MainActivity;
+
 import com.parse.Parse;
 import com.parse.PushService;
 

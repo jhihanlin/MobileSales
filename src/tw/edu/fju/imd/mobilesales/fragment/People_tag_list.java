@@ -171,7 +171,7 @@ public class People_tag_list extends Fragment {
 
 																						try {
 																							Thread.sleep(300);
-																							Message msg = new Message();
+																							MessageAddFragment msg = new MessageAddFragment();
 																							People_tag_list ppadd = new People_tag_list();
 																							ppadd.setTag(tag);
 																							Fragment fg = ppadd;

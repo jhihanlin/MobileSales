@@ -183,7 +183,7 @@ public class People_tag extends Fragment {
 											public void run() {
 												try {
 													Thread.sleep(1000);
-													Message msg = new Message();
+													MessageAddFragment msg = new MessageAddFragment();
 													getActivity().getSupportFragmentManager()
 															.beginTransaction()
 															.replace(R.id.content_frame, new People_tag())
