@@ -147,5 +147,5 @@ local.properties
 .texlipse
 project.properties
 
-res/layout/people_layout_viewpager.xml
->>>>>>> d99eefde9a62698f2538a3eacda09f5bf4163c9a
+kit-libs/
+kits.properties
