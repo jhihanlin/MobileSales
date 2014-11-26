@@ -3,27 +3,16 @@ package tw.edu.fju.imd.mobilesales.activity;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import tw.edu.fju.imd.mobilesales.R;
-import tw.edu.fju.imd.mobilesales.R.array;
-import tw.edu.fju.imd.mobilesales.R.drawable;
-import tw.edu.fju.imd.mobilesales.R.id;
-import tw.edu.fju.imd.mobilesales.R.layout;
-import tw.edu.fju.imd.mobilesales.R.menu;
-import tw.edu.fju.imd.mobilesales.R.string;
 import tw.edu.fju.imd.mobilesales.adapter.MenuAdapter;
 import tw.edu.fju.imd.mobilesales.fragment.BoardFragment;
 import tw.edu.fju.imd.mobilesales.fragment.CalendarFragment;
 import tw.edu.fju.imd.mobilesales.fragment.ClientNoteRecordFragment;
 import tw.edu.fju.imd.mobilesales.fragment.MessageHistoryFragment;
 import tw.edu.fju.imd.mobilesales.fragment.NotifyFragment;
-import tw.edu.fju.imd.mobilesales.fragment.People;
 import tw.edu.fju.imd.mobilesales.fragment.PeopleFragment;
 import tw.edu.fju.imd.mobilesales.fragment.SearchFragment;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
@@ -92,6 +81,7 @@ public class MainActivity extends FragmentActivity {
 		Button select_photo = (Button) findViewById(R.id.select_photo);
 		Button logoutBtn = (Button) findViewById(R.id.logoutBtn);
 		profile = (ImageView) findViewById(R.id.profile);
+
 		loadFromParse();
 
 		logoutBtn.setTypeface(typeface);
