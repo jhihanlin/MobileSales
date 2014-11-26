@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import tw.edu.fju.imd.mobilesales.R;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-
-import android.app.AlertDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +26,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -134,7 +133,8 @@ public class MessageHistoryFragment extends Fragment {
 						public boolean onItemLongClick(AdapterView<?> parent,
 								View view, int position, long id) {
 
-							showDeleteDialog(data, position, adapter);
+							DialogHelper.showDeleteDialog(getActivity(), "Message", data, position,
+									adapter);
 
 							return true;
 						}
@@ -146,37 +146,6 @@ public class MessageHistoryFragment extends Fragment {
 			}
 		});
 
-	}
-
-	public void showDeleteDialog(final List<Map<String, String>> data,
-			final int index, final SimpleAdapter adapter) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("是否刪除");
-		builder.setPositiveButton("刪除",
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						String Object_id = data.get(index).get("id");
-
-						Log.d("id", Object_id);
-						ParseObject obj = ParseObject.createWithoutData(
-								"Message", Object_id);
-						obj.deleteEventually();
-						data.remove(index);
-
-						adapter.notifyDataSetChanged();
-					}
-				});
-		builder.setNegativeButton("取消",
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-
-					}
-				});
-		builder.show();
 	}
 
 	@Override

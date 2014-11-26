@@ -30,8 +30,6 @@ import android.app.Dialog;
 import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.widget.Button;
 import android.widget.DatePicker;

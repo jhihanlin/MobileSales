@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import tw.edu.fju.imd.mobilesales.R;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.AlertDialog;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -93,11 +95,8 @@ public class BoardHistoryFragment extends Fragment {
 						@Override
 						public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-							showDeleteDialog(data, position,
+							DialogHelper.showDeleteDialog(getActivity(), "Board", data, position,
 									adapter);
-							// Toast.makeText(getActivity(), "deleted",
-							// Toast.LENGTH_LONG).show();
-
 							return true;
 						}
 					});
@@ -106,36 +105,6 @@ public class BoardHistoryFragment extends Fragment {
 				}
 			}
 		});
-	}
-
-	public void showDeleteDialog(final List<Map<String, String>> data,
-			final int index,
-			final SimpleAdapter adapter) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("是否刪除");
-		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String Object_id = data.get(index).get("id");
-
-				Log.d("id", Object_id);
-				ParseObject obj = ParseObject.createWithoutData(
-						"Board", Object_id);
-				obj.deleteEventually();
-				data.remove(index);
-
-				adapter.notifyDataSetChanged();
-			}
-		});
-		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-
-			}
-		});
-		builder.show();
 	}
 
 	@Override

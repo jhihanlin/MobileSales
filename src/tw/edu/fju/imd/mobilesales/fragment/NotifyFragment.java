@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import tw.edu.fju.imd.mobilesales.R;
-
-import android.app.AlertDialog;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -24,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -102,7 +101,7 @@ public class NotifyFragment extends Fragment {
 							@Override
 							public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-								showDeleteDialog(list, position,
+								DialogHelper.showDeleteDialog(getActivity(), "ClientNote", list, position,
 										adapter);
 
 								return true;
@@ -134,36 +133,6 @@ public class NotifyFragment extends Fragment {
 				.replace(R.id.content_frame, notifyView)
 				.addToBackStack(null)
 				.commit();
-	}
-
-	public void showDeleteDialog(final List<Map<String, String>> data,
-			final int index,
-			final SimpleAdapter adapter) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("是否刪除");
-		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String Object_id = data.get(index).get("id");
-
-				Log.d("id", Object_id);
-				ParseObject obj = ParseObject.createWithoutData(
-						"ClientNote", Object_id);
-				obj.deleteEventually();
-				data.remove(index);
-
-				adapter.notifyDataSetChanged();
-			}
-		});
-		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-
-			}
-		});
-		builder.show();
 	}
 
 	@Override

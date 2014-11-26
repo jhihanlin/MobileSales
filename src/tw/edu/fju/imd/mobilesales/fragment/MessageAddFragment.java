@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tw.edu.fju.imd.mobilesales.R;
-import tw.edu.fju.imd.mobilesales.fragment.MessageExpandableFragment.SavedTabsListAdapter;
 import tw.edu.fju.imd.mobilesales.utils.SpinnerHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
@@ -12,13 +11,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.location.GpsStatus.Listener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.telephony.SmsManager;
@@ -28,26 +25,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 

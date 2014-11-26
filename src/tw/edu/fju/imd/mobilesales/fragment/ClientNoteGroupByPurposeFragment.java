@@ -6,28 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import tw.edu.fju.imd.mobilesales.R;
-import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-
-import android.app.AlertDialog;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -89,6 +81,8 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 	private void setListViewData(List<ParseObject> purpose, View v) {
 		final List<String> arrayList = new ArrayList<String>();
 		final List<String> arrayListId = new ArrayList<String>();
+		final List<Map<String, String>> pList = new ArrayList<Map<String, String>>();
+		final List<Map<String, String>> pListView = new ArrayList<Map<String, String>>();
 
 		LinearLayout layout1 = (LinearLayout) v.findViewById(R.id.purpose_layout);
 		if (purpose.size() <= 0) {
@@ -110,13 +104,11 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 			arrayList.add(purposeName + "(" + count + ")");
 		}
 		try {
-			final ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_list_item_1, arrayList);
+			final ArrayAdapter<String> array_adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, arrayList);
+
 			ls.setAdapter(array_adapter);
 
 			ls.setOnItemClickListener(new OnItemClickListener() {
-				final List<Map<String, String>> plist = new ArrayList<Map<String, String>>();
-				final List<Map<String, String>> plist_view = new ArrayList<Map<String, String>>();
 
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -133,7 +125,7 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 						item.put("title", clientNote.getString("title"));
 						item.put("date", clientNote.getString("date"));
 						item.put("id", clientNote.getObjectId());
-						plist.add(item);
+						pList.add(item);
 
 						Map<String, String> item2 = new HashMap<String, String>();
 						item2.put("title", clientNote.getString("title"));
@@ -146,12 +138,12 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 						item2.put("remind", clientNote.getString("remind"));
 						item2.put("remarks", clientNote.getString("remarks"));
 						item2.put("id", clientNote.getObjectId());
-						plist_view.add(item2);
+						pListView.add(item2);
 					}
-					if (plist.size() > 0) {
+					if (pList.size() > 0) {
 						try {
 							final SimpleAdapter adapter_2 = new SimpleAdapter(getActivity(),
-									plist, R.layout.client_note_listview,
+									pList, R.layout.client_note_listview,
 									new String[] { "title", "date" }, new int[] {
 											R.id.clientNote_tx1, R.id.clientNote_tx2 });
 							ls.setAdapter(adapter_2);
@@ -159,7 +151,7 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 
 								@Override
 								public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-									sendValueToClientNoteView(plist_view, position);
+									sendValueToClientNoteView(pListView, position);
 								}
 							});
 						} catch (Exception e2) {
@@ -178,8 +170,9 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-					showDeleteDialog(arrayListId, position, array_adapter);
-
+					DialogHelper.showDeleteDialog(getActivity(), "Purpose", pList, position,
+							array_adapter);
+					
 					return true;
 				}
 			});
@@ -207,39 +200,6 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 				.addToBackStack(null)
 				.commit();
 
-	}
-
-	public void showDeleteDialog(final List<String> data,
-			final int index,
-			final ArrayAdapter<String> array_adapter) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle("是否刪除");
-		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String objectId = data.get(index);
-
-				Log.d("id", objectId);
-				ParseObject obj = ParseObject.createWithoutData(
-						"Purpose", objectId);
-				obj.deleteEventually();
-				data.remove(index);
-				Toast.makeText(getActivity().getBaseContext(),
-						"刪除成功", Toast.LENGTH_SHORT)
-						.show();
-				array_adapter.remove(array_adapter.getItem(index));
-				array_adapter.notifyDataSetChanged();
-			}
-		});
-		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-
-			}
-		});
-		builder.show();
 	}
 
 	@Override

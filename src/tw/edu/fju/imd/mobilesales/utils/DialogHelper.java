@@ -7,12 +7,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.util.Log;
-import android.widget.SimpleAdapter;
+import android.widget.BaseAdapter;
 
 import com.parse.ParseObject;
 
 public class DialogHelper {
-	public static void showDeleteDialog(Activity activity, final String className, final List<Map<String, String>> data, final int index, final SimpleAdapter adapter) {
+	public static void showDeleteDialog(Activity activity, final String className, final List<Map<String, String>> data, final int index, final BaseAdapter adapter) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("是否刪除");
 		builder.setPositiveButton("刪除", new DialogInterface.OnClickListener() {

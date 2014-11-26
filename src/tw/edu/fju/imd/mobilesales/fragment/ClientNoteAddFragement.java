@@ -1,49 +1,33 @@
 package tw.edu.fju.imd.mobilesales.fragment;
 
 import android.support.v4.app.Fragment;
-
-import android.location.GpsStatus.Listener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.SpinnerHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.widget.Button;
 import android.widget.DatePicker;

@@ -9,8 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import tw.edu.fju.imd.mobilesales.R;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-
 import android.app.AlertDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -655,8 +655,10 @@ public class CalendarFragment extends Fragment {
 						@Override
 						public boolean onItemLongClick(AdapterView<?> parent,
 								View view, int position, long id) {
-							showDeleteDialog(data, list, position,
+							
+							DialogHelper.showDeleteDialog(getActivity(), "ClientNote", data, position,
 									simpleAdapter);
+							
 							return true;
 						}
 					});
@@ -692,35 +694,6 @@ public class CalendarFragment extends Fragment {
 			} catch (Exception e) {
 				// google calendar's event does not support showing dialog
 			}
-		}
-
-		public void showDeleteDialog(final List<Map<String, String>> data,
-				List<HashMap<String, String>> list, final int index,
-				final SimpleAdapter simpleAdapter) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setTitle("是否刪除");
-			builder.setPositiveButton("刪除",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							String id = data.get(index).get("id");
-							ParseObject obj = ParseObject.createWithoutData(
-									"ClientNote", id);
-							obj.deleteEventually();
-							data.remove(index);
-							simpleAdapter.notifyDataSetChanged();
-						}
-					});
-			builder.setNegativeButton("取消",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-
-						}
-					});
-			builder.show();
 		}
 
 		public View crateDiaglogView(List<Map<String, String>> data,
