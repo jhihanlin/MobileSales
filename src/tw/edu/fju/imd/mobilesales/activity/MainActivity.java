@@ -10,7 +10,6 @@ import tw.edu.fju.imd.mobilesales.fragment.CalendarFragment;
 import tw.edu.fju.imd.mobilesales.fragment.ClientNoteRecordFragment;
 import tw.edu.fju.imd.mobilesales.fragment.MessageHistoryFragment;
 import tw.edu.fju.imd.mobilesales.fragment.NotifyFragment;
-import tw.edu.fju.imd.mobilesales.fragment.PeopleFragment;
 import tw.edu.fju.imd.mobilesales.fragment.SearchFragment;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.AlertDialog;
@@ -218,7 +217,7 @@ public class MainActivity extends FragmentActivity {
 		switch (position) {
 		case 0: {
 			fragmentManager.beginTransaction()
-					.add(R.id.content_frame, new PeopleFragment())
+					.add(R.id.content_frame, new ClientNoteRecordFragment())
 					.addToBackStack(null)
 					.commit();
 			break;
