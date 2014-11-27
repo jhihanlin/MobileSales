@@ -1,7 +1,6 @@
 package tw.edu.fju.imd.mobilesales.fragment;
 
 import android.support.v4.app.Fragment;
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.format.Time;
@@ -22,9 +21,9 @@ import java.util.Date;
 import java.util.List;
 
 import tw.edu.fju.imd.mobilesales.R;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.SpinnerHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.support.v4.app.FragmentManager;
@@ -146,9 +145,7 @@ public class CalendarAddNoteFragment extends Fragment {
 		m_datepickerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-				onCreateDialog(m_datepickerButton).show();
+				DialogHelper.onCreateDateDialog(getActivity(), m_datepickerButton).show();
 			}
 		});
 
@@ -156,8 +153,7 @@ public class CalendarAddNoteFragment extends Fragment {
 		m_timepickerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				onCreateDialog2(m_timepickerButton).show();
+				DialogHelper.onCreateTimeDialog(getActivity(), m_timepickerButton).show();
 			}
 		});
 
@@ -227,36 +223,4 @@ public class CalendarAddNoteFragment extends Fragment {
 
 		return v;
 	}
-
-	// DatePickerDialog
-	protected Dialog onCreateDialog(final Button btn) {
-		Dialog dialog = null;
-		c = Calendar.getInstance();
-		dialog = new DatePickerDialog(getActivity(),
-				new DatePickerDialog.OnDateSetListener() {
-					public void onDateSet(DatePicker dp, int year, int month,
-							int dayOfMonth) {
-						String text = String.format("%d/%02d/%02d", year,
-								(month + 1), dayOfMonth);
-						btn.setText(text);
-					}
-				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
-				c.get(Calendar.DAY_OF_MONTH));
-		return dialog;
-	}
-
-	// TimePickerDialog
-	protected Dialog onCreateDialog2(final Button btn) {
-		Dialog dialog2 = null;
-		c = Calendar.getInstance();
-		dialog2 = new TimePickerDialog(getActivity(),
-				new TimePickerDialog.OnTimeSetListener() {
-					public void onTimeSet(TimePicker view, int hourOfDay,
-							int minute) {
-						btn.setText(hourOfDay + ":" + minute);
-					}
-				}, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
-		return dialog2;
-	}
-
 }
