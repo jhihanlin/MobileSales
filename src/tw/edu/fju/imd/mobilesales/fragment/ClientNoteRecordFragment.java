@@ -49,6 +49,7 @@ public class ClientNoteRecordFragment extends Fragment {
 	private SearchView mSearchView;
 	private Menu menu;
 	private List<ParseObject> clientObject;
+	private ProgressDialog pd;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -69,10 +70,9 @@ public class ClientNoteRecordFragment extends Fragment {
 	}
 
 	private void loadDataFromParse() {
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
+		pd = new ProgressDialog(getActivity());
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+		pd.show();
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"ClientNote");
@@ -81,7 +81,7 @@ public class ClientNoteRecordFragment extends Fragment {
 
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
-				progressDialog.dismiss();
+				pd.dismiss();
 				clientObject = objects;
 				final ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
@@ -138,7 +138,6 @@ public class ClientNoteRecordFragment extends Fragment {
 					e2.printStackTrace();
 				}
 			}
-
 		});
 	}
 

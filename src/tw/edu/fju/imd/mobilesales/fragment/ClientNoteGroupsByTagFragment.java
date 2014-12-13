@@ -37,6 +37,7 @@ public class ClientNoteGroupsByTagFragment extends Fragment {
 	private List<ParseObject> clientNotes;
 	private ListView ls;
 	private TextView groupByText;
+	private ProgressDialog pd;
 
 	public ClientNoteGroupsByTagFragment() {
 	}
@@ -48,11 +49,9 @@ public class ClientNoteGroupsByTagFragment extends Fragment {
 		ls = (ListView) v.findViewById(R.id.purpose_listview);
 		groupByText = (TextView) v.findViewById(R.id.group_by_textview);
 		groupByText.setText("依客戶標籤分類記事");
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
+		pd = new ProgressDialog(getActivity());
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+		pd.show();
 		ParseQuery<ParseObject> queryPurpose = new ParseQuery<ParseObject>(
 				"Client");
 		queryPurpose.orderByDescending("createdAt");
@@ -66,8 +65,8 @@ public class ClientNoteGroupsByTagFragment extends Fragment {
 
 					@Override
 					public void done(List<ParseObject> objects, ParseException e) {
+						pd.dismiss();
 						clientNotes = objects;
-						progressDialog.dismiss();
 						setListViewData(clients, clientNotes, v);
 					}
 				});

@@ -24,15 +24,11 @@ import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.SpinnerHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.graphics.Typeface;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
 
 import com.parse.FindCallback;
 import com.parse.ParseACL;
@@ -44,21 +40,20 @@ import com.parse.SaveCallback;
 
 public class CalendarAddNoteFragment extends Fragment {
 
-	EditText m_titleText;
-	EditText m_contentText;
-	EditText m_locationText;
-	EditText m_remarksText;
-	Spinner m_purpose;
-	Spinner m_remind;
-	Spinner m_client;
-	Button m_datepickerButton = null;
-	Button m_timepickerButton = null;
-	Button saveButton;
-	Calendar c = null;
+	private EditText m_titleText;
+	private EditText m_contentText;
+	private EditText m_locationText;
+	private EditText m_remarksText;
+	private Spinner m_purpose;
+	private Spinner m_remind;
+	private Spinner m_client;
+	private Button m_datepickerButton = null;
+	private Button m_timepickerButton = null;
+	private Button saveButton;
+	private Calendar c = null;
 	protected List<ParseObject> purpose;
 	protected List<ParseObject> clientName;
-
-	private ProgressDialog progressDialog;
+	private ProgressDialog pd;
 
 	String[] remindTime = new String[] { "10 minutes ago", "15 minutes ago",
 			"30 minutes ago", "1 hour ago", "3 hours ago", "12 hours ago",
@@ -158,7 +153,6 @@ public class CalendarAddNoteFragment extends Fragment {
 		});
 
 		saveButton.setOnClickListener(new OnClickListener() {
-			ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
 			@Override
 			public void onClick(View v) {
@@ -173,9 +167,9 @@ public class CalendarAddNoteFragment extends Fragment {
 				String remind = m_remind.getSelectedItem().toString();
 				String remarks = m_remarksText.getText().toString();
 
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
+				pd = new ProgressDialog(getActivity());
+				pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+				pd.show();
 
 				ParseObject object = new ParseObject("ClientNote");
 				object.put("client", client);
@@ -192,7 +186,7 @@ public class CalendarAddNoteFragment extends Fragment {
 
 					@Override
 					public void done(ParseException e) {
-						progressDialog.dismiss();
+						pd.dismiss();
 						if (e == null) {
 							Toast.makeText(getActivity(), "Successful",
 									Toast.LENGTH_SHORT).show();

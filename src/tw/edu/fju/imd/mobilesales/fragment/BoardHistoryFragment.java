@@ -8,14 +8,11 @@ import java.util.Map;
 import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-import android.app.AlertDialog;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +32,8 @@ public class BoardHistoryFragment extends Fragment {
 	public BoardHistoryFragment() {
 	}
 
-	ListView board_list;
-
+	private ListView board_list;
+	private ProgressDialog pd;
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,11 +46,9 @@ public class BoardHistoryFragment extends Fragment {
 	}
 
 	private void loadDataFromParse() {
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());// loading
-																				// bar
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
+		pd = new ProgressDialog(getActivity());
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+		pd.show();
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"Board");
@@ -62,7 +57,7 @@ public class BoardHistoryFragment extends Fragment {
 
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
-				progressDialog.dismiss();
+				pd.dismiss();
 
 				final ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 				final ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();

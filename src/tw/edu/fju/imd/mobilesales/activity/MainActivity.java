@@ -3,6 +3,7 @@ package tw.edu.fju.imd.mobilesales.activity;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import tw.edu.fju.imd.mobilesales.R;
 import tw.edu.fju.imd.mobilesales.adapter.MenuAdapter;
 import tw.edu.fju.imd.mobilesales.fragment.BoardFragment;
@@ -11,10 +12,11 @@ import tw.edu.fju.imd.mobilesales.fragment.ClientNoteRecordFragment;
 import tw.edu.fju.imd.mobilesales.fragment.MessageHistoryFragment;
 import tw.edu.fju.imd.mobilesales.fragment.NotifyFragment;
 import tw.edu.fju.imd.mobilesales.fragment.SearchFragment;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.AlertDialog;
-import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -43,6 +45,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -57,19 +60,16 @@ public class MainActivity extends FragmentActivity {
 	private CharSequence my_DrawerTitle;
 	private CharSequence my_Title;
 	private String[] my_PlanetTitles;
-	private ProgressDialog progressDialog;
 	private static final int PHOTO_SUCCESS = 1;
 	boolean doubleBackToExitPressedOnce = false;
-
+	private ProgressDialog pd;
 	ImageView profile;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(this);
-		progressDialog = new ProgressDialog(this);
 		my_Title = my_DrawerTitle = getTitle();
 
 		my_PlanetTitles = getResources().getStringArray(R.array.planets_array);
@@ -84,9 +84,7 @@ public class MainActivity extends FragmentActivity {
 		loadFromParse();
 
 		logoutBtn.setTypeface(typeface);
-
 		logoutBtn.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				ParseUser.logOut();
@@ -112,7 +110,6 @@ public class MainActivity extends FragmentActivity {
 					}
 				});
 				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
@@ -222,29 +219,21 @@ public class MainActivity extends FragmentActivity {
 					.commit();
 			break;
 		}
-
 		case 1: {
-			fragmentManager.beginTransaction()
-					.add(R.id.content_frame, new ClientNoteRecordFragment())
-					.addToBackStack(null)
-					.commit();
-			break;
-		}
-		case 2: {
 			fragmentManager.beginTransaction()
 					.replace(R.id.content_frame, new CalendarFragment())
 					.addToBackStack(null)
 					.commit();
 			break;
 		}
-		case 3: {
+		case 2: {
 			fragmentManager.beginTransaction()
 					.replace(R.id.content_frame, new SearchFragment())
 					.addToBackStack(null)
 					.commit();
 			break;
 		}
-		case 4: {
+		case 3: {
 			fragmentManager.beginTransaction()
 					.replace(R.id.content_frame, new MessageHistoryFragment())
 					.addToBackStack(null)
@@ -252,7 +241,7 @@ public class MainActivity extends FragmentActivity {
 
 			break;
 		}
-		case 5: {
+		case 4: {
 			fragmentManager.beginTransaction()
 					.replace(R.id.content_frame, new BoardFragment())
 					.addToBackStack(null)
@@ -260,7 +249,7 @@ public class MainActivity extends FragmentActivity {
 
 			break;
 		}
-		case 6: {
+		case 5: {
 			fragmentManager.beginTransaction()
 					.replace(R.id.content_frame, new NotifyFragment())
 					.addToBackStack(null)
@@ -316,9 +305,9 @@ public class MainActivity extends FragmentActivity {
 		Uri selectedImageUri = data.getData();
 		profile.setImageURI(selectedImageUri);
 
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
+		pd = new ProgressDialog(MainActivity.this);
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(MainActivity.this);
+		pd.show();
 		saveToParse(selectedImageUri);
 		super.onActivityResult(requestCode, resultCode, data);
 
@@ -336,7 +325,7 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			public void done(ParseException e) {
-				progressDialog.dismiss();
+				pd.dismiss();
 				if (e == null) {
 					String url = file.getUrl();
 					Log.d("debug", url);
@@ -404,5 +393,15 @@ public class MainActivity extends FragmentActivity {
 
 	public void nullClick(View view) {
 
+	}
+
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this); // Add this method.
+	}
+
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this); // Add this method.
 	}
 }

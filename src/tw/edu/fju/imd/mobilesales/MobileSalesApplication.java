@@ -3,10 +3,8 @@ package tw.edu.fju.imd.mobilesales;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 import tw.edu.fju.imd.mobilesales.activity.MainActivity;
-
 import com.parse.Parse;
 import com.parse.PushService;
-
 import android.app.Application;
 
 public class MobileSalesApplication extends Application {

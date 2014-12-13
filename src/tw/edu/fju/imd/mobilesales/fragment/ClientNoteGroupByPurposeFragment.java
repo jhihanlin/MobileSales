@@ -35,6 +35,7 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 	private List<ParseObject> clientNotes;
 	private ListView ls;
 	private TextView groupByText;
+	private ProgressDialog pd;
 
 	public ClientNoteGroupByPurposeFragment() {
 	}
@@ -46,11 +47,10 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 		ls = (ListView) v.findViewById(R.id.purpose_listview);
 		groupByText = (TextView) v.findViewById(R.id.group_by_textview);
 		groupByText.setText("依目的分類記事");
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+		pd = new ProgressDialog(getActivity());
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+		pd.show();
 
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
 		ParseQuery<ParseObject> queryPurpose = new ParseQuery<ParseObject>(
 				"Purpose");
 		queryPurpose.orderByDescending("createdAt");
@@ -66,7 +66,7 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 					@Override
 					public void done(List<ParseObject> objects, ParseException e) {
 						clientNotes = objects;
-						progressDialog.dismiss();
+						pd.dismiss();
 						setListViewData(purpose, v);
 					}
 				});
@@ -172,7 +172,7 @@ public class ClientNoteGroupByPurposeFragment extends Fragment {
 
 					DialogHelper.showDeleteDialog(getActivity(), "Purpose", pList, position,
 							array_adapter);
-					
+
 					return true;
 				}
 			});

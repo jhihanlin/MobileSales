@@ -1,6 +1,7 @@
 package tw.edu.fju.imd.mobilesales.fragment;
 
 import tw.edu.fju.imd.mobilesales.R;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
@@ -28,7 +29,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class BoardFragment extends Fragment {
-	String content;
+	private String content;
+	private ProgressDialog pd;
 
 	public BoardFragment() {
 	}
@@ -37,7 +39,6 @@ public class BoardFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.board_layout, container, false);
-		final ProgressDialog progressDialog = new ProgressDialog(getActivity());
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		final EditText push_content = (EditText) v.findViewById(R.id.push_content);
@@ -51,9 +52,9 @@ public class BoardFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
+				pd = new ProgressDialog(getActivity());
+				pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+				pd.show();
 
 				// get user
 				ParseUser user = ParseUser.getCurrentUser();
@@ -72,7 +73,7 @@ public class BoardFragment extends Fragment {
 
 					@Override
 					public void done(ParseException e) {
-						progressDialog.dismiss();
+						pd.dismiss();
 
 					}
 				});

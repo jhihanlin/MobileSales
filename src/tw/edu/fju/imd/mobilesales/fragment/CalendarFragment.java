@@ -16,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -63,7 +62,7 @@ public class CalendarFragment extends Fragment {
 	protected List<ParseObject> clientNotes;
 	private ListView clientNoteText;
 	private static final String dateTemplate = "MMMM yyyy";
-	private ProgressDialog progressDialog;
+	private ProgressDialog pd;
 	private List<Map<String, String>> calendarEvents;
 	private SharedPreferences sp;
 	private SharedPreferences.Editor editor;
@@ -187,7 +186,6 @@ public class CalendarFragment extends Fragment {
 
 		calendarView = (GridView) v.findViewById(R.id.calendar);
 		clientNoteText = (ListView) v.findViewById(R.id.clientNoteText);
-		progressDialog = new ProgressDialog(getActivity());
 
 		// Initialised
 		adapter = new GridCellAdapter(getActivity().getApplicationContext(),
@@ -266,9 +264,9 @@ public class CalendarFragment extends Fragment {
 
 	private void loadClientNoteFromParse() {
 
-		progressDialog.setTitle("Loading...");
-		progressDialog.setCancelable(false);
-		progressDialog.show();
+		pd = new ProgressDialog(getActivity());
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+		pd.show();
 
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
 				"ClientNote"); // get Parse table:ClientNote
@@ -280,7 +278,7 @@ public class CalendarFragment extends Fragment {
 				if (e == null) { // put resule into a variable:clientNotes
 					clientNotes = objects;
 				}
-				progressDialog.dismiss();
+				pd.dismiss();
 				if (adapter != null) { // when Parse changed it will notify
 										// adapter
 					adapter.notifyDataSetChanged();
@@ -655,10 +653,10 @@ public class CalendarFragment extends Fragment {
 						@Override
 						public boolean onItemLongClick(AdapterView<?> parent,
 								View view, int position, long id) {
-							
+
 							DialogHelper.showDeleteDialog(getActivity(), "ClientNote", data, position,
 									simpleAdapter);
-							
+
 							return true;
 						}
 					});

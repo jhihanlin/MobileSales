@@ -1,20 +1,16 @@
 package tw.edu.fju.imd.mobilesales.fragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import tw.edu.fju.imd.mobilesales.R;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.SpinnerHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
-
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,11 +23,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -44,9 +37,7 @@ import com.parse.SaveCallback;
 public class ClientNoteDetailFragment extends Fragment {
 	protected List<ParseObject> clientName;
 	protected List<ParseObject> purposeName;
-	Calendar c = null;
-	private ProgressDialog progressDialog;
-
+	private ProgressDialog pd;
 	int c_index;
 	int p_index;
 
@@ -62,8 +53,6 @@ public class ClientNoteDetailFragment extends Fragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.client_note_view, container, false);
 		// bar
-		progressDialog = new ProgressDialog(getActivity());// loading
-
 		Typeface typeface = TypeFaceHelper.getCurrentTypeface(getActivity());
 
 		Bundle arguments = getArguments();
@@ -91,7 +80,6 @@ public class ClientNoteDetailFragment extends Fragment {
 		final EditText getLocation = (EditText) v.findViewById(R.id.view_location);
 		final Spinner getRemind = (Spinner) v.findViewById(R.id.view_remind);
 		final EditText getRemarks = (EditText) v.findViewById(R.id.view_remarks);
-		final LinearLayout linearLayout1 = (LinearLayout) v.findViewById(R.id.LinearLayout1);
 		final Button edit = (Button) v.findViewById(R.id.edit);
 		edit.setTypeface(typeface);
 		final Button save = (Button) v.findViewById(R.id.save);
@@ -116,11 +104,8 @@ public class ClientNoteDetailFragment extends Fragment {
 		getContent.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		getContent.setInputType(InputType.TYPE_NULL);
 		getRemind.setEnabled(false);
-		// 文本显示的位置在EditText的最上方
 		getContent.setGravity(Gravity.TOP);
-		// 改变默认的单行模式
 		getContent.setSingleLine(false);
-		// 水平滚动设置为False
 		getContent.setHorizontallyScrolling(false);
 
 		String location = list.get(0).get("location");
@@ -148,10 +133,9 @@ public class ClientNoteDetailFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				progressDialog = new ProgressDialog(getActivity());// loading
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
+				pd = new ProgressDialog(getActivity());
+				pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+				pd.show();
 
 				getTitle.setInputType(InputType.TYPE_CLASS_TEXT);
 				getContent.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -166,19 +150,19 @@ public class ClientNoteDetailFragment extends Fragment {
 
 					@Override
 					public void onClick(View v) {
-						onCreateDialog(getDateButton).show();
+						DialogHelper.onCreateDateDialog(getActivity(), getDateButton).show();
 					}
 				});
 				getTimeButton.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						onCreateDialog2(getTimeButton).show();
+						DialogHelper.onCreateTimeDialog(getActivity(), getTimeButton).show();
 					}
 				});
 				createSaveButton(id);
 
-				progressDialog.dismiss();
+				pd.dismiss();
 
 			}
 
@@ -266,16 +250,16 @@ public class ClientNoteDetailFragment extends Fragment {
 	}
 
 	private void changeDataToParse(final ArrayList<Map<String, String>> ed, String id) {
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
+		pd = new ProgressDialog(getActivity());
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(getActivity());
+		pd.show();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("ClientNote");
 
 		// Retrieve the object by id
 		query.getInBackground(id, new GetCallback<ParseObject>() {
 			public void done(ParseObject ob, ParseException e) {
+				pd.dismiss();
 				if (e == null) {
-					progressDialog.dismiss();
 					ob.put("title", ed.get(0).get("title"));
 					ob.put("client", ed.get(0).get("client"));
 					ob.put("purpose", ed.get(0).get("purpose"));
@@ -301,35 +285,6 @@ public class ClientNoteDetailFragment extends Fragment {
 				}
 			}
 		});
-	}
-
-	protected Dialog onCreateDialog(final Button btn) {
-		Dialog dialog = null;
-		c = Calendar.getInstance();
-		dialog = new DatePickerDialog(getActivity(),
-				new DatePickerDialog.OnDateSetListener() {
-					public void onDateSet(DatePicker dp, int year, int month,
-							int dayOfMonth) {
-						String text = String.format("%d/%02d/%02d", year,
-								(month + 1), dayOfMonth);
-						btn.setText(text);
-					}
-				}, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
-				c.get(Calendar.DAY_OF_MONTH));
-		return dialog;
-	}
-
-	protected Dialog onCreateDialog2(final Button btn) {
-		Dialog dialog2 = null;
-		c = Calendar.getInstance();
-		dialog2 = new TimePickerDialog(getActivity(),
-				new TimePickerDialog.OnTimeSetListener() {
-					public void onTimeSet(TimePicker view, int hourOfDay,
-							int minute) {
-						btn.setText(hourOfDay + ":" + minute);
-					}
-				}, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false);
-		return dialog2;
 	}
 
 	@Override

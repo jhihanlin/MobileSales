@@ -1,8 +1,7 @@
 package tw.edu.fju.imd.mobilesales.activity;
 
 import tw.edu.fju.imd.mobilesales.R;
-import tw.edu.fju.imd.mobilesales.R.id;
-import tw.edu.fju.imd.mobilesales.R.layout;
+import tw.edu.fju.imd.mobilesales.utils.DialogHelper;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,10 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.PushService;
 import com.parse.SignUpCallback;
 
 public class LoginActivity extends Activity {
@@ -39,19 +36,16 @@ public class LoginActivity extends Activity {
 	private Button registerButton;
 	private Button loginButton;
 	private CheckBox loginCheckBox;
-	private ProgressDialog progressDialog;
-
 	private SharedPreferences sp;
 	private SharedPreferences.Editor editor;
+	private ProgressDialog pd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login);
+		setContentView(R.layout.activity_login);
 
 		Log.d("debug", "login activity");
-
-		progressDialog = new ProgressDialog(this);// loading bar
 
 		sp = getSharedPreferences("settings", Context.MODE_PRIVATE);
 		editor = sp.edit();
@@ -80,18 +74,14 @@ public class LoginActivity extends Activity {
 		registerButton.setTypeface(typeface);
 
 		// login
-
 		loginButton.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				loginFromParse();
 			}
-
 		});
 
 		// register
-
 		registerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -113,11 +103,7 @@ public class LoginActivity extends Activity {
 				else {
 
 					Log.d("debug", "signup:" + username);
-
-					progressDialog.setCancelable(false);
-					progressDialog.setTitle("Loading...");
-					progressDialog.show();
-
+					DialogHelper.mProgressDialog(LoginActivity.this).show();
 					final ParseUser user = new ParseUser();
 					user.setUsername(username);
 					user.setPassword(password);
@@ -127,8 +113,7 @@ public class LoginActivity extends Activity {
 
 						@Override
 						public void done(ParseException e) {
-
-							progressDialog.dismiss();
+							DialogHelper.mProgressDialog(LoginActivity.this).dismiss();
 							if (e != null) {
 								e.printStackTrace();
 								Toast.makeText(LoginActivity.this, "Username already exists",
@@ -164,15 +149,16 @@ public class LoginActivity extends Activity {
 	}
 
 	private void loginFromParse() {
+		pd = new ProgressDialog(LoginActivity.this);
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(LoginActivity.this);
+		pd.show();
 		String username = accountEditText.getText().toString();
 		String password = passwordEditText.getText().toString();
 		boolean checked = loginCheckBox.isChecked();
 		Log.d("debug", "login:" + username);
 		Log.d("debug", "checked:" + "status" + loginCheckBox.isChecked());
 
-		editor.putString("username", username); // when user keyin owen
-												// username it will put
-												// in editor
+		editor.putString("username", username);
 		editor.putString("password", password);
 		editor.putBoolean("checked", checked);
 		editor.commit();
@@ -182,16 +168,12 @@ public class LoginActivity extends Activity {
 			user.put("checked", checked);
 			user.saveInBackground();
 		}
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
 		ParseUser.logInInBackground(username, password,
 				new LogInCallback() {
 					@Override
 					public void done(ParseUser user,
 							com.parse.ParseException e) {
-						progressDialog.dismiss();
-
+						pd.dismiss();
 						if (user != null && e == null) {
 							goToMainActivity();
 							LoginActivity.this.finish();

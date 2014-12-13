@@ -2,6 +2,7 @@ package tw.edu.fju.imd.mobilesales.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.parse.FindCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -23,13 +24,12 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class SpinnerHelper {
+	private static ProgressDialog pd;
 
 	public static void buildCustomerData(final Activity activity, final Spinner spinner, final String className, final String title, final String selection) {
-		final ProgressDialog progressDialog = new ProgressDialog(activity);
-		progressDialog.setCancelable(false);
-		progressDialog.setTitle("Loading...");
-		progressDialog.show();
-
+		pd = new ProgressDialog(activity);
+		pd = (ProgressDialog) DialogHelper.mProgressDialog(activity);
+		pd.show();
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(className);
 
 		query.findInBackground(new FindCallback<ParseObject>() {
@@ -37,11 +37,9 @@ public class SpinnerHelper {
 			@Override
 			public void done(List<ParseObject> purpose,
 					com.parse.ParseException e) {
-
+				pd.dismiss();
 				int selectionPosition = -1;
 				ArrayList<String> purposArrayList;
-				progressDialog.dismiss();
-
 				if (e != null) {
 					e.printStackTrace();
 					return;
@@ -133,7 +131,6 @@ public class SpinnerHelper {
 	}
 
 	private static void showAddPurposeDialog(final Activity activity, final ArrayAdapter<String> purposeAdapter, final String className, final String title) {
-		final ProgressDialog progressDialog = new ProgressDialog(activity);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("新增" + title);
@@ -143,10 +140,9 @@ public class SpinnerHelper {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				progressDialog.setCancelable(false);
-				progressDialog.setTitle("Loading...");
-				progressDialog.show();
-
+				pd = new ProgressDialog(activity);
+				pd = (ProgressDialog) DialogHelper.mProgressDialog(activity);
+				pd.show();
 				final String s = ed.getText().toString();
 				ParseObject object = new ParseObject(className);
 				if (className.equals("MessageModel")) {
@@ -160,7 +156,7 @@ public class SpinnerHelper {
 
 					@Override
 					public void done(ParseException e) {
-						progressDialog.dismiss();
+						pd.dismiss();
 						purposeAdapter.remove("《新增" + title + "》");
 						purposeAdapter.add(s);
 						purposeAdapter.add("《新增" + title + "》");

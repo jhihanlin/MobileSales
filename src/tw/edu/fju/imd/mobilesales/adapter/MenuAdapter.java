@@ -1,14 +1,9 @@
 package tw.edu.fju.imd.mobilesales.adapter;
 
 import tw.edu.fju.imd.mobilesales.R;
-import tw.edu.fju.imd.mobilesales.R.array;
-import tw.edu.fju.imd.mobilesales.R.drawable;
-import tw.edu.fju.imd.mobilesales.R.id;
-import tw.edu.fju.imd.mobilesales.R.layout;
 import tw.edu.fju.imd.mobilesales.utils.TypeFaceHelper;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +31,11 @@ public class MenuAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
